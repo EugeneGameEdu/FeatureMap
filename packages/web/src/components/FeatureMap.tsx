@@ -9,9 +9,11 @@ import {
   ReactFlow,
   useEdgesState,
   useNodesState,
+  type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
+import { FeatureNode } from './FeatureNode';
 import type { Feature, GraphData } from '@/lib/types';
 
 interface FeatureMapProps {
@@ -20,8 +22,12 @@ interface FeatureMapProps {
   onNodeClick?: (featureId: string) => void;
 }
 
+const nodeTypes: NodeTypes = {
+  feature: FeatureNode,
+};
+
 const NODE_WIDTH = 180;
-const NODE_HEIGHT = 60;
+const NODE_HEIGHT = 70;
 
 function getLayoutedElements(
   nodes: Node[],
@@ -30,7 +36,7 @@ function getLayoutedElements(
 ): { nodes: Node[]; edges: Edge[] } {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: direction, nodesep: 50, ranksep: 80 });
+  dagreGraph.setGraph({ rankdir: direction, nodesep: 60, ranksep: 100 });
 
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
@@ -62,23 +68,15 @@ export function FeatureMap({ graph, features, onNodeClick }: FeatureMapProps) {
       const feature = features[node.id];
       return {
         id: node.id,
-        type: 'default',
+        type: 'feature',
         data: {
-          label: (
-            <div className="text-center">
-              <div className="font-medium text-sm">{node.label}</div>
-              <div className="text-xs text-gray-500">{node.fileCount} files</div>
-            </div>
-          ),
+          label: node.label,
+          fileCount: node.fileCount,
+          source: feature?.source || 'auto',
+          status: feature?.status || 'active',
+          dependencyCount: feature?.dependsOn?.length || 0,
         },
         position: { x: 0, y: 0 },
-        style: {
-          width: NODE_WIDTH,
-          backgroundColor: feature?.source === 'ai' ? '#dbeafe' : '#f3f4f6',
-          border: '1px solid #d1d5db',
-          borderRadius: '8px',
-          padding: '8px',
-        },
       };
     });
   }, [graph.nodes, features]);
@@ -90,7 +88,11 @@ export function FeatureMap({ graph, features, onNodeClick }: FeatureMapProps) {
       target: edge.target,
       type: 'smoothstep',
       animated: false,
-      style: { stroke: '#9ca3af' },
+      style: { stroke: '#9ca3af', strokeWidth: 2 },
+      markerEnd: {
+        type: 'arrowclosed' as const,
+        color: '#9ca3af',
+      },
     }));
   }, [graph.edges]);
 
@@ -113,18 +115,25 @@ export function FeatureMap({ graph, features, onNodeClick }: FeatureMapProps) {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
         connectionMode={ConnectionMode.Loose}
         fitView
         fitViewOptions={{ padding: 0.2 }}
-        minZoom={0.5}
+        minZoom={0.3}
         maxZoom={2}
+        defaultEdgeOptions={{
+          type: 'smoothstep',
+        }}
       >
-        <Background color="#e5e7eb" gap={16} />
-        <Controls />
-        <Panel position="top-left" className="bg-white p-2 rounded shadow text-sm">
+        <Background color="#e5e7eb" gap={20} size={1} />
+        <Controls showInteractive={false} />
+        <Panel
+          position="top-left"
+          className="bg-white/90 backdrop-blur px-3 py-2 rounded-lg shadow-sm text-sm text-gray-600"
+        >
           {graph.nodes.length} features • {graph.edges.length} connections
         </Panel>
       </ReactFlow>
