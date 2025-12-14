@@ -4,9 +4,11 @@ description: null
 source: auto
 status: active
 files:
+  - path: packages/web/src/lib/loadFeatureMap.ts
+  - path: packages/web/src/lib/types.ts
   - path: packages/web/src/lib/utils.ts
 exports: []
 dependsOn: []
 metadata:
-  createdAt: 2025-12-14T09:57:10.553Z
-  updatedAt: 2025-12-14T09:57:10.553Z
+  createdAt: 2025-12-14T16:50:06.983Z
+  updatedAt: 2025-12-14T16:50:06.983Z

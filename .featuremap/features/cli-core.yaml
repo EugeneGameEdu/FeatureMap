@@ -9,5 +9,5 @@ exports: []
 dependsOn:
   - cli-commands
 metadata:
-  createdAt: 2025-12-14T09:57:10.551Z
-  updatedAt: 2025-12-14T09:57:10.551Z
+  createdAt: 2025-12-14T16:50:06.975Z
+  updatedAt: 2025-12-14T16:50:06.975Z
