@@ -1,0 +1,117 @@
+/**
+ * Demo script that simulates AI analysis by updating features
+ * with better names and descriptions.
+ *
+ * Run: npx ts-node src/scripts/demo-ai-analysis.ts
+ * Or after build: node dist/scripts/demo-ai-analysis.js
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'yaml';
+
+const DEMO_UPDATES: Record<string, { name: string; description: string }> = {
+  'cli-analyzer': {
+    name: 'Code Analyzer',
+    description:
+      'Core analysis engine that parses TypeScript files, builds dependency graphs, and groups files into feature clusters using ts-morph.',
+  },
+  'cli-commands': {
+    name: 'CLI Commands',
+    description:
+      'Command-line interface with init, scan, and web commands. Entry point for all FeatureMap operations.',
+  },
+  'cli-core': {
+    name: 'CLI Entry Point',
+    description: 'Main entry point that registers all CLI commands using Commander.js.',
+  },
+  'mcp-server-core': {
+    name: 'MCP Server',
+    description:
+      'Model Context Protocol server that exposes FeatureMap tools to AI assistants like Cursor and Claude.',
+  },
+  'mcp-server-tools': {
+    name: 'MCP Tools',
+    description:
+      'AI-accessible tools for reading project structure, getting features, and updating feature metadata.',
+  },
+  'web-components': {
+    name: 'Map Components',
+    description:
+      'React Flow based interactive map with custom feature nodes and dependency visualization.',
+  },
+  'web-components-ui': {
+    name: 'UI Components',
+    description:
+      'Reusable UI components from shadcn/ui including buttons, cards, badges, and the sidebar panel.',
+  },
+  'web-core': {
+    name: 'Web Application',
+    description:
+      'Main React application that loads feature data and renders the interactive map with sidebar.',
+  },
+  'web-lib': {
+    name: 'Web Utilities',
+    description:
+      'Data loading utilities, TypeScript types, and helper functions for the web interface.',
+  },
+};
+
+async function main() {
+  const projectRoot = process.cwd();
+  const featuresDir = path.join(projectRoot, '.featuremap', 'features');
+
+  if (!fs.existsSync(featuresDir)) {
+    console.error('❌ .featuremap/features/ not found. Run "featuremap scan" first.');
+    process.exit(1);
+  }
+
+  console.log('🤖 Simulating AI analysis...\n');
+
+  let updated = 0;
+
+  for (const [id, updates] of Object.entries(DEMO_UPDATES)) {
+    const featurePath = path.join(featuresDir, `${id}.yaml`);
+
+    if (!fs.existsSync(featurePath)) {
+      console.log(`  ⚠️  Skipping ${id} (not found)`);
+      continue;
+    }
+
+    const content = fs.readFileSync(featurePath, 'utf-8');
+    const feature = yaml.parse(content);
+
+    feature.name = updates.name;
+    feature.description = updates.description;
+    feature.source = 'ai';
+    feature.metadata = feature.metadata || {};
+    feature.metadata.updatedAt = new Date().toISOString();
+
+    fs.writeFileSync(featurePath, yaml.stringify(feature), 'utf-8');
+    console.log(`  ✓ Updated ${id} → "${updates.name}"`);
+    updated++;
+  }
+
+  const graphPath = path.join(projectRoot, '.featuremap', 'graph.yaml');
+  if (fs.existsSync(graphPath)) {
+    const graphContent = fs.readFileSync(graphPath, 'utf-8');
+    const graph = yaml.parse(graphContent);
+
+    if (graph.nodes) {
+      for (const node of graph.nodes) {
+        if (DEMO_UPDATES[node.id]) {
+          node.label = DEMO_UPDATES[node.id].name;
+        }
+      }
+    }
+
+    graph.generatedAt = new Date().toISOString();
+    fs.writeFileSync(graphPath, yaml.stringify(graph), 'utf-8');
+    console.log('  ✓ Updated graph.yaml labels');
+  }
+
+  console.log(`\n✨ Updated ${updated} features with AI-style names and descriptions.`);
+  console.log('   Run "featuremap web" to see the changes.');
+}
+
+main().catch(console.error);

@@ -1,7 +1,8 @@
 id: web-components
-name: Web Components
-description: null
-source: auto
+name: Map Components
+description: React Flow based interactive map with custom feature nodes and
+  dependency visualization.
+source: ai
 status: active
 files:
   - path: packages/web/src/components/FeatureMap.tsx
@@ -11,4 +12,4 @@ exports: []
 dependsOn: []
 metadata:
   createdAt: 2025-12-14T16:50:06.979Z
-  updatedAt: 2025-12-14T16:50:06.979Z
+  updatedAt: 2025-12-14T16:55:17.887Z

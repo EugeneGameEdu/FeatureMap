@@ -1,7 +1,8 @@
 id: mcp-server-tools
-name: Mcp Server Tools
-description: null
-source: auto
+name: MCP Tools
+description: AI-accessible tools for reading project structure, getting
+  features, and updating feature metadata.
+source: ai
 status: active
 files:
   - path: packages/mcp-server/src/tools/getCurrentFeatures.ts
@@ -11,4 +12,4 @@ exports: []
 dependsOn: []
 metadata:
   createdAt: 2025-12-14T16:50:06.978Z
-  updatedAt: 2025-12-14T16:50:06.978Z
+  updatedAt: 2025-12-14T16:55:17.885Z
