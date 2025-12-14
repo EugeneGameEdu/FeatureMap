@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { createInitCommand } from './commands/init.js';
 import { createScanCommand } from './commands/scan.js';
+import { createWebCommand } from './commands/web.js';
 
 const program = new Command();
 
@@ -14,12 +15,6 @@ program
 // Add commands
 program.addCommand(createInitCommand());
 program.addCommand(createScanCommand());
-
-program
-  .command('web')
-  .description('Start web interface')
-  .action(() => {
-    console.log('Web command - not implemented yet');
-  });
+program.addCommand(createWebCommand());
 
 program.parse();
