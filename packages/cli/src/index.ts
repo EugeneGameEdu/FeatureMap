@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { createInitCommand } from './commands/init.js';
 
 const program = new Command();
 
@@ -9,12 +10,8 @@ program
   .description('Visual feature map for your codebase')
   .version('0.1.0');
 
-program
-  .command('init')
-  .description('Initialize FeatureMap in current project')
-  .action(() => {
-    console.log('Init command - not implemented yet');
-  });
+// Add commands
+program.addCommand(createInitCommand());
 
 program
   .command('scan')
