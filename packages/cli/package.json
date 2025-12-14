@@ -11,7 +11,8 @@
     "dev": "tsc --watch",
     "test:parser": "node dist/analyzer/test-parser.js",
     "test:scanner": "node dist/analyzer/test-scanner.js",
-    "test:graph": "node dist/analyzer/test-graph.js"
+    "test:graph": "node dist/analyzer/test-graph.js",
+    "test:grouper": "node dist/analyzer/test-grouper.js"
   },
   "files": [
     "dist"
