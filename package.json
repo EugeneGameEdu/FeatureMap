@@ -7,6 +7,9 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "dev": "npm run dev --workspace=packages/web"
+    "dev": "npm run dev --workspace=@featuremap/web",
+    "cli": "node packages/cli/dist/index.js",
+    "scan": "node packages/cli/dist/index.js scan",
+    "web": "node packages/cli/dist/index.js web"
   }
 }
