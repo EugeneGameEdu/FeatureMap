@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.featuremap/raw-graph.yaml
+*.log
+.DS_Store
