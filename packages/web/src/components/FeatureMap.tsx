@@ -20,6 +20,7 @@ interface FeatureMapProps {
   graph: GraphData;
   features: Record<string, Feature>;
   onNodeClick?: (featureId: string) => void;
+  selectedNodeId?: string | null;
 }
 
 const nodeTypes: NodeTypes = {
@@ -62,7 +63,7 @@ function getLayoutedElements(
   return { nodes: layoutedNodes, edges };
 }
 
-export function FeatureMap({ graph, features, onNodeClick }: FeatureMapProps) {
+export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: FeatureMapProps) {
   const initialNodes: Node[] = useMemo(() => {
     return graph.nodes.map((node) => {
       const feature = features[node.id];
@@ -77,9 +78,10 @@ export function FeatureMap({ graph, features, onNodeClick }: FeatureMapProps) {
           dependencyCount: feature?.dependsOn?.length || 0,
         },
         position: { x: 0, y: 0 },
+        selected: node.id === selectedNodeId,
       };
     });
-  }, [graph.nodes, features]);
+  }, [graph.nodes, features, selectedNodeId]);
 
   const initialEdges: Edge[] = useMemo(() => {
     return graph.edges.map((edge, index) => ({

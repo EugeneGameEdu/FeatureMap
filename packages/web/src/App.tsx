@@ -11,7 +11,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedFeatureId, setSelectedFeatureId] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -32,7 +31,6 @@ function App() {
 
   const handleNodeClick = (featureId: string) => {
     setSelectedFeatureId(featureId);
-    setSidebarOpen(true);
   };
 
   const handleDependencyClick = (featureId: string) => {
@@ -42,7 +40,7 @@ function App() {
   };
 
   const handleCloseSidebar = () => {
-    setSidebarOpen(false);
+    setSelectedFeatureId(null);
   };
 
   if (loading) {
@@ -87,20 +85,22 @@ function App() {
         </Button>
       </header>
 
-      <main className="flex-1 relative">
-        <FeatureMap
-          graph={data.graph}
-          features={data.features}
-          onNodeClick={handleNodeClick}
-        />
-      </main>
+      <div className="flex-1 flex overflow-hidden">
+        <main className="flex-1 relative">
+          <FeatureMap
+            graph={data.graph}
+            features={data.features}
+            onNodeClick={handleNodeClick}
+            selectedNodeId={selectedFeatureId}
+          />
+        </main>
 
-      <Sidebar
-        feature={selectedFeature}
-        open={sidebarOpen}
-        onClose={handleCloseSidebar}
-        onDependencyClick={handleDependencyClick}
-      />
+        <Sidebar
+          feature={selectedFeature}
+          onClose={handleCloseSidebar}
+          onDependencyClick={handleDependencyClick}
+        />
+      </div>
     </div>
   );
 }
