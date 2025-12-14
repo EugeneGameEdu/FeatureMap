@@ -51,7 +51,43 @@ export function createScanCommand(): Command {
         console.log('✓ Saved to .featuremap/');
 
         if (options.ai) {
-          console.log('\n🤖 AI mode: MCP server functionality will be added in Phase 5');
+          const separator = '─'.repeat(50);
+          console.log(`\n${separator}`);
+          console.log('🤖 AI Analysis Mode');
+          console.log(separator);
+          console.log('\nTo analyze features with AI, connect the MCP server to your AI assistant.\n');
+
+          const mcpConfig = {
+            mcpServers: {
+              featuremap: {
+                command: 'node',
+                args: [`${process.cwd()}/packages/mcp-server/dist/index.js`],
+                cwd: process.cwd(),
+              },
+            },
+          };
+
+          console.log('For Cursor, add to ~/.cursor/mcp.json:');
+          console.log('```json');
+          console.log(JSON.stringify(mcpConfig, null, 2));
+          console.log('```\n');
+
+          console.log('Then ask your AI:');
+          console.log('  • "Analyze the features and give them better names and descriptions"');
+          console.log('  • "What features does this project have?"');
+          console.log('  • "Explain the architecture based on the feature map"');
+          console.log('\nThe AI will use these MCP tools:');
+          console.log('  • get_project_structure — raw dependency graph');
+          console.log('  • get_current_features — current feature list');
+          console.log('  • update_feature — update names/descriptions');
+
+          const mcpServerPath = path.resolve(projectRoot, 'packages', 'mcp-server', 'dist', 'index.js');
+          const mcpServerExists = fs.existsSync(mcpServerPath);
+          if (mcpServerExists) {
+            console.log(`\nMCP server location: ${mcpServerPath}`);
+          } else {
+            console.log('\n⚠️  MCP server not built. Run: npm run build --workspace=@featuremap/mcp-server');
+          }
         }
 
       } catch (error) {
