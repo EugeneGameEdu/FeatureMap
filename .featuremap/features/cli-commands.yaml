@@ -1,0 +1,14 @@
+id: cli-commands
+name: Cli Commands
+description: null
+source: auto
+status: active
+files:
+  - path: packages/cli/src/commands/init.ts
+  - path: packages/cli/src/commands/scan.ts
+exports: []
+dependsOn:
+  - cli-analyzer
+metadata:
+  createdAt: 2025-12-14T09:57:10.550Z
+  updatedAt: 2025-12-14T09:57:10.550Z

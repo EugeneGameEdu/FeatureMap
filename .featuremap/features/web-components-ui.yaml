@@ -1,0 +1,16 @@
+id: web-components-ui
+name: Web Components Ui
+description: null
+source: auto
+status: active
+files:
+  - path: packages/web/src/components/ui/badge.tsx
+  - path: packages/web/src/components/ui/button.tsx
+  - path: packages/web/src/components/ui/card.tsx
+  - path: packages/web/src/components/ui/scroll-area.tsx
+  - path: packages/web/src/components/ui/sheet.tsx
+exports: []
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T09:57:10.552Z
+  updatedAt: 2025-12-14T09:57:10.552Z

@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { createInitCommand } from './commands/init.js';
+import { createScanCommand } from './commands/scan.js';
 
 const program = new Command();
 
@@ -12,13 +13,7 @@ program
 
 // Add commands
 program.addCommand(createInitCommand());
-
-program
-  .command('scan')
-  .description('Scan project and build feature map')
-  .action(() => {
-    console.log('Scan command - not implemented yet');
-  });
+program.addCommand(createScanCommand());
 
 program
   .command('web')
