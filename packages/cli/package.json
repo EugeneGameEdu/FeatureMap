@@ -8,7 +8,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test:parser": "node dist/analyzer/test-parser.js"
   },
   "files": [
     "dist"
