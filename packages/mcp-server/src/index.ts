@@ -4,6 +4,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { getProjectStructure } from './tools/getProjectStructure.js';
+import { getCurrentFeatures } from './tools/getCurrentFeatures.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -40,6 +41,30 @@ server.tool(
           text: JSON.stringify(result.data, null, 2),
         },
       ],
+    };
+  }
+);
+
+// Tool: get_current_features
+server.tool(
+  'get_current_features',
+  'Get all currently defined features with their metadata, files, dependencies, and descriptions. Use this to understand what features exist in the project.',
+  {
+    projectRoot: z.string().optional().describe('Path to project root. Defaults to current directory.'),
+  },
+  async ({ projectRoot }) => {
+    const root = projectRoot || process.cwd();
+    const result = getCurrentFeatures(root);
+
+    if (!result.success) {
+      return {
+        content: [{ type: 'text', text: `Error: ${result.error}` }],
+        isError: true,
+      };
+    }
+
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result.data, null, 2) }],
     };
   }
 );
