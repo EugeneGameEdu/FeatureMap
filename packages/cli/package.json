@@ -9,7 +9,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test:parser": "node dist/analyzer/test-parser.js"
+    "test:parser": "node dist/analyzer/test-parser.js",
+    "test:scanner": "node dist/analyzer/test-scanner.js"
   },
   "files": [
     "dist"
