@@ -1,0 +1,14 @@
+id: web-components
+name: Web Components
+description: null
+source: auto
+status: active
+files:
+  - path: packages/web/src/components/FeatureMap.tsx
+  - path: packages/web/src/components/FeatureNode.tsx
+  - path: packages/web/src/components/Sidebar.tsx
+exports: []
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T16:50:06.979Z
+  updatedAt: 2025-12-14T16:50:06.979Z
