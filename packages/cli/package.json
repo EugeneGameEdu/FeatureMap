@@ -10,7 +10,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test:parser": "node dist/analyzer/test-parser.js",
-    "test:scanner": "node dist/analyzer/test-scanner.js"
+    "test:scanner": "node dist/analyzer/test-scanner.js",
+    "test:graph": "node dist/analyzer/test-graph.js"
   },
   "files": [
     "dist"
