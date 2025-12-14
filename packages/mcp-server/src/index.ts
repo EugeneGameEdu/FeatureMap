@@ -5,6 +5,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { getProjectStructure } from './tools/getProjectStructure.js';
 import { getCurrentFeatures } from './tools/getCurrentFeatures.js';
+import { updateFeature } from './tools/updateFeature.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -69,10 +70,38 @@ server.tool(
   }
 );
 
+// Tool: update_feature
+server.tool(
+  'update_feature',
+  'Update a feature\'s name, description, or status. Use this to give features human-readable names and descriptions after analyzing the code.',
+  {
+    projectRoot: z.string().optional().describe('Path to project root. Defaults to current directory.'),
+    id: z.string().describe('Feature ID (e.g., "cli-commands", "web-core")'),
+    name: z.string().optional().describe('New human-readable name for the feature'),
+    description: z.string().optional().describe('Description of what this feature does'),
+    status: z.enum(['active', 'deprecated', 'ignored']).optional().describe('Feature status'),
+  },
+  async ({ projectRoot, id, name, description, status }) => {
+    const root = projectRoot || process.cwd();
+    const result = updateFeature(root, { id, name, description, status });
+
+    if (!result.success) {
+      return {
+        content: [{ type: 'text', text: `Error: ${result.error}` }],
+        isError: true,
+      };
+    }
+
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result.data, null, 2) }],
+    };
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started');
+  console.error('FeatureMap MCP server started with 3 tools');
 }
 
 main().catch((error) => {
