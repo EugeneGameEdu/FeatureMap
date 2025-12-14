@@ -1,0 +1,19 @@
+id: cli-analyzer
+name: Cli Analyzer
+description: null
+source: auto
+status: active
+files:
+  - path: packages/cli/src/analyzer/graph.ts
+  - path: packages/cli/src/analyzer/grouper.ts
+  - path: packages/cli/src/analyzer/parser.ts
+  - path: packages/cli/src/analyzer/scanner.ts
+  - path: packages/cli/src/analyzer/test-graph.ts
+  - path: packages/cli/src/analyzer/test-grouper.ts
+  - path: packages/cli/src/analyzer/test-parser.ts
+  - path: packages/cli/src/analyzer/test-scanner.ts
+exports: []
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T09:57:10.550Z
+  updatedAt: 2025-12-14T09:57:10.550Z
