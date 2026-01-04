@@ -1,0 +1,12 @@
+id: cli-utils
+name: Cli Utils
+description: null
+source: auto
+status: active
+dependsOn: []
+metadata:
+  createdAt: 2026-01-04T20:59:28.533Z
+  updatedAt: 2026-01-04T20:59:28.533Z
+files:
+  - path: packages/cli/src/utils/yaml-loader.ts
+exports: []

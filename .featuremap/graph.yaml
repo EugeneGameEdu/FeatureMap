@@ -1,45 +1,65 @@
 version: 1
-generatedAt: 2025-12-14T16:55:17.895Z
+generatedAt: 2026-01-04T20:59:28.560Z
 nodes:
   - id: cli-analyzer
-    label: Code Analyzer
+    label: Cli Analyzer
     type: feature
     fileCount: 8
   - id: cli-commands
-    label: CLI Commands
+    label: Cli Commands
     type: feature
     fileCount: 3
   - id: cli-core
-    label: CLI Entry Point
+    label: Cli Core
+    type: feature
+    fileCount: 1
+  - id: cli-scripts
+    label: Cli Scripts
+    type: feature
+    fileCount: 1
+  - id: cli-types
+    label: Cli Types
+    type: feature
+    fileCount: 7
+  - id: cli-utils
+    label: Cli Utils
     type: feature
     fileCount: 1
   - id: mcp-server-core
-    label: MCP Server
+    label: Mcp Server Core
     type: feature
     fileCount: 1
   - id: mcp-server-tools
-    label: MCP Tools
+    label: Mcp Server Tools
     type: feature
     fileCount: 3
   - id: web-components
-    label: Map Components
+    label: Web Components
     type: feature
     fileCount: 3
   - id: web-components-ui
-    label: UI Components
+    label: Web Components Ui
     type: feature
     fileCount: 5
   - id: web-core
-    label: Web Application
+    label: Web Core
     type: feature
     fileCount: 2
   - id: web-lib
-    label: Web Utilities
+    label: Web Lib
     type: feature
     fileCount: 3
 edges:
+  - source: cli-analyzer
+    target: cli-types
+  - source: cli-analyzer
+    target: cli-utils
   - source: cli-commands
     target: cli-analyzer
+  - source: cli-commands
+    target: cli-types
+  - source: cli-commands
+    target: cli-utils
   - source: cli-core
     target: cli-commands
   - source: mcp-server-core

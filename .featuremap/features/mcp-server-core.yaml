@@ -4,11 +4,11 @@ description: Model Context Protocol server that exposes FeatureMap tools to AI
   assistants like Cursor and Claude.
 source: ai
 status: active
-files:
-  - path: packages/mcp-server/src/index.ts
-exports: []
 dependsOn:
   - mcp-server-tools
 metadata:
   createdAt: 2025-12-14T16:50:06.977Z
-  updatedAt: 2025-12-14T16:55:17.883Z
+  updatedAt: 2026-01-04T20:59:28.547Z
+files:
+  - path: packages/mcp-server/src/index.ts
+exports: []

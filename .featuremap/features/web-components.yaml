@@ -4,12 +4,12 @@ description: React Flow based interactive map with custom feature nodes and
   dependency visualization.
 source: ai
 status: active
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T16:50:06.979Z
+  updatedAt: 2026-01-04T20:59:28.551Z
 files:
   - path: packages/web/src/components/FeatureMap.tsx
   - path: packages/web/src/components/FeatureNode.tsx
   - path: packages/web/src/components/Sidebar.tsx
 exports: []
-dependsOn: []
-metadata:
-  createdAt: 2025-12-14T16:50:06.979Z
-  updatedAt: 2025-12-14T16:55:17.887Z

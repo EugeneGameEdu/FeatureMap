@@ -1,10 +1,11 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
 import { scanProject } from '../analyzer/scanner.js';
 import { buildGraph, getGraphStats, DependencyGraph } from '../analyzer/graph.js';
 import { groupByFolders, Cluster } from '../analyzer/grouper.js';
+import { Feature, FeatureSchema, Graph, GraphSchema, RawGraph, RawGraphSchema } from '../types/index.js';
+import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
 
 export function createScanCommand(): Command {
   const command = new Command('scan');
@@ -100,7 +101,7 @@ export function createScanCommand(): Command {
 }
 
 function saveRawGraph(featuremapDir: string, graph: DependencyGraph): void {
-  const rawGraph = {
+  const rawGraph: RawGraph = {
     version: 1,
     generatedAt: new Date().toISOString(),
     files: graph.files,
@@ -108,7 +109,7 @@ function saveRawGraph(featuremapDir: string, graph: DependencyGraph): void {
   };
 
   const filePath = path.join(featuremapDir, 'raw-graph.yaml');
-  fs.writeFileSync(filePath, yaml.stringify(rawGraph), 'utf-8');
+  saveYAML(filePath, rawGraph, RawGraphSchema);
 }
 
 function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
@@ -124,18 +125,24 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
     const featureFile = path.join(featuresDir, `${cluster.id}.yaml`);
 
     if (fs.existsSync(featureFile)) {
-      const existing = yaml.parse(fs.readFileSync(featureFile, 'utf-8'));
-      if (existing.source === 'manual' || existing.source === 'ai') {
+      const existing = loadYAML(featureFile, FeatureSchema);
+      if (existing.source === 'user' || existing.source === 'ai') {
         existing.files = cluster.files.map(f => ({ path: f }));
         existing.dependsOn = cluster.externalDependencies;
-        existing.metadata = existing.metadata || {};
-        existing.metadata.updatedAt = new Date().toISOString();
-        fs.writeFileSync(featureFile, yaml.stringify(existing), 'utf-8');
+        if (!existing.metadata) {
+          existing.metadata = {
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+        } else {
+          existing.metadata.updatedAt = new Date().toISOString();
+        }
+        saveYAML(featureFile, existing, FeatureSchema);
         continue;
       }
     }
 
-    const feature = {
+    const feature: Feature = {
       id: cluster.id,
       name: cluster.name,
       description: null,
@@ -150,7 +157,7 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
       },
     };
 
-    fs.writeFileSync(featureFile, yaml.stringify(feature), 'utf-8');
+    saveYAML(featureFile, feature, FeatureSchema);
     created++;
   }
 
@@ -180,7 +187,7 @@ function saveGraphYaml(featuremapDir: string, clusters: Cluster[]): void {
     }
   }
 
-  const graphYaml = {
+  const graphYaml: Graph = {
     version: 1,
     generatedAt: new Date().toISOString(),
     nodes,
@@ -188,5 +195,5 @@ function saveGraphYaml(featuremapDir: string, clusters: Cluster[]): void {
   };
 
   const filePath = path.join(featuremapDir, 'graph.yaml');
-  fs.writeFileSync(filePath, yaml.stringify(graphYaml), 'utf-8');
+  saveYAML(filePath, graphYaml, GraphSchema);
 }

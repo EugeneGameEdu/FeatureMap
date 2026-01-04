@@ -1,0 +1,12 @@
+id: cli-scripts
+name: Cli Scripts
+description: null
+source: auto
+status: active
+dependsOn: []
+metadata:
+  createdAt: 2026-01-04T20:59:28.530Z
+  updatedAt: 2026-01-04T20:59:28.530Z
+files:
+  - path: packages/cli/src/scripts/demo-ai-analysis.ts
+exports: []

@@ -1,41 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
 import fg from 'fast-glob';
-
-export interface FeatureMapConfig {
-  version: number;
-  project: {
-    name: string;
-    root: string;
-  };
-  scan: {
-    include: string[];
-    exclude: string[];
-  };
-  features: {
-    hints: Array<{
-      pattern: string;
-      type: string;
-    }>;
-  };
-}
+import { Config, ConfigSchema } from '../types/config.js';
+import { loadYAML } from '../utils/yaml-loader.js';
 
 export interface ScanResult {
-  config: FeatureMapConfig;
+  config: Config;
   files: string[];
   projectRoot: string;
 }
 
-export function loadConfig(configPath: string): FeatureMapConfig {
+export function loadConfig(configPath: string): Config {
   if (!fs.existsSync(configPath)) {
     throw new Error(`Config not found: ${configPath}`);
   }
 
-  const content = fs.readFileSync(configPath, 'utf-8');
-  const config = yaml.parse(content) as FeatureMapConfig;
-
-  return config;
+  return loadYAML(configPath, ConfigSchema);
 }
 
 export async function scanProject(projectRoot: string): Promise<ScanResult> {

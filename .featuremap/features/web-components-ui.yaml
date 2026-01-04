@@ -4,6 +4,10 @@ description: Reusable UI components from shadcn/ui including buttons, cards,
   badges, and the sidebar panel.
 source: ai
 status: active
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T16:50:06.981Z
+  updatedAt: 2026-01-04T20:59:28.554Z
 files:
   - path: packages/web/src/components/ui/badge.tsx
   - path: packages/web/src/components/ui/button.tsx
@@ -11,7 +15,3 @@ files:
   - path: packages/web/src/components/ui/scroll-area.tsx
   - path: packages/web/src/components/ui/sheet.tsx
 exports: []
-dependsOn: []
-metadata:
-  createdAt: 2025-12-14T16:50:06.981Z
-  updatedAt: 2025-12-14T16:55:17.888Z

@@ -1,9 +1,10 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
+import { Config, ConfigSchema } from '../types/config.js';
+import { saveYAML } from '../utils/yaml-loader.js';
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: Config = {
   version: 1,
   project: {
     name: path.basename(process.cwd()),
@@ -55,8 +56,7 @@ export function createInitCommand(): Command {
         console.log('✓ Created .featuremap/features/');
       }
 
-      const configContent = yaml.stringify(DEFAULT_CONFIG);
-      fs.writeFileSync(configPath, configContent, 'utf-8');
+      saveYAML(configPath, DEFAULT_CONFIG, ConfigSchema);
       console.log('✓ Created .featuremap/config.yaml');
 
       const gitignorePath = path.join(process.cwd(), '.gitignore');

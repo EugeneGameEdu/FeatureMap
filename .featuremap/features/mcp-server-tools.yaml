@@ -4,12 +4,12 @@ description: AI-accessible tools for reading project structure, getting
   features, and updating feature metadata.
 source: ai
 status: active
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T16:50:06.978Z
+  updatedAt: 2026-01-04T20:59:28.549Z
 files:
   - path: packages/mcp-server/src/tools/getCurrentFeatures.ts
   - path: packages/mcp-server/src/tools/getProjectStructure.ts
   - path: packages/mcp-server/src/tools/updateFeature.ts
 exports: []
-dependsOn: []
-metadata:
-  createdAt: 2025-12-14T16:50:06.978Z
-  updatedAt: 2025-12-14T16:55:17.885Z
