@@ -1,46 +1,72 @@
 version: 1
-generatedAt: 2025-12-14T16:55:17.895Z
+generatedAt: 2026-01-04T22:04:36.128Z
 nodes:
-  - id: cli-analyzer
-    label: Code Analyzer
+  - fileCount: 8
+    id: cli-analyzer
+    label: Cli Analyzer
     type: feature
-    fileCount: 8
-  - id: cli-commands
-    label: CLI Commands
+  - fileCount: 3
+    id: cli-commands
+    label: Cli Commands
     type: feature
-    fileCount: 3
-  - id: cli-core
-    label: CLI Entry Point
+  - fileCount: 1
+    id: cli-core
+    label: Cli Core
     type: feature
-    fileCount: 1
-  - id: mcp-server-core
-    label: MCP Server
+  - fileCount: 1
+    id: cli-scripts
+    label: Cli Scripts
     type: feature
-    fileCount: 1
-  - id: mcp-server-tools
-    label: MCP Tools
+  - fileCount: 7
+    id: cli-types
+    label: Cli Types
     type: feature
-    fileCount: 3
-  - id: web-components
-    label: Map Components
+  - fileCount: 4
+    id: cli-utils
+    label: Cli Utils
     type: feature
-    fileCount: 3
-  - id: web-components-ui
-    label: UI Components
+  - fileCount: 1
+    id: mcp-server-core
+    label: Mcp Server Core
     type: feature
-    fileCount: 5
-  - id: web-core
-    label: Web Application
+  - fileCount: 2
+    id: mcp-server-tools
+    label: Mcp Server Tools
     type: feature
-    fileCount: 2
-  - id: web-lib
-    label: Web Utilities
+  - fileCount: 3
+    id: web-components
+    label: Web Components
     type: feature
-    fileCount: 3
+  - fileCount: 5
+    id: web-components-ui
+    label: Web Components Ui
+    type: feature
+  - fileCount: 2
+    id: web-core
+    label: Web Core
+    type: feature
+  - fileCount: 3
+    id: web-lib
+    label: Web Lib
+    type: feature
 edges:
+  - source: cli-analyzer
+    target: cli-types
+  - source: cli-analyzer
+    target: cli-utils
   - source: cli-commands
     target: cli-analyzer
+  - source: cli-commands
+    target: cli-types
+  - source: cli-commands
+    target: cli-utils
   - source: cli-core
     target: cli-commands
+  - source: cli-scripts
+    target: cli-types
+  - source: cli-scripts
+    target: cli-utils
+  - source: cli-utils
+    target: cli-types
   - source: mcp-server-core
     target: mcp-server-tools

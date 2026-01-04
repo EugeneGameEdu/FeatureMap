@@ -8,7 +8,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as yaml from 'yaml';
+import { FeatureSchema, GraphSchema } from '../types/index.js';
+import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
 
 const DEMO_UPDATES: Record<string, { name: string; description: string }> = {
   'cli-analyzer': {
@@ -78,24 +79,30 @@ async function main() {
       continue;
     }
 
-    const content = fs.readFileSync(featurePath, 'utf-8');
-    const feature = yaml.parse(content);
+    const feature = loadYAML(featurePath, FeatureSchema);
 
     feature.name = updates.name;
     feature.description = updates.description;
     feature.source = 'ai';
-    feature.metadata = feature.metadata || {};
-    feature.metadata.updatedAt = new Date().toISOString();
+    if (!feature.metadata) {
+      feature.metadata = {
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    } else {
+      feature.metadata.updatedAt = new Date().toISOString();
+    }
 
-    fs.writeFileSync(featurePath, yaml.stringify(feature), 'utf-8');
+    saveYAML(featurePath, feature, FeatureSchema, {
+      sortArrayFields: ['files', 'clusters', 'dependsOn'],
+    });
     console.log(`  ✓ Updated ${id} → "${updates.name}"`);
     updated++;
   }
 
   const graphPath = path.join(projectRoot, '.featuremap', 'graph.yaml');
   if (fs.existsSync(graphPath)) {
-    const graphContent = fs.readFileSync(graphPath, 'utf-8');
-    const graph = yaml.parse(graphContent);
+    const graph = loadYAML(graphPath, GraphSchema);
 
     if (graph.nodes) {
       for (const node of graph.nodes) {
@@ -106,7 +113,9 @@ async function main() {
     }
 
     graph.generatedAt = new Date().toISOString();
-    fs.writeFileSync(graphPath, yaml.stringify(graph), 'utf-8');
+    saveYAML(graphPath, graph, GraphSchema, {
+      sortArrayFields: ['nodes', 'edges'],
+    });
     console.log('  ✓ Updated graph.yaml labels');
   }
 

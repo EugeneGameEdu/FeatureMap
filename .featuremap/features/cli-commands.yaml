@@ -1,18 +1,17 @@
 id: cli-commands
 name: CLI Commands
-description: Command-line interface with init, scan, and web commands. Entry
-  point for all FeatureMap operations.
+description: Command-line interface with init, scan, and web commands. Entry point for all FeatureMap operations.
 source: ai
 status: active
+files:
+  - path: packages/cli/src/commands/init.ts
+  - path: packages/cli/src/commands/scan.ts
+  - path: packages/cli/src/commands/web.ts
+exports: []
 dependsOn:
   - cli-analyzer
   - cli-types
   - cli-utils
 metadata:
   createdAt: 2025-12-14T16:50:06.974Z
-  updatedAt: 2026-01-04T20:59:28.527Z
-files:
-  - path: packages/cli/src/commands/init.ts
-  - path: packages/cli/src/commands/scan.ts
-  - path: packages/cli/src/commands/web.ts
-exports: []
+  updatedAt: 2026-01-04T21:23:29.309Z

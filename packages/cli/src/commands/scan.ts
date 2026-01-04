@@ -2,10 +2,15 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { scanProject } from '../analyzer/scanner.js';
-import { buildGraph, getGraphStats, DependencyGraph } from '../analyzer/graph.js';
+import { buildGraph, getGraphStats } from '../analyzer/graph.js';
 import { groupByFolders, Cluster } from '../analyzer/grouper.js';
-import { Feature, FeatureSchema, Graph, GraphSchema, RawGraph, RawGraphSchema } from '../types/index.js';
+import { Feature, FeatureSchema, Graph, GraphSchema } from '../types/index.js';
 import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
+import {
+  areFeaturesEquivalent,
+  areGraphsEquivalent,
+  buildUpdatedMetadata,
+} from '../utils/scanCompare.js';
 
 export function createScanCommand(): Command {
   const command = new Command('scan');
@@ -35,8 +40,6 @@ export function createScanCommand(): Command {
         const grouping = groupByFolders(graph);
         console.log(`  ✓ Identified ${grouping.clusters.length} feature clusters`);
 
-        saveRawGraph(featuremapDir, graph);
-        console.log('  ✓ Saved raw-graph.yaml');
 
         const featuresCreated = saveFeatures(featuremapDir, grouping.clusters);
         console.log(`  ✓ Created ${featuresCreated} feature files`);
@@ -78,7 +81,6 @@ export function createScanCommand(): Command {
           console.log('  • "What features does this project have?"');
           console.log('  • "Explain the architecture based on the feature map"');
           console.log('\nThe AI will use these MCP tools:');
-          console.log('  • get_project_structure — raw dependency graph');
           console.log('  • get_current_features — current feature list');
           console.log('  • update_feature — update names/descriptions');
 
@@ -100,18 +102,6 @@ export function createScanCommand(): Command {
   return command;
 }
 
-function saveRawGraph(featuremapDir: string, graph: DependencyGraph): void {
-  const rawGraph: RawGraph = {
-    version: 1,
-    generatedAt: new Date().toISOString(),
-    files: graph.files,
-    dependencies: graph.dependencies,
-  };
-
-  const filePath = path.join(featuremapDir, 'raw-graph.yaml');
-  saveYAML(filePath, rawGraph, RawGraphSchema);
-}
-
 function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
   const featuresDir = path.join(featuremapDir, 'features');
 
@@ -123,42 +113,35 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
 
   for (const cluster of clusters) {
     const featureFile = path.join(featuresDir, `${cluster.id}.yaml`);
+    const isNewFeature = !fs.existsSync(featureFile);
+    const existing = isNewFeature ? null : loadYAML(featureFile, FeatureSchema);
 
-    if (fs.existsSync(featureFile)) {
-      const existing = loadYAML(featureFile, FeatureSchema);
-      if (existing.source === 'user' || existing.source === 'ai') {
-        existing.files = cluster.files.map(f => ({ path: f }));
-        existing.dependsOn = cluster.externalDependencies;
-        if (!existing.metadata) {
-          existing.metadata = {
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-        } else {
-          existing.metadata.updatedAt = new Date().toISOString();
-        }
-        saveYAML(featureFile, existing, FeatureSchema);
-        continue;
+    if (existing && (existing.source === 'user' || existing.source === 'ai')) {
+      const updatedFeature = buildAuthoredFeature(existing, cluster);
+
+      if (!areFeaturesEquivalent(existing, updatedFeature)) {
+        updatedFeature.metadata = buildUpdatedMetadata(existing.metadata);
+        saveYAML(featureFile, updatedFeature, FeatureSchema, {
+          sortArrayFields: ['files', 'clusters', 'dependsOn'],
+        });
       }
+      continue;
     }
 
-    const feature: Feature = {
-      id: cluster.id,
-      name: cluster.name,
-      description: null,
-      source: 'auto',
-      status: 'active',
-      files: cluster.files.map(f => ({ path: f })),
-      exports: getExportsForCluster(cluster),
-      dependsOn: cluster.externalDependencies,
-      metadata: {
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    };
+    const autoFeature = buildAutoFeature(cluster);
 
-    saveYAML(featureFile, feature, FeatureSchema);
-    created++;
+    if (existing && areFeaturesEquivalent(existing, autoFeature)) {
+      continue;
+    }
+
+    autoFeature.metadata = buildUpdatedMetadata(existing?.metadata);
+    saveYAML(featureFile, autoFeature, FeatureSchema, {
+      sortArrayFields: ['files', 'clusters', 'dependsOn'],
+    });
+
+    if (isNewFeature) {
+      created++;
+    }
   }
 
   return created;
@@ -166,6 +149,39 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
 
 function getExportsForCluster(cluster: Cluster): string[] {
   return [];
+}
+
+function buildAuthoredFeature(existing: Feature, cluster: Cluster): Feature {
+  return {
+    ...existing,
+    files: cluster.files.map(f => ({ path: f })),
+    dependsOn: cluster.externalDependencies,
+  };
+}
+
+function buildAutoFeature(cluster: Cluster): Feature {
+  return {
+    id: cluster.id,
+    name: cluster.name,
+    description: null,
+    source: 'auto',
+    status: 'active',
+    files: cluster.files.map(f => ({ path: f })),
+    exports: getExportsForCluster(cluster),
+    dependsOn: cluster.externalDependencies,
+  };
+}
+
+function buildGraphData(
+  nodes: Graph['nodes'],
+  edges: Graph['edges']
+): Graph {
+  return {
+    version: 1,
+    generatedAt: new Date().toISOString(),
+    nodes,
+    edges,
+  };
 }
 
 function saveGraphYaml(featuremapDir: string, clusters: Cluster[]): void {
@@ -187,13 +203,18 @@ function saveGraphYaml(featuremapDir: string, clusters: Cluster[]): void {
     }
   }
 
-  const graphYaml: Graph = {
-    version: 1,
-    generatedAt: new Date().toISOString(),
-    nodes,
-    edges,
-  };
-
   const filePath = path.join(featuremapDir, 'graph.yaml');
-  saveYAML(filePath, graphYaml, GraphSchema);
+  if (fs.existsSync(filePath)) {
+    const existing = loadYAML(filePath, GraphSchema);
+    const nextGraph = buildGraphData(nodes, edges);
+
+    if (areGraphsEquivalent(existing, nextGraph)) {
+      return;
+    }
+  }
+
+  const graphYaml = buildGraphData(nodes, edges);
+  saveYAML(filePath, graphYaml, GraphSchema, {
+    sortArrayFields: ['nodes', 'edges'],
+  });
 }

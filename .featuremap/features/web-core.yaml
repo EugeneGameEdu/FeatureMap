@@ -1,14 +1,13 @@
 id: web-core
 name: Web Application
-description: Main React application that loads feature data and renders the
-  interactive map with sidebar.
+description: Main React application that loads feature data and renders the interactive map with sidebar.
 source: ai
 status: active
-dependsOn: []
-metadata:
-  createdAt: 2025-12-14T16:50:06.982Z
-  updatedAt: 2026-01-04T20:59:28.557Z
 files:
   - path: packages/web/src/App.tsx
   - path: packages/web/src/main.tsx
 exports: []
+dependsOn: []
+metadata:
+  createdAt: 2025-12-14T16:50:06.982Z
+  updatedAt: 2026-01-04T21:23:29.337Z

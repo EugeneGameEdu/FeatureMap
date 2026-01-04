@@ -1,15 +1,8 @@
 id: cli-analyzer
 name: Code Analyzer
-description: Core analysis engine that parses TypeScript files, builds
-  dependency graphs, and groups files into feature clusters using ts-morph.
+description: Core analysis engine that parses TypeScript files, builds dependency graphs, and groups files into feature clusters using ts-morph.
 source: ai
 status: active
-dependsOn:
-  - cli-types
-  - cli-utils
-metadata:
-  createdAt: 2025-12-14T16:50:06.973Z
-  updatedAt: 2026-01-04T20:59:28.524Z
 files:
   - path: packages/cli/src/analyzer/graph.ts
   - path: packages/cli/src/analyzer/grouper.ts
@@ -20,3 +13,9 @@ files:
   - path: packages/cli/src/analyzer/test-parser.ts
   - path: packages/cli/src/analyzer/test-scanner.ts
 exports: []
+dependsOn:
+  - cli-types
+  - cli-utils
+metadata:
+  createdAt: 2025-12-14T16:50:06.973Z
+  updatedAt: 2026-01-04T21:23:29.304Z

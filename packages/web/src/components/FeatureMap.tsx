@@ -88,7 +88,7 @@ export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: Fea
       id: `e${index}-${edge.source}-${edge.target}`,
       source: edge.source,
       target: edge.target,
-      type: 'smoothstep',
+      type: 'bezier',
       animated: false,
       style: { stroke: '#9ca3af', strokeWidth: 2 },
       markerEnd: {
@@ -127,7 +127,7 @@ export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: Fea
         minZoom={0.3}
         maxZoom={2}
         defaultEdgeOptions={{
-          type: 'smoothstep',
+          type: 'bezier',
         }}
       >
         <Background color="#e5e7eb" gap={20} size={1} />
