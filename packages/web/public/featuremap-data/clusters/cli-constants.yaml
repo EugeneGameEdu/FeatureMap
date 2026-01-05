@@ -1,10 +1,9 @@
 version: 1
 id: cli-constants
-layer: infrastructure
+layer: shared
 layerDetection:
-  confidence: medium
-  signals:
-    - cluster id starts with cli-
+  confidence: low
+  signals: []
 files:
   - packages/cli/src/constants/versions.ts
 exports:
@@ -20,7 +19,7 @@ exports:
 imports:
   external: []
   internal: []
-compositionHash: fefbf602a80f23f37b58407ef7f632de36081075056cad4237c554d540aeba92
+compositionHash: fefbf602a80f23f3
 metadata:
-  createdAt: 2026-01-05T10:17:11.287Z
-  updatedAt: 2026-01-05T10:17:11.287Z
+  createdAt: 2026-01-05T14:58:11.074Z
+  updatedAt: 2026-01-05T14:58:11.074Z

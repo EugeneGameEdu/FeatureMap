@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   Background,
   ConnectionMode,
@@ -13,7 +13,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
-import { FeatureNode } from './FeatureNode';
+import { FeatureNode, type FeatureNodeData } from './FeatureNode';
 import type { GraphData, MapEntity, NodeType } from '@/lib/types';
 
 interface FeatureMapProps {
@@ -76,15 +76,16 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
   const initialNodes: Node[] = useMemo(() => {
     return graph.nodes.map((node) => {
       const entity = entities[node.id];
-      const source = entity?.kind === 'feature' ? entity.data.source : 'auto';
+      const source = resolveSource(entity);
       const status = entity?.kind === 'feature' ? entity.data.status : 'active';
       const fileCount = node.fileCount ?? node.clusterCount ?? 0;
+      const nodeType = (node.type ?? 'cluster') as NodeType;
       return {
         id: node.id,
-        type: node.type,
+        type: nodeType,
         data: {
-          label: node.label,
-          kind: node.type as NodeType,
+          label: node.label ?? node.id,
+          kind: nodeType,
           fileCount,
           source,
           status,
@@ -115,8 +116,13 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
     return getLayoutedElements(initialNodes, initialEdges, 'TB');
   }, [initialNodes, initialEdges]);
 
-  const [nodes, , onNodesChange] = useNodesState(layoutedNodes);
-  const [edges, , onEdgesChange] = useEdgesState(layoutedEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+
+  useEffect(() => {
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+  }, [layoutedNodes, layoutedEdges, setNodes, setEdges]);
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -154,4 +160,16 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
       </ReactFlow>
     </div>
   );
+}
+
+function resolveSource(entity: MapEntity | undefined): FeatureNodeData['source'] {
+  if (!entity || entity.kind !== 'feature') {
+    return 'auto';
+  }
+
+  if (entity.data.metadata.lastModifiedBy === 'ai' || entity.data.source === 'ai') {
+    return 'ai';
+  }
+
+  return entity.data.source === 'user' ? 'user' : 'auto';
 }

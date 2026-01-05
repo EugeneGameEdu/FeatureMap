@@ -1,0 +1,19 @@
+version: 1
+id: mcp-feature-bridge
+name: MCP Feature Bridge
+description: MCP server and tools that expose FeatureMap data and accept AI grouping output.
+source: ai
+status: active
+scope: backend
+clusters:
+  - mcp-server-core
+  - mcp-server-tools
+  - mcp-server-types
+  - mcp-server-utils
+composition:
+  hash: a84eb010b459deb0
+metadata:
+  createdAt: 2026-01-05T15:04:59.679Z
+  updatedAt: 2026-01-05T15:04:59.679Z
+  lastModifiedBy: ai
+  version: 1

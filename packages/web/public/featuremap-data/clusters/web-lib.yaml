@@ -1,10 +1,11 @@
 version: 1
 id: web-lib
-layer: frontend
+layer: shared
 layerDetection:
-  confidence: high
+  confidence: low
   signals:
-    - cluster id starts with web-
+    - path contains /web/
+    - path contains /lib/
 files:
   - packages/web/src/lib/loadFeatureMap.ts
   - packages/web/src/lib/types.ts
@@ -12,34 +13,61 @@ files:
 exports:
   - isDefault: false
     name: Cluster
-    type: interface
+    type: type
   - isDefault: false
     name: ClusterExport
-    type: interface
+    type: type
   - isDefault: false
     name: ClusterImports
-    type: interface
+    type: type
+  - isDefault: false
+    name: ClusterSchema
+    type: variable
   - isDefault: false
     name: cn
     type: function
   - isDefault: false
     name: Feature
-    type: interface
+    type: type
+  - isDefault: false
+    name: FeatureClusterDetail
+    type: type
+  - isDefault: false
+    name: FeatureClusterDetailSchema
+    type: variable
+  - isDefault: false
+    name: FeatureDetails
+    type: type
+  - isDefault: false
+    name: FeatureDetailsSchema
+    type: variable
   - isDefault: false
     name: FeatureMapData
     type: interface
+  - isDefault: false
+    name: FeatureSchema
+    type: variable
   - isDefault: false
     name: formatDate
     type: function
   - isDefault: false
     name: GraphData
-    type: interface
+    type: type
   - isDefault: false
     name: GraphEdge
-    type: interface
+    type: type
+  - isDefault: false
+    name: GraphEdgeSchema
+    type: variable
   - isDefault: false
     name: GraphNode
-    type: interface
+    type: type
+  - isDefault: false
+    name: GraphNodeSchema
+    type: variable
+  - isDefault: false
+    name: GraphSchema
+    type: variable
   - isDefault: false
     name: loadFeatureMap
     type: function
@@ -49,14 +77,18 @@ exports:
   - isDefault: false
     name: NodeType
     type: type
+  - isDefault: false
+    name: ViewMode
+    type: type
 imports:
   external:
     - clsx
     - js-yaml
     - tailwind-merge
+    - zod
   internal:
     - ./types
-compositionHash: 03b73fcabb74617e3c11d633352b7d5b7eee9b4caf704643c4ac20e841d1bea6
+compositionHash: de152a539befa142
 metadata:
-  createdAt: 2026-01-05T10:17:11.312Z
-  updatedAt: 2026-01-05T10:17:11.312Z
+  createdAt: 2026-01-05T14:58:11.091Z
+  updatedAt: 2026-01-05T14:58:11.091Z

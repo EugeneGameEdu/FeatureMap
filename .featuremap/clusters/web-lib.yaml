@@ -13,34 +13,61 @@ files:
 exports:
   - isDefault: false
     name: Cluster
-    type: interface
+    type: type
   - isDefault: false
     name: ClusterExport
-    type: interface
+    type: type
   - isDefault: false
     name: ClusterImports
-    type: interface
+    type: type
+  - isDefault: false
+    name: ClusterSchema
+    type: variable
   - isDefault: false
     name: cn
     type: function
   - isDefault: false
     name: Feature
-    type: interface
+    type: type
+  - isDefault: false
+    name: FeatureClusterDetail
+    type: type
+  - isDefault: false
+    name: FeatureClusterDetailSchema
+    type: variable
+  - isDefault: false
+    name: FeatureDetails
+    type: type
+  - isDefault: false
+    name: FeatureDetailsSchema
+    type: variable
   - isDefault: false
     name: FeatureMapData
     type: interface
+  - isDefault: false
+    name: FeatureSchema
+    type: variable
   - isDefault: false
     name: formatDate
     type: function
   - isDefault: false
     name: GraphData
-    type: interface
+    type: type
   - isDefault: false
     name: GraphEdge
-    type: interface
+    type: type
+  - isDefault: false
+    name: GraphEdgeSchema
+    type: variable
   - isDefault: false
     name: GraphNode
-    type: interface
+    type: type
+  - isDefault: false
+    name: GraphNodeSchema
+    type: variable
+  - isDefault: false
+    name: GraphSchema
+    type: variable
   - isDefault: false
     name: loadFeatureMap
     type: function
@@ -50,14 +77,18 @@ exports:
   - isDefault: false
     name: NodeType
     type: type
+  - isDefault: false
+    name: ViewMode
+    type: type
 imports:
   external:
     - clsx
     - js-yaml
     - tailwind-merge
+    - zod
   internal:
     - ./types
 compositionHash: de152a539befa142
 metadata:
-  createdAt: 2026-01-05T13:54:09.398Z
-  updatedAt: 2026-01-05T13:54:09.398Z
+  createdAt: 2026-01-05T14:58:11.091Z
+  updatedAt: 2026-01-05T14:58:11.091Z

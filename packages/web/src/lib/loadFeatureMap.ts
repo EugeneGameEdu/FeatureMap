@@ -1,28 +1,77 @@
 import yaml from 'js-yaml';
-import type { Cluster, Feature, FeatureMapData, GraphData, MapEntity } from './types';
+import { z } from 'zod';
+import {
+  ClusterSchema,
+  FeatureDetails,
+  FeatureSchema,
+  GraphSchema,
+  type Cluster,
+  type Feature,
+  type FeatureClusterDetail,
+  type FeatureMapData,
+  type GraphData,
+  type GraphEdge,
+  type GraphNode,
+  type MapEntity,
+  type NodeType,
+} from './types';
 
 const DATA_BASE_URL = '/featuremap-data';
+const FEATURE_DEP_EDGE_TYPE = 'feature_dep';
+const FEATURE_CONTAINS_EDGE_TYPE = 'contains';
 
 export async function loadFeatureMap(): Promise<FeatureMapData> {
   const graph = await loadGraphYaml();
+  const clusterGraph = buildClusterGraph(graph);
+  const featureGraph = buildFeatureGraph(graph);
 
-  const entities: Record<string, MapEntity> = {};
+  const clusterIds = new Set(clusterGraph.nodes.map((node) => node.id));
+  const featureIds = new Set(featureGraph.nodes.map((node) => node.id));
 
-  for (const node of graph.nodes) {
-    try {
-      if (node.type === 'cluster') {
-        const cluster = await loadClusterYaml(node.id);
-        entities[node.id] = { kind: 'cluster', label: node.label, data: cluster };
-      } else {
-        const feature = await loadFeatureYaml(node.id);
-        entities[node.id] = { kind: 'feature', label: node.label, data: feature };
-      }
-    } catch (error) {
-      console.warn(`Failed to load ${node.type} ${node.id}:`, error);
+  const clustersById = await loadClustersById(clusterIds);
+  const featuresById = await loadFeaturesById(featureIds);
+
+  const referencedClusterIds = new Set<string>();
+  for (const feature of featuresById.values()) {
+    for (const clusterId of feature.clusters) {
+      referencedClusterIds.add(clusterId);
     }
   }
 
-  return { graph, entities };
+  for (const clusterId of referencedClusterIds) {
+    if (clustersById.has(clusterId)) {
+      continue;
+    }
+    const cluster = await loadClusterYamlSafe(clusterId);
+    if (cluster) {
+      clustersById.set(clusterId, cluster);
+    }
+  }
+
+  const featureDetailsById = new Map<string, FeatureDetails>();
+  for (const [featureId, feature] of featuresById.entries()) {
+    const clustersDetailed = feature.clusters.map((clusterId) =>
+      buildFeatureClusterDetail(clusterId, clustersById.get(clusterId))
+    );
+    featureDetailsById.set(featureId, { ...feature, clustersDetailed });
+  }
+
+  const entities: Record<string, MapEntity> = {};
+  for (const node of clusterGraph.nodes) {
+    const cluster = clustersById.get(node.id);
+    if (cluster) {
+      entities[node.id] = { kind: 'cluster', label: node.label ?? node.id, data: cluster };
+    }
+  }
+
+  for (const node of featureGraph.nodes) {
+    const feature = featureDetailsById.get(node.id);
+    if (feature) {
+      entities[node.id] = { kind: 'feature', label: node.label ?? node.id, data: feature };
+    }
+  }
+
+  return { graph, clusterGraph, featureGraph, entities };
 }
 
 async function loadGraphYaml(): Promise<GraphData> {
@@ -33,7 +82,7 @@ async function loadGraphYaml(): Promise<GraphData> {
   }
 
   const text = await response.text();
-  return yaml.load(text) as GraphData;
+  return parseYamlWithSchema(text, GraphSchema, 'graph.yaml');
 }
 
 async function loadClusterYaml(clusterId: string): Promise<Cluster> {
@@ -44,7 +93,7 @@ async function loadClusterYaml(clusterId: string): Promise<Cluster> {
   }
 
   const text = await response.text();
-  return yaml.load(text) as Cluster;
+  return parseYamlWithSchema(text, ClusterSchema, `clusters/${clusterId}.yaml`);
 }
 
 async function loadFeatureYaml(featureId: string): Promise<Feature> {
@@ -55,10 +104,137 @@ async function loadFeatureYaml(featureId: string): Promise<Feature> {
   }
 
   const text = await response.text();
-  return yaml.load(text) as Feature;
+  return parseYamlWithSchema(text, FeatureSchema, `features/${featureId}.yaml`);
 }
 
-// Утилита для форматирования даты
+async function loadClustersById(ids: Set<string>): Promise<Map<string, Cluster>> {
+  const clusters = new Map<string, Cluster>();
+  await Promise.all(
+    [...ids].map(async (clusterId) => {
+      const cluster = await loadClusterYamlSafe(clusterId);
+      if (cluster) {
+        clusters.set(clusterId, cluster);
+      }
+    })
+  );
+  return clusters;
+}
+
+async function loadFeaturesById(ids: Set<string>): Promise<Map<string, Feature>> {
+  const features = new Map<string, Feature>();
+  await Promise.all(
+    [...ids].map(async (featureId) => {
+      const feature = await loadFeatureYamlSafe(featureId);
+      if (feature) {
+        features.set(featureId, feature);
+      }
+    })
+  );
+  return features;
+}
+
+async function loadClusterYamlSafe(clusterId: string): Promise<Cluster | null> {
+  try {
+    return await loadClusterYaml(clusterId);
+  } catch (error) {
+    console.warn(`Failed to load cluster ${clusterId}:`, error);
+    return null;
+  }
+}
+
+async function loadFeatureYamlSafe(featureId: string): Promise<Feature | null> {
+  try {
+    return await loadFeatureYaml(featureId);
+  } catch (error) {
+    console.warn(`Failed to load feature ${featureId}:`, error);
+    return null;
+  }
+}
+
+function buildClusterGraph(graph: GraphData): GraphData {
+  const nodes = graph.nodes
+    .filter((node) => node.type !== 'feature')
+    .map((node) => normalizeNode(node, 'cluster'));
+
+  const edges = graph.edges.filter(
+    (edge) => edge.type !== FEATURE_DEP_EDGE_TYPE && edge.type !== FEATURE_CONTAINS_EDGE_TYPE
+  );
+
+  return {
+    version: graph.version,
+    generatedAt: graph.generatedAt,
+    nodes: sortNodes(nodes),
+    edges: sortEdges(edges),
+  };
+}
+
+function buildFeatureGraph(graph: GraphData): GraphData {
+  const nodes = graph.nodes
+    .filter((node) => node.type === 'feature')
+    .map((node) => normalizeNode(node, 'feature'));
+
+  const edges = graph.edges.filter((edge) => edge.type === FEATURE_DEP_EDGE_TYPE);
+
+  return {
+    version: graph.version,
+    generatedAt: graph.generatedAt,
+    nodes: sortNodes(nodes),
+    edges: sortEdges(edges),
+  };
+}
+
+function normalizeNode(node: GraphNode, fallbackType: NodeType): GraphNode {
+  return {
+    ...node,
+    label: node.label ?? node.id,
+    type: fallbackType,
+  };
+}
+
+function sortNodes(nodes: GraphNode[]): GraphNode[] {
+  return [...nodes].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function sortEdges(edges: GraphEdge[]): GraphEdge[] {
+  return [...edges].sort((a, b) => {
+    const typeA = a.type ?? '';
+    const typeB = b.type ?? '';
+    if (typeA !== typeB) return typeA.localeCompare(typeB);
+    if (a.source !== b.source) return a.source.localeCompare(b.source);
+    return a.target.localeCompare(b.target);
+  });
+}
+
+function buildFeatureClusterDetail(
+  clusterId: string,
+  cluster: Cluster | undefined
+): FeatureClusterDetail {
+  if (!cluster) {
+    return { id: clusterId, missing: true };
+  }
+
+  return {
+    id: clusterId,
+    layer: cluster.layer,
+    purpose_hint: cluster.purpose_hint,
+    fileCount: cluster.files.length,
+  };
+}
+
+function parseYamlWithSchema<T>(text: string, schema: z.ZodType<T>, label: string): T {
+  const parsed = yaml.load(text, { schema: yaml.JSON_SCHEMA });
+  const result = schema.safeParse(parsed);
+
+  if (!result.success) {
+    const issues = result.error.issues
+      .map((issue) => `${issue.path.join('.') || '<root>'}: ${issue.message}`)
+      .join('; ');
+    throw new Error(`Invalid ${label}: ${issues}`);
+  }
+
+  return result.data;
+}
+
 export function formatDate(isoString: string): string {
   const date = new Date(isoString);
   const now = new Date();

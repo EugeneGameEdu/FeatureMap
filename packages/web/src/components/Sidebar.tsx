@@ -1,8 +1,8 @@
-import { ArrowRight, Clock, FileCode, Layers, Tag, X } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Clock, FileCode, Layers, Tag, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import type { MapEntity } from '@/lib/types';
+import type { FeatureDetails, MapEntity } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 
 interface SidebarProps {
@@ -48,7 +48,8 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
 
   const isFeature = node.kind === 'feature';
   const title = isFeature ? node.data.name : node.label;
-  const description = isFeature ? node.data.description : node.data.purpose_hint;
+  const description = isFeature ? node.data.description ?? node.data.purpose : node.data.purpose_hint;
+  const featureSource = isFeature ? resolveFeatureSource(node.data) : 'auto';
 
   return (
     <div className="w-[350px] border-l bg-white flex flex-col">
@@ -59,8 +60,8 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
             <div className="flex gap-2 mt-2">
               {isFeature ? (
                 <>
-                  <Badge variant="outline" className={sourceColors[node.data.source]}>
-                    {node.data.source}
+                  <Badge variant="outline" className={sourceColors[featureSource]}>
+                    {featureSource}
                   </Badge>
                   <Badge variant="outline" className={statusColors[node.data.status]}>
                     {node.data.status}
@@ -100,18 +101,42 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <Layers size={16} />
-                Clusters ({node.data.clusters.length})
+                Clusters ({node.data.clustersDetailed.length})
               </h3>
-              <div className="space-y-1">
-                {node.data.clusters.map((clusterId) => (
-                  <button
-                    key={clusterId}
-                    onClick={() => onDependencyClick?.(clusterId)}
-                    className="w-full text-left text-sm text-blue-600 hover:text-blue-800 py-1.5 px-2 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+              <div className="space-y-2">
+                {node.data.clustersDetailed.map((cluster) => (
+                  <div
+                    key={cluster.id}
+                    className="rounded border border-gray-100 bg-gray-50 px-2 py-2"
                   >
-                    {'-> '}
-                    {clusterId}
-                  </button>
+                    <div className="flex items-start justify-between gap-2">
+                      <button
+                        onClick={() => onDependencyClick?.(cluster.id)}
+                        className="text-left text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        {cluster.id}
+                      </button>
+                      {cluster.missing && (
+                        <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200">
+                          <AlertTriangle size={12} className="mr-1" />
+                          missing
+                        </Badge>
+                      )}
+                    </div>
+                    {!cluster.missing && (
+                      <div className="text-xs text-gray-500 mt-1 flex flex-wrap gap-2">
+                        {cluster.layer && (
+                          <span className="capitalize text-gray-500">{cluster.layer}</span>
+                        )}
+                        {cluster.fileCount !== undefined && (
+                          <span>{cluster.fileCount} files</span>
+                        )}
+                      </div>
+                    )}
+                    {cluster.purpose_hint && (
+                      <p className="text-xs text-gray-500 mt-1">{cluster.purpose_hint}</p>
+                    )}
+                  </div>
                 ))}
               </div>
             </section>
@@ -202,4 +227,12 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
       </ScrollArea>
     </div>
   );
+}
+
+function resolveFeatureSource(feature: FeatureDetails): 'auto' | 'ai' | 'user' {
+  if (feature.metadata.lastModifiedBy === 'ai' || feature.source === 'ai') {
+    return 'ai';
+  }
+
+  return feature.source === 'user' ? 'user' : 'auto';
 }

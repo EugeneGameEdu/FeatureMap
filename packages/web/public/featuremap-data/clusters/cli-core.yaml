@@ -1,10 +1,9 @@
 version: 1
 id: cli-core
-layer: infrastructure
+layer: shared
 layerDetection:
-  confidence: medium
-  signals:
-    - cluster id starts with cli-
+  confidence: low
+  signals: []
 files:
   - packages/cli/src/index.ts
 exports: []
@@ -16,7 +15,7 @@ imports:
     - ./commands/scan.js
     - ./commands/validate.js
     - ./commands/web.js
-compositionHash: 2fb448d11702324cc59d657d5945d59cd325540eb87b71f2e66a5bc01ada834c
+compositionHash: 2fb448d11702324c
 metadata:
-  createdAt: 2026-01-05T10:17:11.290Z
-  updatedAt: 2026-01-05T10:17:11.290Z
+  createdAt: 2026-01-05T14:58:11.075Z
+  updatedAt: 2026-01-05T14:58:11.075Z

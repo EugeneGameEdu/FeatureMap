@@ -1,7 +1,7 @@
 version: 1
-generatedAt: 2026-01-05T10:17:11.317Z
+generatedAt: 2026-01-05T15:04:59.679Z
 nodes:
-  - fileCount: 8
+  - fileCount: 15
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
@@ -21,11 +21,11 @@ nodes:
     id: cli-scripts
     label: Cli Scripts
     type: cluster
-  - fileCount: 8
+  - fileCount: 9
     id: cli-types
     label: Cli Types
     type: cluster
-  - fileCount: 7
+  - fileCount: 9
     id: cli-utils
     label: Cli Utils
     type: cluster
@@ -33,9 +33,17 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 2
+  - fileCount: 5
     id: mcp-server-tools
     label: Mcp Server Tools
+    type: cluster
+  - fileCount: 2
+    id: mcp-server-types
+    label: Mcp Server Types
+    type: cluster
+  - fileCount: 7
+    id: mcp-server-utils
+    label: Mcp Server Utils
     type: cluster
   - fileCount: 3
     id: web-components
@@ -53,7 +61,25 @@ nodes:
     id: web-lib
     label: Web Lib
     type: cluster
+  - id: cli-command-surface
+    label: CLI Command Surface
+    type: feature
+    fileCount: 6
+  - id: code-analysis-engine
+    label: Code Analysis Engine
+    type: feature
+    fileCount: 34
+  - id: mcp-feature-bridge
+    label: MCP Feature Bridge
+    type: feature
+    fileCount: 15
+  - id: web-featuremap-ui
+    label: Web FeatureMap UI
+    type: feature
+    fileCount: 13
 edges:
+  - source: cli-analyzer
+    target: cli-constants
   - source: cli-analyzer
     target: cli-types
   - source: cli-analyzer
@@ -80,3 +106,54 @@ edges:
     target: cli-types
   - source: mcp-server-core
     target: mcp-server-tools
+  - source: mcp-server-tools
+    target: mcp-server-types
+  - source: mcp-server-tools
+    target: mcp-server-utils
+  - source: mcp-server-utils
+    target: mcp-server-types
+  - source: cli-command-surface
+    target: cli-commands
+    type: contains
+  - source: cli-command-surface
+    target: cli-core
+    type: contains
+  - source: cli-command-surface
+    target: cli-scripts
+    type: contains
+  - source: code-analysis-engine
+    target: cli-analyzer
+    type: contains
+  - source: code-analysis-engine
+    target: cli-constants
+    type: contains
+  - source: code-analysis-engine
+    target: cli-types
+    type: contains
+  - source: code-analysis-engine
+    target: cli-utils
+    type: contains
+  - source: mcp-feature-bridge
+    target: mcp-server-core
+    type: contains
+  - source: mcp-feature-bridge
+    target: mcp-server-tools
+    type: contains
+  - source: mcp-feature-bridge
+    target: mcp-server-types
+    type: contains
+  - source: mcp-feature-bridge
+    target: mcp-server-utils
+    type: contains
+  - source: web-featuremap-ui
+    target: web-components
+    type: contains
+  - source: web-featuremap-ui
+    target: web-components-ui
+    type: contains
+  - source: web-featuremap-ui
+    target: web-core
+    type: contains
+  - source: web-featuremap-ui
+    target: web-lib
+    type: contains

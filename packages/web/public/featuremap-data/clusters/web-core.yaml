@@ -4,7 +4,11 @@ layer: frontend
 layerDetection:
   confidence: high
   signals:
-    - cluster id starts with web-
+    - path contains /web/
+    - file extension .tsx
+    - imports react
+    - imports react-dom
+    - exports React components
 files:
   - packages/web/src/App.tsx
   - packages/web/src/main.tsx
@@ -25,7 +29,7 @@ imports:
   internal:
     - ./App.js
     - ./index.css
-compositionHash: afc9f67f24b535f8fe2a1b6ebae371f2b7395a69911f0be4d307254dae0a0d48
+compositionHash: 3f5c50ccf093e648
 metadata:
-  createdAt: 2026-01-05T10:17:11.310Z
-  updatedAt: 2026-01-05T10:17:11.310Z
+  createdAt: 2026-01-05T14:58:11.090Z
+  updatedAt: 2026-01-05T14:58:11.090Z
