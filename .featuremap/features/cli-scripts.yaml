@@ -1,3 +1,4 @@
+version: 1
 id: cli-scripts
 name: Cli Scripts
 description: null
@@ -11,4 +12,4 @@ dependsOn:
   - cli-utils
 metadata:
   createdAt: 2026-01-04T21:34:26.707Z
-  updatedAt: 2026-01-04T21:34:26.707Z
+  updatedAt: 2026-01-05T09:40:59.845Z

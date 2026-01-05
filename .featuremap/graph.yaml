@@ -1,13 +1,17 @@
 version: 1
-generatedAt: 2026-01-04T22:04:36.128Z
+generatedAt: 2026-01-05T09:40:59.866Z
 nodes:
   - fileCount: 8
     id: cli-analyzer
     label: Cli Analyzer
     type: feature
-  - fileCount: 3
+  - fileCount: 4
     id: cli-commands
     label: Cli Commands
+    type: feature
+  - fileCount: 1
+    id: cli-constants
+    label: Cli Constants
     type: feature
   - fileCount: 1
     id: cli-core
@@ -21,7 +25,7 @@ nodes:
     id: cli-types
     label: Cli Types
     type: feature
-  - fileCount: 4
+  - fileCount: 5
     id: cli-utils
     label: Cli Utils
     type: feature
@@ -57,6 +61,8 @@ edges:
   - source: cli-commands
     target: cli-analyzer
   - source: cli-commands
+    target: cli-constants
+  - source: cli-commands
     target: cli-types
   - source: cli-commands
     target: cli-utils
@@ -66,6 +72,8 @@ edges:
     target: cli-types
   - source: cli-scripts
     target: cli-utils
+  - source: cli-utils
+    target: cli-constants
   - source: cli-utils
     target: cli-types
   - source: mcp-server-core

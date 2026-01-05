@@ -5,6 +5,7 @@ import { scanProject } from '../analyzer/scanner.js';
 import { buildGraph, getGraphStats } from '../analyzer/graph.js';
 import { groupByFolders, Cluster } from '../analyzer/grouper.js';
 import { Feature, FeatureSchema, Graph, GraphSchema } from '../types/index.js';
+import { SUPPORTED_VERSIONS } from '../constants/versions.js';
 import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
 import {
   areFeaturesEquivalent,
@@ -114,13 +115,25 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
   for (const cluster of clusters) {
     const featureFile = path.join(featuresDir, `${cluster.id}.yaml`);
     const isNewFeature = !fs.existsSync(featureFile);
-    const existing = isNewFeature ? null : loadYAML(featureFile, FeatureSchema);
+    let versionInjected = false;
+    const existing = isNewFeature
+      ? null
+      : loadYAML(featureFile, FeatureSchema, {
+        fileType: 'feature',
+        allowMissingVersion: true,
+        onVersionInjected: () => {
+          versionInjected = true;
+        },
+      });
 
     if (existing && (existing.source === 'user' || existing.source === 'ai')) {
       const updatedFeature = buildAuthoredFeature(existing, cluster);
 
-      if (!areFeaturesEquivalent(existing, updatedFeature)) {
-        updatedFeature.metadata = buildUpdatedMetadata(existing.metadata);
+      const isEquivalent = areFeaturesEquivalent(existing, updatedFeature);
+      if (versionInjected || !isEquivalent) {
+        if (!isEquivalent) {
+          updatedFeature.metadata = buildUpdatedMetadata(existing.metadata);
+        }
         saveYAML(featureFile, updatedFeature, FeatureSchema, {
           sortArrayFields: ['files', 'clusters', 'dependsOn'],
         });
@@ -128,9 +141,9 @@ function saveFeatures(featuremapDir: string, clusters: Cluster[]): number {
       continue;
     }
 
-    const autoFeature = buildAutoFeature(cluster);
+    const autoFeature = buildAutoFeature(cluster, existing?.version);
 
-    if (existing && areFeaturesEquivalent(existing, autoFeature)) {
+    if (existing && areFeaturesEquivalent(existing, autoFeature) && !versionInjected) {
       continue;
     }
 
@@ -154,13 +167,15 @@ function getExportsForCluster(cluster: Cluster): string[] {
 function buildAuthoredFeature(existing: Feature, cluster: Cluster): Feature {
   return {
     ...existing,
+    version: existing.version ?? SUPPORTED_VERSIONS.feature,
     files: cluster.files.map(f => ({ path: f })),
     dependsOn: cluster.externalDependencies,
   };
 }
 
-function buildAutoFeature(cluster: Cluster): Feature {
+function buildAutoFeature(cluster: Cluster, version?: number): Feature {
   return {
+    version: version ?? SUPPORTED_VERSIONS.feature,
     id: cluster.id,
     name: cluster.name,
     description: null,
@@ -174,10 +189,11 @@ function buildAutoFeature(cluster: Cluster): Feature {
 
 function buildGraphData(
   nodes: Graph['nodes'],
-  edges: Graph['edges']
+  edges: Graph['edges'],
+  version: number
 ): Graph {
   return {
-    version: 1,
+    version,
     generatedAt: new Date().toISOString(),
     nodes,
     edges,
@@ -205,15 +221,15 @@ function saveGraphYaml(featuremapDir: string, clusters: Cluster[]): void {
 
   const filePath = path.join(featuremapDir, 'graph.yaml');
   if (fs.existsSync(filePath)) {
-    const existing = loadYAML(filePath, GraphSchema);
-    const nextGraph = buildGraphData(nodes, edges);
+    const existing = loadYAML(filePath, GraphSchema, { fileType: 'graph' });
+    const nextGraph = buildGraphData(nodes, edges, existing.version);
 
     if (areGraphsEquivalent(existing, nextGraph)) {
       return;
     }
   }
 
-  const graphYaml = buildGraphData(nodes, edges);
+  const graphYaml = buildGraphData(nodes, edges, SUPPORTED_VERSIONS.graph);
   saveYAML(filePath, graphYaml, GraphSchema, {
     sortArrayFields: ['nodes', 'edges'],
   });

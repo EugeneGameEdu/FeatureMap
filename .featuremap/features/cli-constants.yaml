@@ -1,0 +1,13 @@
+version: 1
+id: cli-constants
+name: Cli Constants
+description: null
+source: auto
+status: active
+files:
+  - path: packages/cli/src/constants/versions.ts
+exports: []
+dependsOn: []
+metadata:
+  createdAt: 2026-01-05T09:40:59.841Z
+  updatedAt: 2026-01-05T09:40:59.841Z

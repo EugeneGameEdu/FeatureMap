@@ -1,3 +1,4 @@
+version: 1
 id: mcp-server-tools
 name: MCP Tools
 description: AI-accessible tools for reading project structure, getting features, and updating feature metadata.

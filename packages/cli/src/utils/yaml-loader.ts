@@ -4,11 +4,21 @@ import * as yaml from 'yaml';
 import { ZodError } from 'zod';
 import type { Pair } from 'yaml';
 import type { ZodType } from 'zod';
+import type { FileType } from '../constants/versions.js';
+import { SUPPORTED_VERSIONS } from '../constants/versions.js';
 import { getKeyComparator } from './yaml-key-order.js';
+import { checkVersion, VersionCheckError } from './version-checker.js';
 
 export interface YAMLWriteOptions {
   sortArrayFields?: string[];
   atomicWrite?: boolean;
+}
+
+export interface LoadYAMLOptions {
+  fileType?: FileType;
+  skipVersionCheck?: boolean;
+  allowMissingVersion?: boolean;
+  onVersionInjected?: (version: number) => void;
 }
 
 function formatIssuePath(pathSegments: Array<string | number | symbol>): string {
@@ -34,6 +44,15 @@ function buildErrorMessage(filePath: string, error: ZodError): string {
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function getVersionValue(value: unknown): number | undefined {
+  if (!isPlainObject(value)) {
+    return undefined;
+  }
+
+  const version = value.version;
+  return typeof version === 'number' && Number.isFinite(version) ? version : undefined;
 }
 
 function getObjectSortKey(value: Record<string, unknown>): string | null {
@@ -143,13 +162,35 @@ function atomicWriteFile(filePath: string, content: string): void {
   }
 }
 
-export function loadYAML<T>(filePath: string, schema: ZodType<T>): T {
+export function loadYAML<T>(
+  filePath: string,
+  schema: ZodType<T>,
+  options: LoadYAMLOptions = {}
+): T {
   if (!fs.existsSync(filePath)) {
     throw new Error(`YAML file not found: ${filePath}`);
   }
 
   const content = fs.readFileSync(filePath, 'utf-8');
   const parsed = yaml.parse(content);
+
+  const fileType = options.fileType;
+  let version = getVersionValue(parsed);
+
+  if (fileType && options.allowMissingVersion && version === undefined && isPlainObject(parsed)) {
+    const fallback = SUPPORTED_VERSIONS[fileType];
+    parsed.version = fallback;
+    version = fallback;
+    options.onVersionInjected?.(fallback);
+  }
+
+  if (fileType && !options.skipVersionCheck) {
+    const result = checkVersion(fileType, version);
+    if (!result.valid) {
+      throw new VersionCheckError(result);
+    }
+  }
+
   const result = schema.safeParse(parsed);
 
   if (!result.success) {

@@ -2,10 +2,11 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Config, ConfigSchema } from '../types/config.js';
+import { SUPPORTED_VERSIONS } from '../constants/versions.js';
 import { saveYAML } from '../utils/yaml-loader.js';
 
 const DEFAULT_CONFIG: Config = {
-  version: 1,
+  version: SUPPORTED_VERSIONS.config,
   project: {
     name: path.basename(process.cwd()),
     root: '.',

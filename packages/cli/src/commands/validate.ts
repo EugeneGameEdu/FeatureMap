@@ -9,40 +9,49 @@ import {
   GraphSchema,
   RawGraphSchema,
 } from '../types/index.js';
+import type { FileType } from '../constants/versions.js';
 import { loadYAML } from '../utils/yaml-loader.js';
+import { VersionCheckError } from '../utils/version-checker.js';
+
+type ValidationStatus = 'valid' | 'warning' | 'error' | 'skipped';
 
 interface ValidationResult {
   file: string;
-  valid: boolean;
-  errors?: string[];
-  skipped?: boolean;
+  status: ValidationStatus;
+  messages?: string[];
+  version?: number;
 }
 
 interface ValidateOptions {
   quiet?: boolean;
 }
 
-function getSchemaForFile(filePath: string, featuremapDir: string): ZodType<unknown> | null {
+interface SchemaTarget {
+  schema: ZodType<unknown>;
+  fileType: FileType;
+}
+
+function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget | null {
   const relativePath = path.relative(featuremapDir, filePath).replace(/\\/g, '/');
 
   if (relativePath === 'config.yaml') {
-    return ConfigSchema;
+    return { schema: ConfigSchema, fileType: 'config' };
   }
 
   if (relativePath === 'raw-graph.yaml') {
-    return RawGraphSchema;
+    return { schema: RawGraphSchema, fileType: 'rawGraph' };
   }
 
   if (relativePath === 'graph.yaml') {
-    return GraphSchema;
+    return { schema: GraphSchema, fileType: 'graph' };
   }
 
   if (relativePath.startsWith('features/')) {
-    return FeatureSchema;
+    return { schema: FeatureSchema, fileType: 'feature' };
   }
 
   if (relativePath.startsWith('clusters/')) {
-    return ClusterSchema;
+    return { schema: ClusterSchema, fileType: 'cluster' };
   }
 
   return null;
@@ -50,6 +59,19 @@ function getSchemaForFile(filePath: string, featuremapDir: string): ZodType<unkn
 
 function getRelativePath(featuremapDir: string, filePath: string): string {
   return path.relative(featuremapDir, filePath).replace(/\\/g, '/');
+}
+
+function getVersionValue(value: unknown): number | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  if (!('version' in value)) {
+    return undefined;
+  }
+
+  const version = (value as { version?: unknown }).version;
+  return typeof version === 'number' && Number.isFinite(version) ? version : undefined;
 }
 
 function formatErrorMessages(error: unknown): string[] {
@@ -77,27 +99,38 @@ function formatErrorMessages(error: unknown): string[] {
 
 function validateFile(filePath: string, featuremapDir: string): ValidationResult {
   const relativePath = getRelativePath(featuremapDir, filePath);
-  const schema = getSchemaForFile(filePath, featuremapDir);
+  const target = getSchemaForFile(filePath, featuremapDir);
 
-  if (!schema) {
+  if (!target) {
     return {
       file: relativePath,
-      valid: true,
-      skipped: true,
+      status: 'skipped',
     };
   }
 
   try {
-    loadYAML(filePath, schema);
+    const data = loadYAML(filePath, target.schema, { fileType: target.fileType });
+    const version = getVersionValue(data);
     return {
       file: relativePath,
-      valid: true,
+      status: 'valid',
+      version,
     };
   } catch (error) {
+    if (error instanceof VersionCheckError) {
+      const status = error.result.error === 'too_new' ? 'warning' : 'error';
+      return {
+        file: relativePath,
+        status,
+        version: error.result.fileVersion,
+        messages: [error.result.message ?? 'Version check failed.'],
+      };
+    }
+
     return {
       file: relativePath,
-      valid: false,
-      errors: formatErrorMessages(error),
+      status: 'error',
+      messages: formatErrorMessages(error),
     };
   }
 }
@@ -116,18 +149,16 @@ function validateAll(featuremapDir: string): ValidationResult[] {
   return files.map((filePath) => validateFile(filePath, featuremapDir));
 }
 
-function countErrors(results: ValidationResult[]): number {
+function countMessages(results: ValidationResult[], status: ValidationStatus): number {
   return results
-    .filter((result) => !result.valid && !result.skipped)
-    .reduce((total, result) => total + (result.errors?.length ?? 1), 0);
+    .filter((result) => result.status === status)
+    .reduce((total, result) => total + (result.messages?.length ?? 1), 0);
 }
 
-function printValidationResults(
-  results: ValidationResult[],
-  quiet: boolean
-): void {
-  const validated = results.filter((result) => !result.skipped);
-  const invalid = validated.filter((result) => !result.valid);
+function printValidationResults(results: ValidationResult[], quiet: boolean): void {
+  const validated = results.filter((result) => result.status !== 'skipped');
+  const errors = results.filter((result) => result.status === 'error');
+  const warnings = results.filter((result) => result.status === 'warning');
 
   if (!quiet) {
     console.log('Validating .featuremap/...\n');
@@ -135,7 +166,7 @@ function printValidationResults(
 
   if (validated.length === 0) {
     if (!quiet) {
-      for (const result of results.filter((entry) => entry.skipped)) {
+      for (const result of results.filter((entry) => entry.status === 'skipped')) {
         console.log(`Warning: Skipping unknown file: ${result.file}`);
       }
       console.log('✓ No files to validate');
@@ -144,37 +175,63 @@ function printValidationResults(
   }
 
   for (const result of results) {
-    if (result.skipped) {
+    if (result.status === 'skipped') {
       if (!quiet) {
         console.log(`Warning: Skipping unknown file: ${result.file}`);
       }
       continue;
     }
 
-    if (result.valid) {
+    if (result.status === 'valid') {
       if (!quiet) {
-        console.log(`  ✓ ${result.file}`);
+        const versionLabel = result.version !== undefined ? ` (v${result.version})` : '';
+        console.log(`  ✓ ${result.file}${versionLabel}`);
+      }
+      continue;
+    }
+
+    if (result.status === 'warning') {
+      if (!quiet) {
+        console.log(`  ⚠ ${result.file}`);
+        for (const message of result.messages ?? ['Unknown warning']) {
+          console.log(`    - ${message}`);
+        }
       }
       continue;
     }
 
     console.log(`  ✗ ${result.file}`);
-    for (const error of result.errors ?? ['Unknown error']) {
-      console.log(`    - ${error}`);
+    for (const message of result.messages ?? ['Unknown error']) {
+      console.log(`    - ${message}`);
     }
   }
 
-  if (invalid.length === 0) {
-    if (!quiet) {
-      console.log(`\n✓ All ${validated.length} files valid`);
+  const errorCount = countMessages(results, 'error');
+  const warningCount = countMessages(results, 'warning');
+
+  if (quiet) {
+    if (errorCount > 0) {
+      const errorSuffix = errorCount === 1 ? '' : 's';
+      console.log(`\n✗ Found ${errorCount} error${errorSuffix} in ${validated.length} files`);
     }
     return;
   }
 
-  const errorCount = countErrors(results);
-  console.log(
-    `\n✗ Found ${errorCount} errors in ${invalid.length} of ${validated.length} files`
-  );
+  if (errorCount === 0 && warningCount === 0) {
+    console.log(`\n✓ All ${validated.length} files valid`);
+    return;
+  }
+
+  if (errorCount > 0) {
+    const errorSuffix = errorCount === 1 ? '' : 's';
+    const warningSuffix = warningCount === 1 ? '' : 's';
+    const warningPart = warningCount > 0 ? `, ${warningCount} warning${warningSuffix}` : '';
+    console.log(`\n✗ Found ${errorCount} error${errorSuffix}${warningPart} in ${validated.length} files`);
+    return;
+  }
+
+  const warningSuffix = warningCount === 1 ? '' : 's';
+  console.log(`\n⚠ Found ${warningCount} warning${warningSuffix} in ${validated.length} files`);
 }
 
 export function validateCommand(options: ValidateOptions): void {
@@ -188,7 +245,7 @@ export function validateCommand(options: ValidateOptions): void {
   }
 
   const results = validateAll(featuremapDir);
-  const hasErrors = results.some((result) => !result.valid && !result.skipped);
+  const hasErrors = results.some((result) => result.status === 'error');
 
   printValidationResults(results, quiet);
 

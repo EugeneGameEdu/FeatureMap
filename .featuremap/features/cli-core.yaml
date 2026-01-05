@@ -1,3 +1,4 @@
+version: 1
 id: cli-core
 name: CLI Entry Point
 description: Main entry point that registers all CLI commands using Commander.js.

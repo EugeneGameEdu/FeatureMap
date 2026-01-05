@@ -15,7 +15,7 @@ const GraphEdgeSchema = z.object({
 }).describe('React Flow edge');
 
 export const GraphSchema = z.object({
-  version: z.number(),
+  version: z.number().int().positive(),
   generatedAt: z.string(),
   nodes: z.array(GraphNodeSchema),
   edges: z.array(GraphEdgeSchema),

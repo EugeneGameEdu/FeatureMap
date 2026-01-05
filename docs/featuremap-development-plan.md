@@ -256,7 +256,7 @@ writeYAML('feature.yaml', featureData, {
 
 ---
 
-### [] Шаг 0.3: Команда validate
+### [done] Шаг 0.3: Команда validate
 
 **Задача:** CLI команда для проверки всех файлов.
 

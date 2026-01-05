@@ -6,7 +6,7 @@ export const FeatureHintSchema = z.object({
 }).describe('Pattern hint to guide feature grouping');
 
 export const ConfigSchema = z.object({
-  version: z.number(),
+  version: z.number().int().positive(),
   project: z.object({
     name: z.string(),
     root: z.string(),

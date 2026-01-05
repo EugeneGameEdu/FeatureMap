@@ -1,3 +1,4 @@
+version: 1
 id: web-lib
 name: Web Utilities
 description: Data loading utilities, TypeScript types, and helper functions for the web interface.

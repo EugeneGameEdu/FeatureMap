@@ -1,3 +1,4 @@
+version: 1
 id: cli-utils
 name: Cli Utils
 description: null
@@ -6,11 +7,13 @@ status: active
 files:
   - path: packages/cli/src/utils/file-categories.ts
   - path: packages/cli/src/utils/scanCompare.ts
+  - path: packages/cli/src/utils/version-checker.ts
   - path: packages/cli/src/utils/yaml-key-order.ts
   - path: packages/cli/src/utils/yaml-loader.ts
 exports: []
 dependsOn:
+  - cli-constants
   - cli-types
 metadata:
   createdAt: 2026-01-04T21:34:26.719Z
-  updatedAt: 2026-01-04T22:04:36.096Z
+  updatedAt: 2026-01-05T09:40:59.850Z

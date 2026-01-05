@@ -1,3 +1,4 @@
+version: 1
 id: web-components-ui
 name: UI Components
 description: Reusable UI components from shadcn/ui including buttons, cards, badges, and the sidebar panel.

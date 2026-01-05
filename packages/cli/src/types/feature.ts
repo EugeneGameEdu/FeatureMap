@@ -15,6 +15,7 @@ const FeatureCompositionSchema = z.object({
 const FeatureReasoningSchema = z.string().describe('AI reasoning notes');
 
 export const FeatureSchema = z.object({
+  version: z.number().int().positive(),
   id: z.string(),
   name: z.string(),
   description: z.string().nullable().optional(),

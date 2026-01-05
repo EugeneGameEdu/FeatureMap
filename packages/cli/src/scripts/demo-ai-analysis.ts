@@ -79,7 +79,7 @@ async function main() {
       continue;
     }
 
-    const feature = loadYAML(featurePath, FeatureSchema);
+    const feature = loadYAML(featurePath, FeatureSchema, { fileType: 'feature' });
 
     feature.name = updates.name;
     feature.description = updates.description;
@@ -102,7 +102,7 @@ async function main() {
 
   const graphPath = path.join(projectRoot, '.featuremap', 'graph.yaml');
   if (fs.existsSync(graphPath)) {
-    const graph = loadYAML(graphPath, GraphSchema);
+    const graph = loadYAML(graphPath, GraphSchema, { fileType: 'graph' });
 
     if (graph.nodes) {
       for (const node of graph.nodes) {

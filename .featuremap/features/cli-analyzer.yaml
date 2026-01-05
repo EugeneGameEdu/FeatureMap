@@ -1,3 +1,4 @@
+version: 1
 id: cli-analyzer
 name: Code Analyzer
 description: Core analysis engine that parses TypeScript files, builds dependency graphs, and groups files into feature clusters using ts-morph.

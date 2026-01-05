@@ -1,3 +1,4 @@
+version: 1
 id: web-core
 name: Web Application
 description: Main React application that loads feature data and renders the interactive map with sidebar.

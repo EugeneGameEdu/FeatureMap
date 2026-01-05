@@ -7,6 +7,7 @@ const LayerDetectionSchema = z.object({
 }).describe('Signals used to infer cluster layer');
 
 export const ClusterSchema = z.object({
+  version: z.number().int().positive(),
   id: z.string(),
   layer: LayerSchema,
   files: z.array(z.string()).describe('Files contained in the cluster'),

@@ -1,3 +1,4 @@
+version: 1
 id: web-components
 name: Map Components
 description: React Flow based interactive map with custom feature nodes and dependency visualization.

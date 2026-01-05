@@ -15,7 +15,7 @@ export function loadConfig(configPath: string): Config {
     throw new Error(`Config not found: ${configPath}`);
   }
 
-  return loadYAML(configPath, ConfigSchema);
+  return loadYAML(configPath, ConfigSchema, { fileType: 'config' });
 }
 
 export async function scanProject(projectRoot: string): Promise<ScanResult> {

@@ -1,6 +1,7 @@
 export const KEY_ORDER: Record<string, string[]> = {
   config: ['version', 'project', 'scan', 'features'],
   cluster: [
+    'version',
     'id',
     'layer',
     'layerDetection',
@@ -12,6 +13,7 @@ export const KEY_ORDER: Record<string, string[]> = {
     'compositionHash',
   ],
   feature: [
+    'version',
     'id',
     'name',
     'description',

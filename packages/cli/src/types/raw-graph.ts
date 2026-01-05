@@ -14,7 +14,7 @@ const RawClusterSchema = z.object({
 }).describe('Lightweight cluster definition');
 
 export const RawGraphSchema = z.object({
-  version: z.number(),
+  version: z.number().int().positive(),
   generatedAt: z.string(),
   files: z.record(z.string(), RawFileSchema),
   dependencies: z.record(z.string(), z.array(z.string())).describe('File dependency adjacency list'),
