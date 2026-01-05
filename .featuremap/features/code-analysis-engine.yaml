@@ -1,0 +1,16 @@
+version: 1
+id: code-analysis-engine
+name: Code Analysis Engine
+description: Scans the repository and builds the dependency/cluster model.
+source: ai
+status: active
+scope: shared
+clusters:
+  - cli-commands
+composition:
+  hash: 14c526031e9c966d
+metadata:
+  createdAt: 2026-01-05T13:55:01.192Z
+  updatedAt: 2026-01-05T13:55:01.192Z
+  lastModifiedBy: ai
+  version: 1

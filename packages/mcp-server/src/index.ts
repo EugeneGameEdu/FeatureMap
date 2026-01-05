@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { getCurrentFeatures } from './tools/getCurrentFeatures.js';
 import { updateFeature } from './tools/updateFeature.js';
 import { getProjectContextTool } from './tools/getProjectContext.js';
+import { getGroupingInputTool } from './tools/getGroupingInput.js';
+import { saveFeaturesFromGroupingTool } from './tools/saveFeaturesFromGrouping.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -72,10 +74,26 @@ server.tool(
   getProjectContextTool.execute
 );
 
+// Tool: get_grouping_input
+server.tool(
+  getGroupingInputTool.name,
+  getGroupingInputTool.description,
+  getGroupingInputTool.parameters,
+  getGroupingInputTool.execute
+);
+
+// Tool: save_features_from_grouping
+server.tool(
+  saveFeaturesFromGroupingTool.name,
+  saveFeaturesFromGroupingTool.description,
+  saveFeaturesFromGroupingTool.parameters,
+  saveFeaturesFromGroupingTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 3 tools');
+  console.error('FeatureMap MCP server started with 5 tools');
 }
 
 main().catch((error) => {

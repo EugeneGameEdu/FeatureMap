@@ -635,7 +635,7 @@ cat .featuremap/context/conventions.yaml
 
 ---
 
-### Шаг 2.3: MCP Tool — get_project_context
+### [done] Шаг 2.3: MCP Tool — get_project_context
 
 **Задача:** Новый MCP tool для получения контекста проекта.
 
@@ -1477,22 +1477,22 @@ featuremap web
 ## 📋 Чек-лист фаз
 
 ### Фаза 0: Contracts и валидация
-- [ ] 0.1 TypeScript types + Zod schemas
-- [ ] 0.2 Детерминированная запись YAML
-- [ ] 0.3 Команда validate
-- [ ] 0.4 Version checks
+- [done] 0.1 TypeScript types + Zod schemas
+- [done] 0.2 Детерминированная запись YAML
+- [done] 0.3 Команда validate
+- [done] 0.4 Version checks
 
 ### Фаза 1: Инфраструктура
-- [ ] 1.1 Рефакторинг структуры (clusters vs features, locks, layout отдельно)
-- [ ] 1.2 Расширение метаданных (layer, purpose_hint, confidence)
-- [ ] 1.3 Создание context/
-- [ ] 1.4 Cluster ID stability
+- [done] 1.1 Рефакторинг структуры (clusters vs features, locks, layout отдельно)
+- [done] 1.2 Расширение метаданных (layer, purpose_hint, confidence)
+- [done] 1.3 Создание context/
+- [done] 1.4 Cluster ID stability
 
 ### Фаза 2: AI-группировка
-- [ ] 2.1 Tech Stack анализ
-- [ ] 2.2 Conventions анализ
-- [ ] 2.3 MCP get_project_context
-- [ ] 2.4a MCP get_grouping_input
+- [done] 2.1 Tech Stack анализ
+- [done] 2.2 Conventions анализ
+- [done] 2.3 MCP get_project_context
+- [done] 2.4a MCP get_grouping_input
 - [ ] 2.4b MCP save_features_from_grouping
 - [ ] 2.5 Веб Level 1 (фичи)
 - [ ] 2.6 Стабильность (composition hash)

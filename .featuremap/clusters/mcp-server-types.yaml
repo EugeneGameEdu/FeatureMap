@@ -9,7 +9,11 @@ layerDetection:
     - exports only types
 files:
   - packages/mcp-server/src/types/context.ts
+  - packages/mcp-server/src/types/feature.ts
 exports:
+  - isDefault: false
+    name: ClusterInfo
+    type: interface
   - isDefault: false
     name: Constraint
     type: interface
@@ -20,6 +24,33 @@ exports:
     name: Decision
     type: interface
   - isDefault: false
+    name: FeatureFile
+    type: interface
+  - isDefault: false
+    name: FeatureInput
+    type: interface
+  - isDefault: false
+    name: FeatureLocks
+    type: interface
+  - isDefault: false
+    name: FeatureMetadata
+    type: interface
+  - isDefault: false
+    name: FeatureScope
+    type: type
+  - isDefault: false
+    name: FeatureStatus
+    type: type
+  - isDefault: false
+    name: GraphData
+    type: interface
+  - isDefault: false
+    name: GraphEdge
+    type: interface
+  - isDefault: false
+    name: GraphNode
+    type: interface
+  - isDefault: false
     name: Overview
     type: interface
   - isDefault: false
@@ -28,7 +59,7 @@ exports:
 imports:
   external: []
   internal: []
-compositionHash: e00a5d489eab5b94
+compositionHash: d2209ed4f9870e2f
 metadata:
-  createdAt: 2026-01-05T11:54:06.730Z
-  updatedAt: 2026-01-05T11:54:06.730Z
+  createdAt: 2026-01-05T13:54:09.384Z
+  updatedAt: 2026-01-05T13:54:09.384Z

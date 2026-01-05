@@ -7,7 +7,9 @@ layerDetection:
     - path contains /mcp-server/
 files:
   - packages/mcp-server/src/tools/getCurrentFeatures.ts
+  - packages/mcp-server/src/tools/getGroupingInput.ts
   - packages/mcp-server/src/tools/getProjectContext.ts
+  - packages/mcp-server/src/tools/saveFeaturesFromGrouping.ts
   - packages/mcp-server/src/tools/updateFeature.ts
 exports:
   - isDefault: false
@@ -20,7 +22,13 @@ exports:
     name: getCurrentFeatures
     type: function
   - isDefault: false
+    name: getGroupingInputTool
+    type: variable
+  - isDefault: false
     name: getProjectContextTool
+    type: variable
+  - isDefault: false
+    name: saveFeaturesFromGroupingTool
     type: variable
   - isDefault: false
     name: updateFeature
@@ -38,9 +46,15 @@ imports:
     - yaml
     - zod
   internal:
+    - ../types/feature.js
     - ../utils/contextLoader.js
+    - ../utils/featureLoader.js
+    - ../utils/featureMerge.js
+    - ../utils/featureYaml.js
     - ../utils/findFeaturemapDir.js
-compositionHash: 061996a78f2abf5e
+    - ../utils/graphBuilder.js
+    - ../utils/listUtils.js
+compositionHash: a242b066421a6ca3
 metadata:
-  createdAt: 2026-01-05T11:24:35.798Z
-  updatedAt: 2026-01-05T11:54:06.728Z
+  createdAt: 2026-01-05T13:54:09.381Z
+  updatedAt: 2026-01-05T13:54:09.381Z

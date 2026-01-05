@@ -8,25 +8,60 @@ layerDetection:
     - path contains /utils/
 files:
   - packages/mcp-server/src/utils/contextLoader.ts
+  - packages/mcp-server/src/utils/featureLoader.ts
+  - packages/mcp-server/src/utils/featureMerge.ts
+  - packages/mcp-server/src/utils/featureYaml.ts
   - packages/mcp-server/src/utils/findFeaturemapDir.ts
+  - packages/mcp-server/src/utils/graphBuilder.ts
+  - packages/mcp-server/src/utils/listUtils.ts
 exports:
   - isDefault: false
+    name: buildGraphData
+    type: function
+  - isDefault: false
+    name: findDuplicateIds
+    type: function
+  - isDefault: false
     name: findFeaturemapDir
+    type: function
+  - isDefault: false
+    name: loadClusters
+    type: function
+  - isDefault: false
+    name: loadFeatures
     type: function
   - isDefault: false
     name: loadProjectContext
     type: function
   - isDefault: false
+    name: markFeatureIgnored
+    type: function
+  - isDefault: false
+    name: mergeFeatureWithLocks
+    type: function
+  - isDefault: false
+    name: normalizeStringList
+    type: function
+  - isDefault: false
     name: ProjectContext
     type: interface
+  - isDefault: false
+    name: writeFeatureYaml
+    type: function
+  - isDefault: false
+    name: writeGraphYaml
+    type: function
 imports:
   external:
+    - crypto
     - fs
     - path
     - yaml
   internal:
     - ../types/context.js
-compositionHash: 8650008b7560391c
+    - ../types/feature.js
+    - ./listUtils.js
+compositionHash: 92753eaadb068d99
 metadata:
-  createdAt: 2026-01-05T11:54:06.731Z
-  updatedAt: 2026-01-05T11:54:06.731Z
+  createdAt: 2026-01-05T13:54:09.387Z
+  updatedAt: 2026-01-05T13:54:09.387Z
