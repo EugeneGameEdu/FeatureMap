@@ -7,7 +7,12 @@ import { loadClusters, loadFeatures } from '../utils/featureLoader.js';
 import { findDuplicateIds, normalizeStringList } from '../utils/listUtils.js';
 import { mergeFeatureWithLocks, markFeatureIgnored } from '../utils/featureMerge.js';
 import { writeFeatureYaml } from '../utils/featureYaml.js';
-import { buildGraphData, writeGraphYaml } from '../utils/graphBuilder.js';
+import {
+  buildFeatureOverlay,
+  mergeGraphs,
+  readExistingGraphYaml,
+  writeGraphYaml,
+} from '../utils/graphBuilder.js';
 
 const scopeEnum = z.enum(['frontend', 'backend', 'fullstack', 'shared']);
 const statusEnum = z.enum(['active', 'ignored', 'deprecated']);
@@ -185,7 +190,9 @@ export const saveFeaturesFromGroupingTool = {
     saved.updated.sort((a, b) => a.localeCompare(b));
     saved.unchanged.sort((a, b) => a.localeCompare(b));
 
-    const graphData = buildGraphData([...nextFeatures.values()], clusters, warnings, startedAt);
+    const existingGraph = readExistingGraphYaml(featuremapDir);
+    const overlay = buildFeatureOverlay([...nextFeatures.values()], clusters, warnings);
+    const graphData = mergeGraphs(existingGraph, overlay, startedAt);
     const graphWritten = !dryRun && writeGraphYaml(featuremapDir, graphData);
 
     const result = {

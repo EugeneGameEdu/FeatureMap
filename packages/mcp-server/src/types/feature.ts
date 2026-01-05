@@ -55,14 +55,18 @@ export interface FeatureFile {
 
 export interface GraphNode {
   id: string;
-  label: string;
-  type: 'feature';
-  fileCount: number;
+  label?: string;
+  type?: string;
+  fileCount?: number;
+  clusterCount?: number;
+  [key: string]: unknown;
 }
 
 export interface GraphEdge {
   source: string;
   target: string;
+  type?: string;
+  [key: string]: unknown;
 }
 
 export interface GraphData {
