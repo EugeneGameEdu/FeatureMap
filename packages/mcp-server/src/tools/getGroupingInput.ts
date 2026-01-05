@@ -1,9 +1,19 @@
-import { existsSync, readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
-import { parse } from 'yaml';
 import { z } from 'zod';
+import type { ClusterInfo, FeatureFile, FeatureLocks } from '../types/feature.js';
 import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
 import { loadProjectContext } from '../utils/contextLoader.js';
+import { loadFeatures } from '../utils/featureLoader.js';
+import { normalizeStringList } from '../utils/listUtils.js';
+import { computeFeatureCompositionHash } from '../utils/featureMerge.js';
+import {
+  applyLimits,
+  loadClusters,
+  loadDependencies,
+  summarizeCluster,
+  type Limits,
+  type RawCluster,
+} from './getGroupingInputUtils.js';
 
 const layerEnum = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
 const limitsSchema = z.object({
@@ -12,34 +22,14 @@ const limitsSchema = z.object({
   maxClusters: z.number().int().positive().max(500).optional(),
 });
 
-const DEFAULT_LIMITS = {
-  externalImportsTopN: 10,
-  keyPathsTopN: 5,
-  maxClusters: 200,
-};
-
-type Limits = typeof DEFAULT_LIMITS;
-
-interface RawCluster {
-  id?: string;
-  layer?: string;
-  layerDetection?: unknown;
-  purpose_hint?: string;
-  entry_points?: string[];
-  imports?: { external?: string[] };
-  files?: string[];
-}
-
-interface RawFeature {
-  id?: string;
-  name?: string;
+interface ExistingFeatureSummary {
+  id: string;
+  name: string;
   scope?: string;
   status?: string;
-  clusters?: string[];
-}
-
-interface GraphData {
-  edges?: Array<{ source?: string; target?: string }>;
+  clusters: string[];
+  composition: { hash: string; currentHash: string; isStale: boolean };
+  locks?: Pick<FeatureLocks, 'name' | 'description' | 'clusters'>;
 }
 
 export const getGroupingInputTool = {
@@ -48,8 +38,12 @@ export const getGroupingInputTool = {
 
 Guidance for AI usage:
 - Group by PURPOSE, not by folder/module names.
-- Aim for 3–7 high-level features.
+- Aim for 3-7 high-level features.
 - Features should be understandable to non-programmers.
+- If stability.staleFeatureIds is empty, do not change features; avoid renames or reclustering.
+- If some features are stale, update only those features unless the user explicitly requests a regroup.
+- Preserve existing feature IDs whenever possible.
+- Respect locks (name/description/clusters) when proposing updates.
 - After analysis, call save_features_from_grouping (next step).`,
   parameters: {
     layer: layerEnum.optional().describe('Optional layer filter for clusters.'),
@@ -79,6 +73,7 @@ Guidance for AI usage:
 
     const limits = applyLimits(params.limits);
     const rawClusters = loadClusters(join(featuremapDir, 'clusters'));
+    const clustersById = buildClusterInfoMap(rawClusters);
     const filteredClusters = params.layer
       ? rawClusters.filter((cluster) => cluster.layer === params.layer)
       : rawClusters;
@@ -106,8 +101,12 @@ Guidance for AI usage:
     const context = loadProjectContext(featuremapDir);
     const includeExistingFeatures = params.includeExistingFeatures !== false;
     const existingFeatures = includeExistingFeatures
-      ? loadExistingFeatures(join(featuremapDir, 'features'))
+      ? buildExistingFeatureSummaries(
+          loadFeatures(join(featuremapDir, 'features')),
+          clustersById
+        )
       : [];
+    const stability = buildStabilitySummary(existingFeatures);
 
     const result = {
       clusters: clusterSummaries,
@@ -117,6 +116,7 @@ Guidance for AI usage:
         conventions: context.conventions,
       },
       existing_features: existingFeatures,
+      stability,
       _meta: {
         counts: {
           clustersTotal: rawClusters.length,
@@ -141,197 +141,92 @@ Guidance for AI usage:
   },
 };
 
-function applyLimits(limits?: Partial<Limits>): Limits {
-  return {
-    externalImportsTopN: limits?.externalImportsTopN ?? DEFAULT_LIMITS.externalImportsTopN,
-    keyPathsTopN: limits?.keyPathsTopN ?? DEFAULT_LIMITS.keyPathsTopN,
-    maxClusters: limits?.maxClusters ?? DEFAULT_LIMITS.maxClusters,
-  };
-}
+function buildClusterInfoMap(rawClusters: RawCluster[]): Map<string, ClusterInfo> {
+  const clustersById = new Map<string, ClusterInfo>();
 
-function loadClusters(clustersDir: string): RawCluster[] {
-  if (!existsSync(clustersDir)) {
-    return [];
-  }
-
-  const files = readdirSync(clustersDir).filter((file) => file.endsWith('.yaml'));
-  const clusters: RawCluster[] = [];
-
-  for (const file of files) {
-    try {
-      const content = readFileSync(join(clustersDir, file), 'utf-8');
-      const parsed = parse(content) as RawCluster;
-      if (parsed?.id && parsed?.layer) {
-        clusters.push(parsed);
-      }
-    } catch {
-      // Skip invalid cluster files.
-    }
-  }
-
-  return clusters;
-}
-
-function loadExistingFeatures(featuresDir: string): Array<{
-  id: string;
-  name: string;
-  scope?: string;
-  status?: string;
-  clusters: string[];
-}> {
-  if (!existsSync(featuresDir)) {
-    return [];
-  }
-
-  const files = readdirSync(featuresDir).filter((file) => file.endsWith('.yaml'));
-  const features: Array<{
-    id: string;
-    name: string;
-    scope?: string;
-    status?: string;
-    clusters: string[];
-  }> = [];
-
-  for (const file of files) {
-    try {
-      const content = readFileSync(join(featuresDir, file), 'utf-8');
-      const parsed = parse(content) as RawFeature;
-      if (!parsed?.id || !parsed?.name) {
-        continue;
-      }
-      features.push({
-        id: parsed.id,
-        name: parsed.name,
-        scope: parsed.scope,
-        status: parsed.status,
-        clusters: Array.isArray(parsed.clusters)
-          ? [...new Set(parsed.clusters)].sort((a, b) => a.localeCompare(b))
-          : [],
-      });
-    } catch {
-      // Skip invalid feature files.
-    }
-  }
-
-  return features.sort((a, b) => a.id.localeCompare(b.id));
-}
-
-function summarizeCluster(cluster: RawCluster, limits: Limits): {
-  id: string;
-  layer: string;
-  layerDetection?: unknown;
-  purpose_hint?: string;
-  entry_points?: string[];
-  imports_external: string[];
-  fileCount: number;
-  keyPaths: string[];
-} {
-  const files = Array.isArray(cluster.files) ? cluster.files : [];
-  const entryPoints = normalizeStringList(cluster.entry_points);
-  const importsExternal = normalizeStringList(cluster.imports?.external).slice(
-    0,
-    limits.externalImportsTopN
-  );
-  const keyPaths = extractKeyPaths(files, limits.keyPathsTopN);
-
-  return {
-    id: cluster.id ?? 'unknown',
-    layer: cluster.layer ?? 'shared',
-    ...(cluster.layerDetection ? { layerDetection: cluster.layerDetection } : {}),
-    ...(cluster.purpose_hint ? { purpose_hint: cluster.purpose_hint } : {}),
-    ...(entryPoints.length > 0 ? { entry_points: entryPoints } : {}),
-    imports_external: importsExternal,
-    fileCount: files.length,
-    keyPaths,
-  };
-}
-
-function normalizeStringList(values: string[] | undefined): string[] {
-  if (!Array.isArray(values)) {
-    return [];
-  }
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
-}
-
-function extractKeyPaths(files: string[], topN: number): string[] {
-  const counts = new Map<string, number>();
-
-  for (const file of files) {
-    const keyPath = getKeyPath(file);
-    if (!keyPath) {
+  for (const cluster of rawClusters) {
+    if (!cluster.id) {
       continue;
     }
-    counts.set(keyPath, (counts.get(keyPath) ?? 0) + 1);
+    clustersById.set(cluster.id, {
+      id: cluster.id,
+      layer: cluster.layer,
+      files: Array.isArray(cluster.files) ? cluster.files : [],
+      compositionHash: cluster.compositionHash,
+    });
   }
 
-  const sorted = [...counts.entries()].sort((left, right) => {
-    if (right[1] !== left[1]) {
-      return right[1] - left[1];
-    }
-    return left[0].localeCompare(right[0]);
-  });
-
-  return sorted.slice(0, topN).map(([path]) => path);
+  return clustersById;
 }
 
-function getKeyPath(filePath: string): string | null {
-  const normalized = filePath.replace(/\\/g, '/');
-  const segments = normalized.split('/').filter(Boolean);
-  if (segments.length <= 1) {
-    return normalized || null;
+function buildExistingFeatureSummaries(
+  existingFeatures: Map<string, FeatureFile>,
+  clustersById: Map<string, ClusterInfo>
+): ExistingFeatureSummary[] {
+  const summaries: ExistingFeatureSummary[] = [];
+
+  for (const feature of existingFeatures.values()) {
+    if (!feature?.id || !feature?.name) {
+      continue;
+    }
+
+    const clusters = normalizeStringList(feature.clusters);
+    const storedHash = feature.composition?.hash ?? '';
+    const currentHash = computeFeatureCompositionHash(clusters, clustersById, []);
+    const locks = pickLocks(feature.locks);
+
+    summaries.push({
+      id: feature.id,
+      name: feature.name,
+      scope: feature.scope,
+      status: feature.status,
+      clusters,
+      composition: {
+        hash: storedHash,
+        currentHash,
+        isStale: storedHash !== currentHash,
+      },
+      ...(locks ? { locks } : {}),
+    });
   }
 
-  const dirSegments = segments.slice(0, -1);
-  const prefixSegments = dirSegments.slice(0, 5);
-  return prefixSegments.join('/');
+  return summaries.sort((a, b) => a.id.localeCompare(b.id));
 }
 
-function loadDependencies(
-  graphPath: string,
-  clusterIds: Set<string>
-): { dependencies: Record<string, string[]>; hints: string[] } {
-  const hints: string[] = [];
+function buildStabilitySummary(existingFeatures: ExistingFeatureSummary[]): {
+  staleFeatureIds: string[];
+  staleCount: number;
+  totalFeatures: number;
+} {
+  const staleFeatureIds = existingFeatures
+    .filter((feature) => feature.composition.isStale)
+    .map((feature) => feature.id)
+    .sort((a, b) => a.localeCompare(b));
 
-  if (!existsSync(graphPath)) {
-    hints.push('dependencies unavailable: graph.yaml missing');
-    return { dependencies: {}, hints };
+  return {
+    staleFeatureIds,
+    staleCount: staleFeatureIds.length,
+    totalFeatures: existingFeatures.length,
+  };
+}
+
+function pickLocks(
+  locks: FeatureLocks | undefined
+): ExistingFeatureSummary['locks'] | undefined {
+  if (!locks) {
+    return undefined;
   }
 
-  try {
-    const content = readFileSync(graphPath, 'utf-8');
-    const graph = parse(content) as GraphData;
-    if (!graph?.edges) {
-      hints.push('dependencies unavailable: graph.yaml missing edges');
-      return { dependencies: {}, hints };
-    }
-
-    const dependencyMap: Record<string, string[]> = {};
-    for (const edge of graph.edges) {
-      if (!edge?.source || !edge?.target) {
-        continue;
-      }
-      if (!clusterIds.has(edge.source) || !clusterIds.has(edge.target)) {
-        continue;
-      }
-      if (!dependencyMap[edge.source]) {
-        dependencyMap[edge.source] = [];
-      }
-      dependencyMap[edge.source].push(edge.target);
-    }
-
-    for (const [source, targets] of Object.entries(dependencyMap)) {
-      dependencyMap[source] = [...new Set(targets)].sort((a, b) => a.localeCompare(b));
-    }
-
-    const sortedKeys = Object.keys(dependencyMap).sort((a, b) => a.localeCompare(b));
-    const sortedDependencies: Record<string, string[]> = {};
-    for (const key of sortedKeys) {
-      sortedDependencies[key] = dependencyMap[key];
-    }
-
-    return { dependencies: sortedDependencies, hints };
-  } catch {
-    hints.push('dependencies unavailable: graph.yaml parse error');
-    return { dependencies: {}, hints };
+  const selected: ExistingFeatureSummary['locks'] = {};
+  if (locks.name) {
+    selected.name = true;
   }
+  if (locks.description) {
+    selected.description = true;
+  }
+  if (locks.clusters) {
+    selected.clusters = true;
+  }
+
+  return Object.keys(selected).length > 0 ? selected : undefined;
 }

@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-05T15:04:59.679Z
+generatedAt: 2026-01-05T15:43:53.144Z
 nodes:
   - fileCount: 15
     id: cli-analyzer
@@ -33,7 +33,7 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 5
+  - fileCount: 6
     id: mcp-server-tools
     label: Mcp Server Tools
     type: cluster
@@ -61,22 +61,6 @@ nodes:
     id: web-lib
     label: Web Lib
     type: cluster
-  - id: cli-command-surface
-    label: CLI Command Surface
-    type: feature
-    fileCount: 6
-  - id: code-analysis-engine
-    label: Code Analysis Engine
-    type: feature
-    fileCount: 34
-  - id: mcp-feature-bridge
-    label: MCP Feature Bridge
-    type: feature
-    fileCount: 15
-  - id: web-featuremap-ui
-    label: Web FeatureMap UI
-    type: feature
-    fileCount: 13
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -112,48 +96,3 @@ edges:
     target: mcp-server-utils
   - source: mcp-server-utils
     target: mcp-server-types
-  - source: cli-command-surface
-    target: cli-commands
-    type: contains
-  - source: cli-command-surface
-    target: cli-core
-    type: contains
-  - source: cli-command-surface
-    target: cli-scripts
-    type: contains
-  - source: code-analysis-engine
-    target: cli-analyzer
-    type: contains
-  - source: code-analysis-engine
-    target: cli-constants
-    type: contains
-  - source: code-analysis-engine
-    target: cli-types
-    type: contains
-  - source: code-analysis-engine
-    target: cli-utils
-    type: contains
-  - source: mcp-feature-bridge
-    target: mcp-server-core
-    type: contains
-  - source: mcp-feature-bridge
-    target: mcp-server-tools
-    type: contains
-  - source: mcp-feature-bridge
-    target: mcp-server-types
-    type: contains
-  - source: mcp-feature-bridge
-    target: mcp-server-utils
-    type: contains
-  - source: web-featuremap-ui
-    target: web-components
-    type: contains
-  - source: web-featuremap-ui
-    target: web-components-ui
-    type: contains
-  - source: web-featuremap-ui
-    target: web-core
-    type: contains
-  - source: web-featuremap-ui
-    target: web-lib
-    type: contains

@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-05T14:58:03.193Z
+detectedAt: 2026-01-05T15:43:42.027Z
 frameworks:
   - name: "@modelcontextprotocol/sdk"
     version: ^1.0.0
@@ -13,9 +13,9 @@ buildTools:
   - vite
 languages:
   - name: TypeScript
-    percentage: 97.2
+    percentage: 97.3
   - name: JavaScript
-    percentage: 2.8
+    percentage: 2.7
 structure:
   type: monorepo
   packages:

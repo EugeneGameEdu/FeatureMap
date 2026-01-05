@@ -198,7 +198,7 @@ function deriveScopeFromClusters(
   return 'backend';
 }
 
-function computeFeatureCompositionHash(
+export function computeFeatureCompositionHash(
   clusterIds: string[],
   clusters: Map<string, ClusterInfo>,
   warnings: string[]

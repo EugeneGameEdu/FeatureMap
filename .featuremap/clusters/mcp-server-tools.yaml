@@ -8,13 +8,20 @@ layerDetection:
 files:
   - packages/mcp-server/src/tools/getCurrentFeatures.ts
   - packages/mcp-server/src/tools/getGroupingInput.ts
+  - packages/mcp-server/src/tools/getGroupingInputUtils.ts
   - packages/mcp-server/src/tools/getProjectContext.ts
   - packages/mcp-server/src/tools/saveFeaturesFromGrouping.ts
   - packages/mcp-server/src/tools/updateFeature.ts
 exports:
   - isDefault: false
+    name: applyLimits
+    type: function
+  - isDefault: false
     name: CurrentFeaturesResult
     type: interface
+  - isDefault: false
+    name: DEFAULT_LIMITS
+    type: variable
   - isDefault: false
     name: Feature
     type: interface
@@ -28,8 +35,23 @@ exports:
     name: getProjectContextTool
     type: variable
   - isDefault: false
+    name: Limits
+    type: type
+  - isDefault: false
+    name: loadClusters
+    type: function
+  - isDefault: false
+    name: loadDependencies
+    type: function
+  - isDefault: false
+    name: RawCluster
+    type: interface
+  - isDefault: false
     name: saveFeaturesFromGroupingTool
     type: variable
+  - isDefault: false
+    name: summarizeCluster
+    type: function
   - isDefault: false
     name: updateFeature
     type: function
@@ -54,7 +76,8 @@ imports:
     - ../utils/findFeaturemapDir.js
     - ../utils/graphBuilder.js
     - ../utils/listUtils.js
-compositionHash: a242b066421a6ca3
+    - ./getGroupingInputUtils.js
+compositionHash: 0d3e0138538c82d4
 metadata:
   createdAt: 2026-01-05T14:58:11.084Z
-  updatedAt: 2026-01-05T14:58:11.084Z
+  updatedAt: 2026-01-05T15:43:53.095Z

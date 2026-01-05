@@ -729,7 +729,7 @@ After analysis, call save_features_from_grouping() with results.
 
 ---
 
-### Шаг 2.4b: MCP Tool — save_features_from_grouping
+### [done] Шаг 2.4b: MCP Tool — save_features_from_grouping
 
 **Задача:** Сохранить результаты AI-группировки.
 
@@ -779,7 +779,7 @@ cat .featuremap/features/code-analysis.yaml
 
 ---
 
-### Шаг 2.5: Обновление веб-интерфейса (Level 1)
+### [done] Шаг 2.5: Обновление веб-интерфейса (Level 1)
 
 **Задача:** Веб показывает фичи (не кластеры).
 
@@ -804,7 +804,7 @@ featuremap web
 
 ---
 
-### Шаг 2.6: Стабильность фич (composition hash)
+### [done] Шаг 2.6: Стабильность фич (composition hash)
 
 **Задача:** Добавить механизм стабильности для повторных scan.
 
@@ -1493,9 +1493,9 @@ featuremap web
 - [done] 2.2 Conventions анализ
 - [done] 2.3 MCP get_project_context
 - [done] 2.4a MCP get_grouping_input
-- [ ] 2.4b MCP save_features_from_grouping
-- [ ] 2.5 Веб Level 1 (фичи)
-- [ ] 2.6 Стабильность (composition hash)
+- [done] 2.4b MCP save_features_from_grouping
+- [done] 2.5 Веб Level 1 (фичи)
+- [done] 2.6 Стабильность (composition hash)
 
 ### Фаза 3: Project Context
 - [ ] 3.1 Команда context init
