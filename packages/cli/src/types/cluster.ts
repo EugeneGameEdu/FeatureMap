@@ -11,6 +11,12 @@ export const ClusterSchema = z.object({
   id: z.string(),
   layer: LayerSchema,
   layerDetection: LayerDetectionSchema.optional(),
+  locks: z
+    .object({
+      layer: z.boolean().optional(),
+      files: z.boolean().optional(),
+    })
+    .optional(),
   files: z.array(z.string()).describe('Files contained in the cluster'),
   exports: z.array(ExportSchema),
   imports: ImportListSchema,

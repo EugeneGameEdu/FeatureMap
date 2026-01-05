@@ -4,7 +4,14 @@ import * as path from 'path';
 import { buildGraph, getGraphStats, type DependencyGraph } from '../analyzer/graph.js';
 import { groupByFolders, type Cluster as FolderCluster } from '../analyzer/grouper.js';
 import { scanProject } from '../analyzer/scanner.js';
-import { type Cluster as ClusterFile, ClusterSchema, Graph, GraphSchema, LayoutSchema } from '../types/index.js';
+import {
+  type Cluster as ClusterFile,
+  ClusterSchema,
+  Graph,
+  GraphSchema,
+  LayoutSchema,
+  type Layer,
+} from '../types/index.js';
 import { SUPPORTED_VERSIONS } from '../constants/versions.js';
 import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
 import {
@@ -47,8 +54,9 @@ export function createScanCommand(): Command {
         const grouping = groupByFolders(graph);
         console.log(`  OK Identified ${grouping.clusters.length} clusters`);
 
-        const clustersCreated = saveClusters(featuremapDir, grouping.clusters, graph);
-        console.log(`  OK Created ${clustersCreated} cluster files`);
+        const clusterSave = saveClusters(featuremapDir, grouping.clusters, graph);
+        console.log(`  OK Created ${clusterSave.created} cluster files`);
+        printLayerSummary(clusterSave.layerSummary);
 
         saveGraphYaml(featuremapDir, grouping.clusters);
         console.log('  OK Generated graph.yaml');
@@ -131,13 +139,24 @@ function ensureDirectory(dirPath: string): void {
   }
 }
 
+interface ClusterSaveResult {
+  created: number;
+  layerSummary: Record<Layer, string[]>;
+}
+
 function saveClusters(
   featuremapDir: string,
   clusters: FolderCluster[],
   graph: DependencyGraph
-): number {
+): ClusterSaveResult {
   const clustersDir = path.join(featuremapDir, 'clusters');
   let created = 0;
+  const layerSummary: Record<Layer, string[]> = {
+    frontend: [],
+    backend: [],
+    shared: [],
+    infrastructure: [],
+  };
 
   for (const cluster of clusters) {
     const clusterFile = path.join(clustersDir, `${cluster.id}.yaml`);
@@ -165,9 +184,12 @@ function saveClusters(
       version: existing?.version,
       purpose_hint: existing?.purpose_hint,
       entry_points: existing?.entry_points,
+      existingCluster: existing,
     });
     const contentChanged = !existing || !areClustersEquivalent(existing, nextCluster);
     const shouldWrite = contentChanged || versionInjected;
+
+    layerSummary[nextCluster.layer].push(nextCluster.id);
 
     if (!shouldWrite) {
       continue;
@@ -188,7 +210,11 @@ function saveClusters(
     }
   }
 
-  return created;
+  for (const layer of Object.keys(layerSummary) as Layer[]) {
+    layerSummary[layer].sort((a, b) => a.localeCompare(b));
+  }
+
+  return { created, layerSummary };
 }
 
 function buildGraphData(nodes: Graph['nodes'], edges: Graph['edges'], version: number): Graph {
@@ -249,4 +275,19 @@ function ensureLayout(featuremapDir: string, clusters: FolderCluster[]): void {
   const layout = buildDefaultLayout(nodeIds);
   saveYAML(layoutPath, layout, LayoutSchema);
   console.log('  OK Generated layout.yaml');
+}
+
+function printLayerSummary(layerSummary: Record<Layer, string[]>): void {
+  console.log('\nLayer distribution:');
+  const order: Layer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
+
+  for (const layer of order) {
+    const clusters = layerSummary[layer];
+    if (!clusters || clusters.length === 0) {
+      console.log(`  - ${layer}: 0 clusters`);
+      continue;
+    }
+    console.log(`  - ${layer}: ${clusters.length} clusters (${clusters.join(', ')})`);
+  }
+  console.log('');
 }

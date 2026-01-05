@@ -1,11 +1,11 @@
 import { createHash } from 'crypto';
 import type { DependencyGraph } from '../analyzer/graph.js';
 import type { Cluster as FolderCluster } from '../analyzer/grouper.js';
+import { detectLayer } from '../analyzer/layer-detector.js';
 import {
   type Cluster as ClusterFile,
   type ExportSymbol,
   type ImportList,
-  type Layer,
   type Metadata,
 } from '../types/index.js';
 import { SUPPORTED_VERSIONS } from '../constants/versions.js';
@@ -15,6 +15,7 @@ interface ClusterBuildOptions {
   version?: number;
   purpose_hint?: string;
   entry_points?: string[];
+  existingCluster?: ClusterFile | null;
 }
 
 export function buildClusterFile(
@@ -22,44 +23,29 @@ export function buildClusterFile(
   graph: DependencyGraph,
   options: ClusterBuildOptions
 ): ClusterFile {
-  const detection = detectClusterLayer(cluster);
+  const exportSymbols = collectClusterExports(cluster, graph);
+  const imports = collectClusterImports(cluster, graph);
+  const detection = detectLayer({
+    files: cluster.files,
+    imports,
+    exports: exportSymbols,
+  });
+  const layerLocked = options.existingCluster?.locks?.layer === true;
 
   return {
     version: options.version ?? SUPPORTED_VERSIONS.cluster,
     id: cluster.id,
-    layer: detection.layer,
-    layerDetection: detection.layerDetection,
+    layer: layerLocked ? options.existingCluster?.layer ?? detection.layer : detection.layer,
+    layerDetection: detection,
+    ...(options.existingCluster?.locks ? { locks: options.existingCluster.locks } : {}),
     files: cluster.files,
-    exports: collectClusterExports(cluster, graph),
-    imports: collectClusterImports(cluster, graph),
+    exports: exportSymbols,
+    imports,
     purpose_hint: options.purpose_hint,
     entry_points: options.entry_points,
     compositionHash: createCompositionHash(cluster.files),
     metadata: options.metadata,
   };
-}
-
-function detectClusterLayer(
-  cluster: FolderCluster
-): { layer: Layer; layerDetection?: { confidence: 'high' | 'medium' | 'low'; signals: string[] } } {
-  const signals: string[] = [];
-
-  if (cluster.id.startsWith('web-')) {
-    signals.push('cluster id starts with web-');
-    return { layer: 'frontend', layerDetection: { confidence: 'high', signals } };
-  }
-
-  if (cluster.id.startsWith('mcp-server')) {
-    signals.push('cluster id starts with mcp-server');
-    return { layer: 'backend', layerDetection: { confidence: 'high', signals } };
-  }
-
-  if (cluster.id.startsWith('cli-')) {
-    signals.push('cluster id starts with cli-');
-    return { layer: 'infrastructure', layerDetection: { confidence: 'medium', signals } };
-  }
-
-  return { layer: 'shared' };
 }
 
 function collectClusterExports(

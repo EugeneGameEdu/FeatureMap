@@ -8,6 +8,7 @@ layerDetection:
 files:
   - packages/cli/src/analyzer/graph.ts
   - packages/cli/src/analyzer/grouper.ts
+  - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
   - packages/cli/src/analyzer/scanner.ts
   - packages/cli/src/analyzer/test-graph.ts
@@ -22,8 +23,14 @@ exports:
     name: Cluster
     type: interface
   - isDefault: false
+    name: Confidence
+    type: type
+  - isDefault: false
     name: DependencyGraph
     type: interface
+  - isDefault: false
+    name: detectLayer
+    type: function
   - isDefault: false
     name: FileExport
     type: interface
@@ -47,6 +54,15 @@ exports:
     type: function
   - isDefault: false
     name: GroupingResult
+    type: interface
+  - isDefault: false
+    name: Layer
+    type: type
+  - isDefault: false
+    name: LayerDetectionInput
+    type: interface
+  - isDefault: false
+    name: LayerDetectionResult
     type: interface
   - isDefault: false
     name: loadConfig
@@ -79,7 +95,7 @@ imports:
     - ./grouper.js
     - ./parser.js
     - ./scanner.js
-compositionHash: f7e9d2cea4d41ba9c3af7ff102e6271b042d52be6b21f9967d662a3a47413b03
+compositionHash: 607cc4ebfdf3278f6a4b05a236ef216a871a3bc85d45c5ff5869c954846223b2
 metadata:
   createdAt: 2026-01-05T10:17:11.275Z
-  updatedAt: 2026-01-05T10:17:11.275Z
+  updatedAt: 2026-01-05T10:44:26.102Z

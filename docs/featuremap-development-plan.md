@@ -10,7 +10,19 @@
 
 ## 📝 История изменений плана
 
-### Версия 2.0 — Обновления после технического ревью
+### Версия 2.1 — Удаление raw-graph.yaml
+
+**Изменено:**
+- Удалены все упоминания `raw-graph.yaml`
+- Данные кластеров теперь хранятся напрямую в `clusters/*.yaml`
+- Обновлены диаграммы структуры файлов
+
+**Причина:**
+- Парсер достаточно быстрый, кэширование не нужно
+- Дублирование данных между raw-graph и clusters создавало путаницу
+- Упрощение архитектуры
+
+### Версия 2.0 - Обновления после технического ревью
 
 **Добавлено:**
 
@@ -53,15 +65,27 @@
 **Структура данных:**
 ```
 .featuremap/
-├── config.yaml           # Конфигурация проекта
-├── raw-graph.yaml        # Сырой граф от алгоритмов
-├── features/             # Кластеры (пока не фичи)
+├── config.yaml           # Project configuration
+├── clusters/             # Technical level (from scan)
+│   └── *.yaml           # One file per cluster
+├── features/             # Architectural level (from AI)
+│   └── *.yaml           # One file per feature
+├── groups/               # User-defined groups
 │   └── *.yaml
-└── graph.yaml            # Граф для React Flow
+├── context/              # Project context
+│   ├── tech-stack.yaml
+│   ├── conventions.yaml
+│   ├── decisions.yaml
+│   └── ...
+├── comments/             # Notes and comments
+│   └── *.yaml
+├── graph.yaml            # Nodes and edges (derived)
+└── layout.yaml           # Node positions (authored)
 ```
 
 **Ограничения:**
 - Кластеры = папки (технический уровень)
+- Данные кластеров хранятся напрямую в `clusters/*.yaml`
 - AI только описывает, не группирует
 - Нет контекста проекта для AI
 - Одноуровневая визуализация
@@ -108,7 +132,7 @@
 **Что делаем:**
 - Создать `packages/cli/src/types/` (или `packages/core` если нужен отдельный пакет)
 - TypeScript interfaces для всех структур:
-  - Config, RawGraph, Cluster, Feature, Group, Comment, Context sections, Graph, Layout
+  - Config, Cluster, Feature, Group, Comment, Context sections, Graph, Layout
 - Zod schemas для runtime валидации
 - Единый YAML loader/saver с валидацией
 
@@ -216,14 +240,19 @@ export const FeatureSchema = z.object({
 - Определить derived vs authored файлы:
   
   **Derived** (пересоздаются):
-  - `raw-graph.yaml`
   - `graph.yaml`
+  - `context/tech-stack.yaml`
+  - `context/conventions.yaml`
   
   **Authored** (редактируются):
+  - `config.yaml`
   - `clusters/*.yaml`
   - `features/*.yaml`
-  - `context/*.yaml`
   - `groups/*.yaml`
+  - `context/decisions.yaml`
+  - `context/constraints.yaml`
+  - `context/overview.yaml`
+  - `context/design-system.yaml`
   - `comments/*.yaml`
   - `layout.yaml`
 
@@ -330,7 +359,7 @@ featuremap validate
 
 **Цель:** Заложить фундамент для новых фич, рефакторинг структуры данных.
 
-### Шаг 1.1: Рефакторинг структуры данных
+### [done] Шаг 1.1: Рефакторинг структуры данных
 
 **Задача:** Разделить кластеры и фичи на уровне данных.
 
@@ -371,12 +400,12 @@ featuremap scan
 
 ---
 
-### Шаг 1.2: Расширение raw-graph метаданными
+### Шаг 1.2: Расширение метаданных кластеров
 
-**Задача:** Добавить в raw-graph.yaml больше метаданных для AI.
+**Задача:** Добавить в `clusters/*.yaml` больше метаданных для AI.
 
 **Что делаем:**
-- Для каждого кластера добавить:
+- Для каждого кластера в `clusters/*.yaml` добавить:
   - `entry_points` (файлы с main/index или экспортами команд)
   - `imports_external` (какие внешние библиотеки используются)
   - `purpose_hint` (эвристическое определение: "user commands", "code parsing", "UI rendering")
@@ -439,7 +468,7 @@ layerRules:
 **Тестирование:**
 ```bash
 featuremap scan
-cat .featuremap/raw-graph.yaml
+cat .featuremap/clusters/*.yaml
 # Проверить что кластеры имеют:
 # - entry_points
 # - imports_external
@@ -448,7 +477,7 @@ cat .featuremap/raw-graph.yaml
 ```
 
 **Критерий готовности:**
-- raw-graph содержит достаточно информации для AI-анализа
+- `clusters/*.yaml` содержит достаточно информации для AI-анализа
 - Эвристики purpose_hint работают разумно
 - Layer detection имеет confidence scores
 - Override rules работают
@@ -1561,25 +1590,22 @@ featuremap web            # Полноценный веб-интерфейс
 **Структура данных:**
 ```
 .featuremap/
-├── config.yaml           # version: 1
-├── raw-graph.yaml        # Сырые данные от алгоритмов (derived)
-├── clusters/             # Технический уровень
-│   └── *.yaml           # compositionHash, layer, layerDetection
-├── features/             # Архитектурный уровень (AI) (authored)
-│   └── *.yaml           # composition.hash, locks, metadata
-├── groups/               # Пользовательские группы (authored)
+├── config.yaml           # Project configuration
+├── clusters/             # Technical level (from scan)
+│   └── *.yaml           # One file per cluster
+├── features/             # Architectural level (from AI)
+│   └── *.yaml           # One file per feature
+├── groups/               # User-defined groups
 │   └── *.yaml
-├── context/              # Контекст проекта
-│   ├── tech-stack.yaml   (auto, derived)
-│   ├── conventions.yaml  (auto, derived)
-│   ├── decisions.yaml    (manual, authored)
-│   ├── constraints.yaml  (manual, authored)
-│   ├── overview.yaml     (ai, authored)
-│   └── design-system.yaml (manual, authored)
-├── comments/             # Комментарии и заметки (authored)
+├── context/              # Project context
+│   ├── tech-stack.yaml
+│   ├── conventions.yaml
+│   ├── decisions.yaml
+│   └── ...
+├── comments/             # Notes and comments
 │   └── *.yaml
-├── graph.yaml            # Граф для визуализации (derived, без позиций)
-└── layout.yaml           # Позиции нод (authored)
+├── graph.yaml            # Nodes and edges (derived)
+└── layout.yaml           # Node positions (authored)
 ```
 
 ---

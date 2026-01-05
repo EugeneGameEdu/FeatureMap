@@ -75,6 +75,7 @@ imports:
   internal:
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
+    - ../analyzer/layer-detector.js
     - ../constants/versions.js
     - ../types/index.js
     - ../types/layout.js
@@ -83,4 +84,4 @@ imports:
 compositionHash: 7df9af14d61bc8bdd675dcdf4236ec3b49416d0950d3630679a2f8bf5f05ffe2
 metadata:
   createdAt: 2026-01-05T10:17:11.298Z
-  updatedAt: 2026-01-05T10:17:11.298Z
+  updatedAt: 2026-01-05T10:44:26.151Z
