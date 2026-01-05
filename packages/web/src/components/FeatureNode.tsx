@@ -4,14 +4,15 @@ import { Box, Folder, Layers } from 'lucide-react';
 
 export interface FeatureNodeData {
   label: string;
+  kind: 'cluster' | 'feature';
   fileCount: number;
-  source: 'auto' | 'ai' | 'manual';
+  source: 'auto' | 'ai' | 'user';
   status: 'active' | 'deprecated' | 'ignored';
   dependencyCount: number;
 }
 
 function FeatureNodeComponent({ data, selected }: NodeProps) {
-  const { label, fileCount, source, status, dependencyCount } =
+  const { label, kind, fileCount, source, status, dependencyCount } =
     data as unknown as FeatureNodeData;
 
   const Icon = fileCount > 5 ? Layers : fileCount > 1 ? Folder : Box;
@@ -20,7 +21,7 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
     ? 'border-blue-500'
     : source === 'ai'
     ? 'border-green-400'
-    : source === 'manual'
+    : source === 'user'
     ? 'border-purple-400'
     : 'border-gray-300';
 
@@ -49,7 +50,7 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
             className={
               source === 'ai'
                 ? 'text-green-500'
-                : source === 'manual'
+                : source === 'user'
                 ? 'text-purple-500'
                 : 'text-gray-400'
             }
@@ -63,8 +64,12 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
               {fileCount} {fileCount === 1 ? 'file' : 'files'}
             </span>
             {dependencyCount > 0 && (
-              <span className="text-xs text-gray-400">→ {dependencyCount}</span>
+              <span className="text-xs text-gray-400">
+                {'-> '}
+                {dependencyCount}
+              </span>
             )}
+            <span className="text-[10px] uppercase text-gray-400">{kind}</span>
           </div>
         </div>
 
@@ -73,10 +78,10 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
             className={`
               text-[10px] px-1.5 py-0.5 rounded font-medium
               ${source === 'ai' ? 'bg-green-100 text-green-700' : ''}
-              ${source === 'manual' ? 'bg-purple-100 text-purple-700' : ''}
+              ${source === 'user' ? 'bg-purple-100 text-purple-700' : ''}
             `}
           >
-            {source === 'ai' ? 'AI' : 'Manual'}
+            {source === 'ai' ? 'AI' : 'User'}
           </div>
         )}
       </div>

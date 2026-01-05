@@ -10,7 +10,7 @@ function App() {
   const [data, setData] = useState<FeatureMapData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedFeatureId, setSelectedFeatureId] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -29,18 +29,18 @@ function App() {
     loadData();
   }, []);
 
-  const handleNodeClick = (featureId: string) => {
-    setSelectedFeatureId(featureId);
+  const handleNodeClick = (nodeId: string) => {
+    setSelectedNodeId(nodeId);
   };
 
-  const handleDependencyClick = (featureId: string) => {
-    if (data?.features[featureId]) {
-      setSelectedFeatureId(featureId);
+  const handleDependencyClick = (nodeId: string) => {
+    if (data?.entities[nodeId]) {
+      setSelectedNodeId(nodeId);
     }
   };
 
   const handleCloseSidebar = () => {
-    setSelectedFeatureId(null);
+    setSelectedNodeId(null);
   };
 
   if (loading) {
@@ -68,7 +68,9 @@ function App() {
 
   if (!data) return null;
 
-  const selectedFeature = selectedFeatureId ? data.features[selectedFeatureId] : null;
+  const selectedNode = selectedNodeId ? data.entities[selectedNodeId] : null;
+  const clusterCount = data.graph.nodes.filter((node) => node.type === 'cluster').length;
+  const featureCount = data.graph.nodes.filter((node) => node.type === 'feature').length;
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -76,7 +78,7 @@ function App() {
         <div>
           <h1 className="text-xl font-bold text-gray-800">FeatureMap</h1>
           <p className="text-sm text-gray-500">
-            {data.graph.nodes.length} features • Updated {formatDate(data.graph.generatedAt)}
+            {clusterCount} clusters, {featureCount} features - Updated {formatDate(data.graph.generatedAt)}
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={loadData}>
@@ -89,14 +91,14 @@ function App() {
         <main className="flex-1 relative">
           <FeatureMap
             graph={data.graph}
-            features={data.features}
+            entities={data.entities}
             onNodeClick={handleNodeClick}
-            selectedNodeId={selectedFeatureId}
+            selectedNodeId={selectedNodeId}
           />
         </main>
 
         <Sidebar
-          feature={selectedFeature}
+          node={selectedNode}
           onClose={handleCloseSidebar}
           onDependencyClick={handleDependencyClick}
         />

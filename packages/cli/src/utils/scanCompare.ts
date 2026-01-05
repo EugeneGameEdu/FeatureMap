@@ -1,8 +1,6 @@
-import { Feature, Graph } from '../types/index.js';
+import { Cluster, Feature, Graph, Metadata } from '../types/index.js';
 
-export function buildUpdatedMetadata(
-  current: Feature['metadata'] | undefined
-): NonNullable<Feature['metadata']> {
+export function buildUpdatedMetadata(current: Metadata | undefined): Metadata {
   const now = new Date().toISOString();
   if (!current) {
     return {
@@ -15,6 +13,13 @@ export function buildUpdatedMetadata(
     ...current,
     updatedAt: now,
   };
+}
+
+export function areClustersEquivalent(left: Cluster, right: Cluster): boolean {
+  return deepEqual(
+    normalizeClusterForComparison(left),
+    normalizeClusterForComparison(right)
+  );
 }
 
 export function areFeaturesEquivalent(left: Feature, right: Feature): boolean {
@@ -31,20 +36,36 @@ export function areGraphsEquivalent(left: Graph, right: Graph): boolean {
   );
 }
 
-function normalizeFeatureForComparison(feature: Feature): Feature {
+function normalizeFeatureForComparison(feature: Feature): Omit<Feature, 'metadata'> {
   const { metadata, ...rest } = feature;
-  const normalized: Feature = { ...rest };
+  const normalized: Omit<Feature, 'metadata'> = { ...rest };
 
-  if (normalized.files) {
-    normalized.files = [...normalized.files].sort((a, b) => a.path.localeCompare(b.path));
-  }
-
-  if (normalized.clusters) {
-    normalized.clusters = [...normalized.clusters].sort((a, b) => a.localeCompare(b));
-  }
+  normalized.clusters = [...normalized.clusters].sort((a, b) => a.localeCompare(b));
 
   if (normalized.dependsOn) {
     normalized.dependsOn = [...normalized.dependsOn].sort((a, b) => a.localeCompare(b));
+  }
+
+  return normalized;
+}
+
+function normalizeClusterForComparison(cluster: Cluster): Omit<Cluster, 'metadata'> {
+  const { metadata, ...rest } = cluster;
+  const normalized: Omit<Cluster, 'metadata'> = { ...rest };
+
+  normalized.files = [...normalized.files].sort((a, b) => a.localeCompare(b));
+  normalized.exports = [...normalized.exports].sort((a, b) => {
+    const leftKey = `${a.name}-${a.type}-${a.isDefault ?? false}`;
+    const rightKey = `${b.name}-${b.type}-${b.isDefault ?? false}`;
+    return leftKey.localeCompare(rightKey);
+  });
+  normalized.imports = {
+    internal: [...normalized.imports.internal].sort((a, b) => a.localeCompare(b)),
+    external: [...normalized.imports.external].sort((a, b) => a.localeCompare(b)),
+  };
+
+  if (normalized.entry_points) {
+    normalized.entry_points = [...normalized.entry_points].sort((a, b) => a.localeCompare(b));
   }
 
   return normalized;

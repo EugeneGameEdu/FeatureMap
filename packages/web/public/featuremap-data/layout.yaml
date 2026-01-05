@@ -1,0 +1,43 @@
+version: 1
+positions:
+  cli-analyzer:
+    x: 0
+    y: 0
+  cli-commands:
+    x: 260
+    y: 0
+  cli-constants:
+    x: 520
+    y: 0
+  cli-core:
+    x: 780
+    y: 0
+  cli-scripts:
+    x: 0
+    y: 180
+  cli-types:
+    x: 260
+    y: 180
+  cli-utils:
+    x: 520
+    y: 180
+  mcp-server-core:
+    x: 780
+    y: 180
+  mcp-server-tools:
+    x: 0
+    y: 360
+  web-components:
+    x: 260
+    y: 360
+  web-components-ui:
+    x: 520
+    y: 360
+  web-core:
+    x: 780
+    y: 360
+  web-lib:
+    x: 0
+    y: 540
+metadata:
+  updatedAt: 2026-01-05T10:17:11.319Z

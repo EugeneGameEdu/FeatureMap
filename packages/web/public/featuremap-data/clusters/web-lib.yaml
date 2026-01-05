@@ -1,0 +1,62 @@
+version: 1
+id: web-lib
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - cluster id starts with web-
+files:
+  - packages/web/src/lib/loadFeatureMap.ts
+  - packages/web/src/lib/types.ts
+  - packages/web/src/lib/utils.ts
+exports:
+  - isDefault: false
+    name: Cluster
+    type: interface
+  - isDefault: false
+    name: ClusterExport
+    type: interface
+  - isDefault: false
+    name: ClusterImports
+    type: interface
+  - isDefault: false
+    name: cn
+    type: function
+  - isDefault: false
+    name: Feature
+    type: interface
+  - isDefault: false
+    name: FeatureMapData
+    type: interface
+  - isDefault: false
+    name: formatDate
+    type: function
+  - isDefault: false
+    name: GraphData
+    type: interface
+  - isDefault: false
+    name: GraphEdge
+    type: interface
+  - isDefault: false
+    name: GraphNode
+    type: interface
+  - isDefault: false
+    name: loadFeatureMap
+    type: function
+  - isDefault: false
+    name: MapEntity
+    type: type
+  - isDefault: false
+    name: NodeType
+    type: type
+imports:
+  external:
+    - clsx
+    - js-yaml
+    - tailwind-merge
+  internal:
+    - ./types
+compositionHash: 03b73fcabb74617e3c11d633352b7d5b7eee9b4caf704643c4ac20e841d1bea6
+metadata:
+  createdAt: 2026-01-05T10:17:11.312Z
+  updatedAt: 2026-01-05T10:17:11.312Z

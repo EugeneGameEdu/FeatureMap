@@ -1,0 +1,107 @@
+version: 1
+id: cli-types
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - cluster id starts with cli-
+files:
+  - packages/cli/src/types/cluster.ts
+  - packages/cli/src/types/common.ts
+  - packages/cli/src/types/config.ts
+  - packages/cli/src/types/feature.ts
+  - packages/cli/src/types/graph.ts
+  - packages/cli/src/types/index.ts
+  - packages/cli/src/types/layout.ts
+  - packages/cli/src/types/raw-graph.ts
+exports:
+  - isDefault: false
+    name: Cluster
+    type: type
+  - isDefault: false
+    name: ClusterSchema
+    type: variable
+  - isDefault: false
+    name: Config
+    type: type
+  - isDefault: false
+    name: ConfigSchema
+    type: variable
+  - isDefault: false
+    name: ExportSchema
+    type: variable
+  - isDefault: false
+    name: ExportSymbol
+    type: type
+  - isDefault: false
+    name: Feature
+    type: type
+  - isDefault: false
+    name: FeatureHintSchema
+    type: variable
+  - isDefault: false
+    name: FeatureSchema
+    type: variable
+  - isDefault: false
+    name: FileReference
+    type: type
+  - isDefault: false
+    name: FileReferenceSchema
+    type: variable
+  - isDefault: false
+    name: Graph
+    type: type
+  - isDefault: false
+    name: GraphSchema
+    type: variable
+  - isDefault: false
+    name: ImportList
+    type: type
+  - isDefault: false
+    name: ImportListSchema
+    type: variable
+  - isDefault: false
+    name: Layer
+    type: type
+  - isDefault: false
+    name: LayerSchema
+    type: variable
+  - isDefault: false
+    name: Layout
+    type: type
+  - isDefault: false
+    name: LayoutSchema
+    type: variable
+  - isDefault: false
+    name: Metadata
+    type: type
+  - isDefault: false
+    name: MetadataSchema
+    type: variable
+  - isDefault: false
+    name: Position
+    type: type
+  - isDefault: false
+    name: PositionSchema
+    type: variable
+  - isDefault: false
+    name: RawGraph
+    type: type
+  - isDefault: false
+    name: RawGraphSchema
+    type: variable
+  - isDefault: false
+    name: Source
+    type: type
+  - isDefault: false
+    name: SourceSchema
+    type: variable
+imports:
+  external:
+    - zod
+  internal:
+    - ./common.js
+compositionHash: 0decd2615a6a907ec3f3afce028876ed83ed635212a3b1915d39c92248ced2a0
+metadata:
+  createdAt: 2026-01-05T10:17:11.294Z
+  updatedAt: 2026-01-05T10:17:11.294Z

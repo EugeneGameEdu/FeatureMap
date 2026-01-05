@@ -1,0 +1,22 @@
+version: 1
+id: mcp-server-core
+layer: backend
+layerDetection:
+  confidence: high
+  signals:
+    - cluster id starts with mcp-server
+files:
+  - packages/mcp-server/src/index.ts
+exports: []
+imports:
+  external:
+    - "@modelcontextprotocol/sdk/server/mcp.js"
+    - "@modelcontextprotocol/sdk/server/stdio.js"
+    - zod
+  internal:
+    - ./tools/getCurrentFeatures.js
+    - ./tools/updateFeature.js
+compositionHash: 0d61616d41c6fc88c7fba1074e28835c7a5a759f4d2189f92fe8eb4bc507abf7
+metadata:
+  createdAt: 2026-01-05T10:17:11.301Z
+  updatedAt: 2026-01-05T10:17:11.301Z

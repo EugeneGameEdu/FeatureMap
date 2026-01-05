@@ -1,0 +1,37 @@
+version: 1
+id: web-components-ui
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - cluster id starts with web-
+files:
+  - packages/web/src/components/ui/badge.tsx
+  - packages/web/src/components/ui/button.tsx
+  - packages/web/src/components/ui/card.tsx
+  - packages/web/src/components/ui/scroll-area.tsx
+  - packages/web/src/components/ui/sheet.tsx
+exports:
+  - isDefault: false
+    name: Badge
+    type: function
+  - isDefault: false
+    name: BadgeProps
+    type: interface
+  - isDefault: false
+    name: ButtonProps
+    type: interface
+imports:
+  external:
+    - "@/lib/utils"
+    - "@radix-ui/react-dialog"
+    - "@radix-ui/react-scroll-area"
+    - "@radix-ui/react-slot"
+    - class-variance-authority
+    - lucide-react
+    - react
+  internal: []
+compositionHash: b452d1bbcf99277e3e25ff0627e57d4eef87c139f93d8c1a083d64a0a6cd7162
+metadata:
+  createdAt: 2026-01-05T10:17:11.308Z
+  updatedAt: 2026-01-05T10:17:11.308Z

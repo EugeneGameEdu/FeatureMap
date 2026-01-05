@@ -11,6 +11,7 @@ export const KEY_ORDER: Record<string, string[]> = {
     'purpose_hint',
     'entry_points',
     'compositionHash',
+    'metadata',
   ],
   feature: [
     'version',
@@ -21,8 +22,6 @@ export const KEY_ORDER: Record<string, string[]> = {
     'source',
     'status',
     'scope',
-    'files',
-    'exports',
     'clusters',
     'dependsOn',
     'composition',
@@ -31,6 +30,7 @@ export const KEY_ORDER: Record<string, string[]> = {
     'reasoning',
   ],
   graph: ['version', 'generatedAt', 'nodes', 'edges'],
+  layout: ['version', 'positions', 'viewport', 'metadata'],
 };
 
 export function getKeyComparator(type: string): (a: string, b: string) => number {

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ConfigSchema } from '../types/config.js';
+import { Config, ConfigSchema, Layout, LayoutSchema } from '../types/index.js';
 import { SUPPORTED_VERSIONS } from '../constants/versions.js';
 import { saveYAML } from '../utils/yaml-loader.js';
 
@@ -40,7 +40,9 @@ export function createInitCommand(): Command {
     .action(async (options) => {
       const featuremapDir = path.join(process.cwd(), '.featuremap');
       const configPath = path.join(featuremapDir, 'config.yaml');
+      const clustersDir = path.join(featuremapDir, 'clusters');
       const featuresDir = path.join(featuremapDir, 'features');
+      const layoutPath = path.join(featuremapDir, 'layout.yaml');
 
       if (fs.existsSync(featuremapDir) && !options.force) {
         console.log('⚠️  .featuremap/ already exists. Use --force to overwrite.');
@@ -52,6 +54,11 @@ export function createInitCommand(): Command {
         console.log('✓ Created .featuremap/');
       }
 
+      if (!fs.existsSync(clustersDir)) {
+        fs.mkdirSync(clustersDir, { recursive: true });
+        console.log('✓ Created .featuremap/clusters/');
+      }
+
       if (!fs.existsSync(featuresDir)) {
         fs.mkdirSync(featuresDir, { recursive: true });
         console.log('✓ Created .featuremap/features/');
@@ -59,6 +66,18 @@ export function createInitCommand(): Command {
 
       saveYAML(configPath, DEFAULT_CONFIG, ConfigSchema);
       console.log('✓ Created .featuremap/config.yaml');
+
+      if (!fs.existsSync(layoutPath)) {
+        const layout: Layout = {
+          version: SUPPORTED_VERSIONS.layout,
+          positions: {},
+          metadata: {
+            updatedAt: new Date().toISOString(),
+          },
+        };
+        saveYAML(layoutPath, layout, LayoutSchema);
+        console.log('✓ Created .featuremap/layout.yaml');
+      }
 
       const gitignorePath = path.join(process.cwd(), '.gitignore');
       const gitignoreEntry = '\n# FeatureMap cache\n.featuremap/raw-graph.yaml\n';

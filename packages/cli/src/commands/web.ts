@@ -100,6 +100,12 @@ async function copyFeatureMapData(sourceDir: string, targetDir: string): Promise
     fs.copyFileSync(graphSource, graphTarget);
   }
 
+  const layoutSource = path.join(sourceDir, 'layout.yaml');
+  const layoutTarget = path.join(targetDir, 'layout.yaml');
+  if (fs.existsSync(layoutSource)) {
+    fs.copyFileSync(layoutSource, layoutTarget);
+  }
+
   const featuresSource = path.join(sourceDir, 'features');
   const featuresTarget = path.join(targetDir, 'features');
 
@@ -113,6 +119,23 @@ async function copyFeatureMapData(sourceDir: string, targetDir: string): Promise
     for (const file of files) {
       if (file.endsWith('.yaml')) {
         fs.copyFileSync(path.join(featuresSource, file), path.join(featuresTarget, file));
+      }
+    }
+  }
+
+  const clustersSource = path.join(sourceDir, 'clusters');
+  const clustersTarget = path.join(targetDir, 'clusters');
+
+  if (fs.existsSync(clustersSource)) {
+    if (fs.existsSync(clustersTarget)) {
+      fs.rmSync(clustersTarget, { recursive: true });
+    }
+    fs.mkdirSync(clustersTarget, { recursive: true });
+
+    const files = fs.readdirSync(clustersSource);
+    for (const file of files) {
+      if (file.endsWith('.yaml')) {
+        fs.copyFileSync(path.join(clustersSource, file), path.join(clustersTarget, file));
       }
     }
   }

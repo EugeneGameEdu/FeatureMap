@@ -1,0 +1,22 @@
+version: 1
+id: cli-core
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - cluster id starts with cli-
+files:
+  - packages/cli/src/index.ts
+exports: []
+imports:
+  external:
+    - commander
+  internal:
+    - ./commands/init.js
+    - ./commands/scan.js
+    - ./commands/validate.js
+    - ./commands/web.js
+compositionHash: 2fb448d11702324cc59d657d5945d59cd325540eb87b71f2e66a5bc01ada834c
+metadata:
+  createdAt: 2026-01-05T10:17:11.290Z
+  updatedAt: 2026-01-05T10:17:11.290Z

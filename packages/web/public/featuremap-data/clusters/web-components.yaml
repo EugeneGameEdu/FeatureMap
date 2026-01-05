@@ -1,0 +1,42 @@
+version: 1
+id: web-components
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - cluster id starts with web-
+files:
+  - packages/web/src/components/FeatureMap.tsx
+  - packages/web/src/components/FeatureNode.tsx
+  - packages/web/src/components/Sidebar.tsx
+exports:
+  - isDefault: false
+    name: FeatureMap
+    type: function
+  - isDefault: false
+    name: FeatureNode
+    type: variable
+  - isDefault: false
+    name: FeatureNodeData
+    type: interface
+  - isDefault: false
+    name: Sidebar
+    type: function
+imports:
+  external:
+    - "@/components/ui/badge"
+    - "@/components/ui/button"
+    - "@/components/ui/scroll-area"
+    - "@/lib/loadFeatureMap"
+    - "@/lib/types"
+    - "@dagrejs/dagre"
+    - "@xyflow/react"
+    - "@xyflow/react/dist/style.css"
+    - lucide-react
+    - react
+  internal:
+    - ./FeatureNode
+compositionHash: 13da9c9a38a2139d47cb473fc8dc3b90ee082c81f7f5288ff0b84c83f83bda30
+metadata:
+  createdAt: 2026-01-05T10:17:11.306Z
+  updatedAt: 2026-01-05T10:17:11.306Z

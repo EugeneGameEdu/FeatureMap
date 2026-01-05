@@ -8,6 +8,7 @@ import {
   FeatureSchema,
   GraphSchema,
   RawGraphSchema,
+  LayoutSchema,
 } from '../types/index.js';
 import type { FileType } from '../constants/versions.js';
 import { loadYAML } from '../utils/yaml-loader.js';
@@ -44,6 +45,10 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath === 'graph.yaml') {
     return { schema: GraphSchema, fileType: 'graph' };
+  }
+
+  if (relativePath === 'layout.yaml') {
+    return { schema: LayoutSchema, fileType: 'layout' };
   }
 
   if (relativePath.startsWith('features/')) {

@@ -1,0 +1,85 @@
+version: 1
+id: cli-analyzer
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - cluster id starts with cli-
+files:
+  - packages/cli/src/analyzer/graph.ts
+  - packages/cli/src/analyzer/grouper.ts
+  - packages/cli/src/analyzer/parser.ts
+  - packages/cli/src/analyzer/scanner.ts
+  - packages/cli/src/analyzer/test-graph.ts
+  - packages/cli/src/analyzer/test-grouper.ts
+  - packages/cli/src/analyzer/test-parser.ts
+  - packages/cli/src/analyzer/test-scanner.ts
+exports:
+  - isDefault: false
+    name: buildGraph
+    type: function
+  - isDefault: false
+    name: Cluster
+    type: interface
+  - isDefault: false
+    name: DependencyGraph
+    type: interface
+  - isDefault: false
+    name: FileExport
+    type: interface
+  - isDefault: false
+    name: FileImports
+    type: interface
+  - isDefault: false
+    name: FileNode
+    type: interface
+  - isDefault: false
+    name: getClusterStats
+    type: function
+  - isDefault: false
+    name: getGraphStats
+    type: function
+  - isDefault: false
+    name: getRelativePath
+    type: function
+  - isDefault: false
+    name: groupByFolders
+    type: function
+  - isDefault: false
+    name: GroupingResult
+    type: interface
+  - isDefault: false
+    name: loadConfig
+    type: function
+  - isDefault: false
+    name: ParsedFile
+    type: interface
+  - isDefault: false
+    name: parseFile
+    type: function
+  - isDefault: false
+    name: resetParser
+    type: function
+  - isDefault: false
+    name: scanProject
+    type: function
+  - isDefault: false
+    name: ScanResult
+    type: interface
+imports:
+  external:
+    - fast-glob
+    - fs
+    - path
+    - ts-morph
+  internal:
+    - ../types/config.js
+    - ../utils/yaml-loader.js
+    - ./graph.js
+    - ./grouper.js
+    - ./parser.js
+    - ./scanner.js
+compositionHash: f7e9d2cea4d41ba9c3af7ff102e6271b042d52be6b21f9967d662a3a47413b03
+metadata:
+  createdAt: 2026-01-05T10:17:11.275Z
+  updatedAt: 2026-01-05T10:17:11.275Z

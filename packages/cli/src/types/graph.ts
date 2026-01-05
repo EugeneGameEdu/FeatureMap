@@ -1,12 +1,11 @@
 import { z } from 'zod';
-import { PositionSchema } from './common.js';
 
 const GraphNodeSchema = z.object({
   id: z.string(),
   label: z.string(),
-  type: z.string().describe('Node type for React Flow'),
-  fileCount: z.number(),
-  position: PositionSchema.optional(),
+  type: z.enum(['cluster', 'feature']).describe('Node type for React Flow'),
+  fileCount: z.number().optional(),
+  clusterCount: z.number().optional(),
 }).describe('React Flow node');
 
 const GraphEdgeSchema = z.object({

@@ -1,54 +1,58 @@
 version: 1
-generatedAt: 2026-01-04T22:04:36.128Z
+generatedAt: 2026-01-05T10:17:11.317Z
 nodes:
   - fileCount: 8
     id: cli-analyzer
     label: Cli Analyzer
-    type: feature
-  - fileCount: 3
+    type: cluster
+  - fileCount: 4
     id: cli-commands
     label: Cli Commands
-    type: feature
+    type: cluster
+  - fileCount: 1
+    id: cli-constants
+    label: Cli Constants
+    type: cluster
   - fileCount: 1
     id: cli-core
     label: Cli Core
-    type: feature
+    type: cluster
   - fileCount: 1
     id: cli-scripts
     label: Cli Scripts
-    type: feature
-  - fileCount: 7
+    type: cluster
+  - fileCount: 8
     id: cli-types
     label: Cli Types
-    type: feature
-  - fileCount: 4
+    type: cluster
+  - fileCount: 7
     id: cli-utils
     label: Cli Utils
-    type: feature
+    type: cluster
   - fileCount: 1
     id: mcp-server-core
     label: Mcp Server Core
-    type: feature
+    type: cluster
   - fileCount: 2
     id: mcp-server-tools
     label: Mcp Server Tools
-    type: feature
+    type: cluster
   - fileCount: 3
     id: web-components
     label: Web Components
-    type: feature
+    type: cluster
   - fileCount: 5
     id: web-components-ui
     label: Web Components Ui
-    type: feature
+    type: cluster
   - fileCount: 2
     id: web-core
     label: Web Core
-    type: feature
+    type: cluster
   - fileCount: 3
     id: web-lib
     label: Web Lib
-    type: feature
+    type: cluster
 edges:
   - source: cli-analyzer
     target: cli-types
@@ -56,6 +60,8 @@ edges:
     target: cli-utils
   - source: cli-commands
     target: cli-analyzer
+  - source: cli-commands
+    target: cli-constants
   - source: cli-commands
     target: cli-types
   - source: cli-commands
@@ -66,6 +72,10 @@ edges:
     target: cli-types
   - source: cli-scripts
     target: cli-utils
+  - source: cli-utils
+    target: cli-analyzer
+  - source: cli-utils
+    target: cli-constants
   - source: cli-utils
     target: cli-types
   - source: mcp-server-core

@@ -1,0 +1,21 @@
+version: 1
+id: cli-scripts
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - cluster id starts with cli-
+files:
+  - packages/cli/src/scripts/demo-ai-analysis.ts
+exports: []
+imports:
+  external:
+    - fs
+    - path
+  internal:
+    - ../types/index.js
+    - ../utils/yaml-loader.js
+compositionHash: a8d778d1438470996bd56f39b3bde3aac6ab0230d912a95837464db226e58745
+metadata:
+  createdAt: 2026-01-05T10:17:11.292Z
+  updatedAt: 2026-01-05T10:17:11.292Z

@@ -14,17 +14,18 @@ import {
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
 import { FeatureNode } from './FeatureNode';
-import type { Feature, GraphData } from '@/lib/types';
+import type { GraphData, MapEntity, NodeType } from '@/lib/types';
 
 interface FeatureMapProps {
   graph: GraphData;
-  features: Record<string, Feature>;
+  entities: Record<string, MapEntity>;
   onNodeClick?: (featureId: string) => void;
   selectedNodeId?: string | null;
 }
 
 const nodeTypes: NodeTypes = {
   feature: FeatureNode,
+  cluster: FeatureNode,
 };
 
 const NODE_WIDTH = 180;
@@ -63,25 +64,37 @@ function getLayoutedElements(
   return { nodes: layoutedNodes, edges };
 }
 
-export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: FeatureMapProps) {
+export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: FeatureMapProps) {
+  const dependencyCountById = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const edge of graph.edges) {
+      counts[edge.source] = (counts[edge.source] ?? 0) + 1;
+    }
+    return counts;
+  }, [graph.edges]);
+
   const initialNodes: Node[] = useMemo(() => {
     return graph.nodes.map((node) => {
-      const feature = features[node.id];
+      const entity = entities[node.id];
+      const source = entity?.kind === 'feature' ? entity.data.source : 'auto';
+      const status = entity?.kind === 'feature' ? entity.data.status : 'active';
+      const fileCount = node.fileCount ?? node.clusterCount ?? 0;
       return {
         id: node.id,
-        type: 'feature',
+        type: node.type,
         data: {
           label: node.label,
-          fileCount: node.fileCount,
-          source: feature?.source || 'auto',
-          status: feature?.status || 'active',
-          dependencyCount: feature?.dependsOn?.length || 0,
+          kind: node.type as NodeType,
+          fileCount,
+          source,
+          status,
+          dependencyCount: dependencyCountById[node.id] ?? 0,
         },
         position: { x: 0, y: 0 },
         selected: node.id === selectedNodeId,
       };
     });
-  }, [graph.nodes, features, selectedNodeId]);
+  }, [graph.nodes, entities, dependencyCountById, selectedNodeId]);
 
   const initialEdges: Edge[] = useMemo(() => {
     return graph.edges.map((edge, index) => ({
@@ -102,8 +115,8 @@ export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: Fea
     return getLayoutedElements(initialNodes, initialEdges, 'TB');
   }, [initialNodes, initialEdges]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+  const [nodes, , onNodesChange] = useNodesState(layoutedNodes);
+  const [edges, , onEdgesChange] = useEdgesState(layoutedEdges);
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -136,7 +149,7 @@ export function FeatureMap({ graph, features, onNodeClick, selectedNodeId }: Fea
           position="top-left"
           className="bg-white/90 backdrop-blur px-3 py-2 rounded-lg shadow-sm text-sm text-gray-600"
         >
-          {graph.nodes.length} features • {graph.edges.length} connections
+          {graph.nodes.length} nodes - {graph.edges.length} connections
         </Panel>
       </ReactFlow>
     </div>

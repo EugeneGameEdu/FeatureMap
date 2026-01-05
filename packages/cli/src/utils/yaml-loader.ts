@@ -133,6 +133,10 @@ function getTypeFromPath(filePath: string): string | null {
     return 'graph';
   }
 
+  if (baseName === 'layout.yaml') {
+    return 'layout';
+  }
+
   if (normalized.includes('/features/')) {
     return 'feature';
   }
