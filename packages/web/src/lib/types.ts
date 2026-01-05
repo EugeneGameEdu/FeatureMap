@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ContextData } from './contextTypes';
 
 // РўРёРїС< Р?Р°Р?Р?С<С: Р?Р>С? FeatureMap
 
@@ -147,4 +148,7 @@ export interface FeatureMapData {
   clusterGraph: GraphData;
   featureGraph: GraphData;
   entities: Record<string, MapEntity>;
+  context: ContextData;
 }
+
+export * from './contextTypes';

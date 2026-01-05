@@ -52,12 +52,13 @@ export function buildConventionsInput(graph: DependencyGraph): ConventionsDetect
   return { files, exports, imports };
 }
 
-export function saveAutoContext<T>(filePath: string, data: T, schema: ZodType<T>): void {
+export function saveAutoContext<T>(filePath: string, data: T, schema: ZodType<T>): boolean {
   if (!shouldOverwriteAutoContext(filePath)) {
-    return;
+    return false;
   }
 
   saveYAML(filePath, data, schema);
+  return true;
 }
 
 function shouldOverwriteAutoContext(filePath: string): boolean {

@@ -5,6 +5,7 @@ import { createInitCommand } from './commands/init.js';
 import { createScanCommand } from './commands/scan.js';
 import { validateCommand } from './commands/validate.js';
 import { createWebCommand } from './commands/web.js';
+import { createContextCommand } from './commands/context.js';
 
 const program = new Command();
 
@@ -16,6 +17,7 @@ program
 // Add commands
 program.addCommand(createInitCommand());
 program.addCommand(createScanCommand());
+program.addCommand(createContextCommand());
 program
   .command('validate')
   .description('Validate all .featuremap/ files against schemas')

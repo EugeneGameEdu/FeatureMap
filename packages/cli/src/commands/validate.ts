@@ -8,6 +8,7 @@ import {
   ConventionsSchema,
   ConstraintsSchema,
   DecisionsSchema,
+  DesignSystemSchema,
   FeatureSchema,
   GraphSchema,
   RawGraphSchema,
@@ -74,6 +75,10 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath === 'context/overview.yaml') {
     return { schema: OverviewSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/design-system.yaml') {
+    return { schema: DesignSystemSchema, fileType: 'context' };
   }
 
   if (relativePath.startsWith('features/')) {

@@ -1,0 +1,21 @@
+# Design system guidance for UI consistency.
+# Used by AI and humans to align visuals.
+version: 1
+source: manual
+updatedAt: "2026-01-05T16:16:10.274Z"
+
+# designPrinciples:
+#   - "Accessible by default"
+#   - "High contrast"
+designPrinciples: []
+# colors:
+#   primary: "#1f2937"
+#   accent: "#f97316"
+colors: {}
+# typography:
+#   fonts: "Source Serif Pro, Arial"
+#   scale: "1.125"
+typography: {}
+# components:
+#   buttons: "Rounded corners, high contrast"
+components: {}

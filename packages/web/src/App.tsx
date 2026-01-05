@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { FeatureMap } from '@/components/FeatureMap';
+import { ContextViewer } from '@/components/ContextViewer';
 import { Sidebar } from '@/components/Sidebar';
 import { Button } from '@/components/ui/button';
 import { formatDate, loadFeatureMap } from '@/lib/loadFeatureMap';
@@ -120,6 +121,7 @@ function App() {
               </Button>
             </div>
           </div>
+          <ContextViewer context={data.context} />
           <Button variant="outline" size="sm" onClick={loadData}>
             <RefreshCw size={14} className="mr-1" />
             Refresh

@@ -236,3 +236,8 @@ export function saveYAML<T>(
 
   atomicWriteFile(filePath, content);
 }
+
+export function writeYamlTemplate(filePath: string, content: string): void {
+  const normalized = content.endsWith('\n') ? content : `${content}\n`;
+  atomicWriteFile(filePath, normalized);
+}

@@ -1,5 +1,4 @@
-import yaml from 'js-yaml';
-import { z } from 'zod';
+import { loadContextFiles } from './contextLoader';
 import {
   ClusterSchema,
   FeatureDetails,
@@ -15,12 +14,14 @@ import {
   type MapEntity,
   type NodeType,
 } from './types';
+import { parseYamlWithSchema } from './yamlParsing';
 
 const DATA_BASE_URL = '/featuremap-data';
 const FEATURE_DEP_EDGE_TYPE = 'feature_dep';
 const FEATURE_CONTAINS_EDGE_TYPE = 'contains';
 
 export async function loadFeatureMap(): Promise<FeatureMapData> {
+  const context = await loadContextFiles();
   const graph = await loadGraphYaml();
   const clusterGraph = buildClusterGraph(graph);
   const featureGraph = buildFeatureGraph(graph);
@@ -71,7 +72,7 @@ export async function loadFeatureMap(): Promise<FeatureMapData> {
     }
   }
 
-  return { graph, clusterGraph, featureGraph, entities };
+  return { graph, clusterGraph, featureGraph, entities, context };
 }
 
 async function loadGraphYaml(): Promise<GraphData> {
@@ -219,20 +220,6 @@ function buildFeatureClusterDetail(
     purpose_hint: cluster.purpose_hint,
     fileCount: cluster.files.length,
   };
-}
-
-function parseYamlWithSchema<T>(text: string, schema: z.ZodType<T>, label: string): T {
-  const parsed = yaml.load(text, { schema: yaml.JSON_SCHEMA });
-  const result = schema.safeParse(parsed);
-
-  if (!result.success) {
-    const issues = result.error.issues
-      .map((issue) => `${issue.path.join('.') || '<root>'}: ${issue.message}`)
-      .join('; ');
-    throw new Error(`Invalid ${label}: ${issues}`);
-  }
-
-  return result.data;
 }
 
 export function formatDate(isoString: string): string {

@@ -1,0 +1,17 @@
+# High-level overview used by AI and humans.
+# Keep this short and business-friendly.
+version: 1
+source: manual
+updatedAt: "2026-01-05T16:16:10.274Z"
+
+summary: "Short summary of what this project does."
+purpose: "Why this project exists."
+# architecture: "Optional high-level architecture notes."
+# keyFeatures:
+#   - "Feature A"
+#   - "Feature B"
+keyFeatures: []
+# targetUsers:
+#   - "Internal developers"
+#   - "Customers"
+targetUsers: []
