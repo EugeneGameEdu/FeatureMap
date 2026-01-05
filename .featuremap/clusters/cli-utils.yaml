@@ -1,12 +1,13 @@
 version: 1
 id: cli-utils
-layer: infrastructure
+layer: shared
 layerDetection:
   confidence: medium
   signals:
-    - cluster id starts with cli-
+    - path contains /utils/
 files:
   - packages/cli/src/utils/cluster-builder.ts
+  - packages/cli/src/utils/contextUtils.ts
   - packages/cli/src/utils/file-categories.ts
   - packages/cli/src/utils/layout-builder.ts
   - packages/cli/src/utils/scanCompare.ts
@@ -27,6 +28,9 @@ exports:
     name: buildClusterFile
     type: function
   - isDefault: false
+    name: buildConventionsInput
+    type: function
+  - isDefault: false
     name: buildDefaultLayout
     type: function
   - isDefault: false
@@ -34,6 +38,9 @@ exports:
     type: function
   - isDefault: false
     name: checkVersion
+    type: function
+  - isDefault: false
+    name: findPackageJsonPaths
     type: function
   - isDefault: false
     name: getKeyComparator
@@ -54,6 +61,9 @@ exports:
     name: LoadYAMLOptions
     type: interface
   - isDefault: false
+    name: saveAutoContext
+    type: function
+  - isDefault: false
     name: saveYAML
     type: function
   - isDefault: false
@@ -68,11 +78,13 @@ exports:
 imports:
   external:
     - crypto
+    - fast-glob
     - fs
     - path
     - yaml
     - zod
   internal:
+    - ../analyzer/conventions-detector.js
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
     - ../analyzer/layer-detector.js
@@ -81,7 +93,8 @@ imports:
     - ../types/layout.js
     - ./version-checker.js
     - ./yaml-key-order.js
-compositionHash: 7df9af14d61bc8bdd675dcdf4236ec3b49416d0950d3630679a2f8bf5f05ffe2
+    - ./yaml-loader.js
+compositionHash: 79c83590023736782378069bfcde859d67b4167fb96579ce5b6c0b10c10aa6fd
 metadata:
-  createdAt: 2026-01-05T10:17:11.298Z
-  updatedAt: 2026-01-05T10:44:26.151Z
+  createdAt: 2026-01-05T11:24:35.775Z
+  updatedAt: 2026-01-05T11:25:28.323Z

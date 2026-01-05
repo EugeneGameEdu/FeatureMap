@@ -4,7 +4,12 @@ layer: frontend
 layerDetection:
   confidence: high
   signals:
-    - cluster id starts with web-
+    - path contains /web/
+    - path contains /components/
+    - file extension .tsx
+    - imports @xyflow/react
+    - imports react
+    - exports React components
 files:
   - packages/web/src/components/FeatureMap.tsx
   - packages/web/src/components/FeatureNode.tsx
@@ -38,5 +43,5 @@ imports:
     - ./FeatureNode
 compositionHash: 13da9c9a38a2139d47cb473fc8dc3b90ee082c81f7f5288ff0b84c83f83bda30
 metadata:
-  createdAt: 2026-01-05T10:17:11.306Z
-  updatedAt: 2026-01-05T10:44:26.166Z
+  createdAt: 2026-01-05T11:24:35.801Z
+  updatedAt: 2026-01-05T11:25:28.334Z

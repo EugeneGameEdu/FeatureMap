@@ -4,7 +4,7 @@ layer: infrastructure
 layerDetection:
   confidence: medium
   signals:
-    - cluster id starts with cli-
+    - path contains /scripts/
 files:
   - packages/cli/src/scripts/demo-ai-analysis.ts
 exports: []
@@ -17,5 +17,5 @@ imports:
     - ../utils/yaml-loader.js
 compositionHash: a8d778d1438470996bd56f39b3bde3aac6ab0230d912a95837464db226e58745
 metadata:
-  createdAt: 2026-01-05T10:17:11.292Z
-  updatedAt: 2026-01-05T10:44:26.135Z
+  createdAt: 2026-01-05T11:24:35.770Z
+  updatedAt: 2026-01-05T11:25:28.308Z

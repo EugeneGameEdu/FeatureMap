@@ -1,0 +1,13 @@
+﻿version: 1
+source: manual
+updatedAt: "2024-01-01T00:00:00Z"
+
+decisions:
+  # Example - uncomment and edit:
+  # - id: use-react
+  #   title: "Use React for frontend"
+  #   description: "Chose React as the primary frontend framework"
+  #   rationale: "Team expertise, ecosystem, hiring pool"
+  #   date: "2024-01-01"
+  #   status: active
+  []

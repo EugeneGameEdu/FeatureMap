@@ -1,0 +1,12 @@
+version: 1
+source: manual
+updatedAt: "2024-01-01T00:00:00Z"
+
+constraints:
+  # Example - uncomment and edit:
+  # - id: avoid-ssr
+  #   type: technical
+  #   title: "Client-only rendering"
+  #   description: "The app must run without server-side rendering"
+  #   impact: "All pages must be compatible with static hosting"
+  []

@@ -1,14 +1,15 @@
 version: 1
 id: cli-types
-layer: infrastructure
+layer: shared
 layerDetection:
   confidence: medium
   signals:
-    - cluster id starts with cli-
+    - path contains /types/
 files:
   - packages/cli/src/types/cluster.ts
   - packages/cli/src/types/common.ts
   - packages/cli/src/types/config.ts
+  - packages/cli/src/types/context.ts
   - packages/cli/src/types/feature.ts
   - packages/cli/src/types/graph.ts
   - packages/cli/src/types/index.ts
@@ -26,6 +27,24 @@ exports:
     type: type
   - isDefault: false
     name: ConfigSchema
+    type: variable
+  - isDefault: false
+    name: Constraints
+    type: type
+  - isDefault: false
+    name: ConstraintsSchema
+    type: variable
+  - isDefault: false
+    name: Conventions
+    type: type
+  - isDefault: false
+    name: ConventionsSchema
+    type: variable
+  - isDefault: false
+    name: Decisions
+    type: type
+  - isDefault: false
+    name: DecisionsSchema
     type: variable
   - isDefault: false
     name: ExportSchema
@@ -79,6 +98,12 @@ exports:
     name: MetadataSchema
     type: variable
   - isDefault: false
+    name: Overview
+    type: type
+  - isDefault: false
+    name: OverviewSchema
+    type: variable
+  - isDefault: false
     name: Position
     type: type
   - isDefault: false
@@ -96,12 +121,18 @@ exports:
   - isDefault: false
     name: SourceSchema
     type: variable
+  - isDefault: false
+    name: TechStack
+    type: type
+  - isDefault: false
+    name: TechStackSchema
+    type: variable
 imports:
   external:
     - zod
   internal:
     - ./common.js
-compositionHash: 0decd2615a6a907ec3f3afce028876ed83ed635212a3b1915d39c92248ced2a0
+compositionHash: a428cae40885c7b87077355f72aec841eaed80962df8046bdee85db80bba1aab
 metadata:
-  createdAt: 2026-01-05T10:17:11.294Z
-  updatedAt: 2026-01-05T10:44:26.142Z
+  createdAt: 2026-01-05T11:24:35.772Z
+  updatedAt: 2026-01-05T11:25:28.316Z

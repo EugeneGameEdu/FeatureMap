@@ -3,16 +3,16 @@ project:
   name: FeatureMap
   root: .
 scan:
-  include:
-    - src/**/*.ts
-    - src/**/*.tsx
-    - packages/*/src/**/*.ts
-    - packages/*/src/**/*.tsx
   exclude:
     - "**/*.test.ts"
     - "**/*.spec.ts"
     - "**/*.d.ts"
     - "**/node_modules/**"
     - "**/dist/**"
+  include:
+    - src/**/*.ts
+    - src/**/*.tsx
+    - packages/*/src/**/*.ts
+    - packages/*/src/**/*.tsx
 features:
   hints: []

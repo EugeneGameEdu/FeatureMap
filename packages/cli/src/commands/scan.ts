@@ -3,13 +3,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { buildGraph, getGraphStats, type DependencyGraph } from '../analyzer/graph.js';
 import { groupByFolders, type Cluster as FolderCluster } from '../analyzer/grouper.js';
+import { detectConventions } from '../analyzer/conventions-detector.js';
+import { detectTechStack } from '../analyzer/tech-stack-detector.js';
 import { scanProject } from '../analyzer/scanner.js';
 import {
   type Cluster as ClusterFile,
   ClusterSchema,
+  ConventionsSchema,
   Graph,
   GraphSchema,
   LayoutSchema,
+  TechStackSchema,
   type Layer,
 } from '../types/index.js';
 import { SUPPORTED_VERSIONS } from '../constants/versions.js';
@@ -21,6 +25,11 @@ import {
 } from '../utils/scanCompare.js';
 import { buildClusterFile } from '../utils/cluster-builder.js';
 import { buildDefaultLayout } from '../utils/layout-builder.js';
+import {
+  buildConventionsInput,
+  findPackageJsonPaths,
+  saveAutoContext,
+} from '../utils/contextUtils.js';
 
 export function createScanCommand(): Command {
   const command = new Command('scan');
@@ -43,9 +52,18 @@ export function createScanCommand(): Command {
         migrateLegacyClusters(featuremapDir);
         ensureDirectory(path.join(featuremapDir, 'clusters'));
         ensureDirectory(path.join(featuremapDir, 'features'));
+        ensureDirectory(path.join(featuremapDir, 'context'));
 
         const scanResult = await scanProject(projectRoot);
         console.log(`  OK Found ${scanResult.files.length} files`);
+
+        const packageJsonPaths = findPackageJsonPaths(projectRoot);
+        const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'tech-stack.yaml'),
+          techStack,
+          TechStackSchema
+        );
 
         const graph = await buildGraph(scanResult);
         const graphStats = getGraphStats(graph);
@@ -60,6 +78,15 @@ export function createScanCommand(): Command {
 
         saveGraphYaml(featuremapDir, grouping.clusters);
         console.log('  OK Generated graph.yaml');
+
+        const conventionsInput = buildConventionsInput(graph);
+        const conventions = detectConventions(conventionsInput);
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'conventions.yaml'),
+          conventions,
+          ConventionsSchema
+        );
+        console.log('  OK Updated project context');
 
         ensureLayout(featuremapDir, grouping.clusters);
 

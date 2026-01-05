@@ -1,7 +1,7 @@
 version: 1
-generatedAt: 2026-01-05T10:44:26.204Z
+generatedAt: 2026-01-05T11:24:35.809Z
 nodes:
-  - fileCount: 9
+  - fileCount: 12
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
@@ -21,11 +21,11 @@ nodes:
     id: cli-scripts
     label: Cli Scripts
     type: cluster
-  - fileCount: 8
+  - fileCount: 9
     id: cli-types
     label: Cli Types
     type: cluster
-  - fileCount: 7
+  - fileCount: 8
     id: cli-utils
     label: Cli Utils
     type: cluster
@@ -54,6 +54,8 @@ nodes:
     label: Web Lib
     type: cluster
 edges:
+  - source: cli-analyzer
+    target: cli-constants
   - source: cli-analyzer
     target: cli-types
   - source: cli-analyzer

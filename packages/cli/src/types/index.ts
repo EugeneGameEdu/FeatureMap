@@ -5,3 +5,4 @@ export * from './cluster.js';
 export * from './feature.js';
 export * from './graph.js';
 export * from './layout.js';
+export * from './context.js';

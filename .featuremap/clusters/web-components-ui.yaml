@@ -4,7 +4,12 @@ layer: frontend
 layerDetection:
   confidence: high
   signals:
-    - cluster id starts with web-
+    - path contains /web/
+    - path contains /ui/
+    - path contains /components/
+    - file extension .tsx
+    - imports react
+    - exports React components
 files:
   - packages/web/src/components/ui/badge.tsx
   - packages/web/src/components/ui/button.tsx
@@ -33,5 +38,5 @@ imports:
   internal: []
 compositionHash: b452d1bbcf99277e3e25ff0627e57d4eef87c139f93d8c1a083d64a0a6cd7162
 metadata:
-  createdAt: 2026-01-05T10:17:11.308Z
-  updatedAt: 2026-01-05T10:44:26.170Z
+  createdAt: 2026-01-05T11:24:35.803Z
+  updatedAt: 2026-01-05T11:25:28.337Z

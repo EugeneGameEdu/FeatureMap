@@ -1,16 +1,18 @@
 version: 1
 id: cli-analyzer
-layer: infrastructure
+layer: shared
 layerDetection:
-  confidence: medium
-  signals:
-    - cluster id starts with cli-
+  confidence: low
+  signals: []
 files:
+  - packages/cli/src/analyzer/conventions-detector.ts
   - packages/cli/src/analyzer/graph.ts
   - packages/cli/src/analyzer/grouper.ts
   - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
   - packages/cli/src/analyzer/scanner.ts
+  - packages/cli/src/analyzer/tech-stack-detector.ts
+  - packages/cli/src/analyzer/techStackHelpers.ts
   - packages/cli/src/analyzer/test-graph.ts
   - packages/cli/src/analyzer/test-grouper.ts
   - packages/cli/src/analyzer/test-parser.ts
@@ -26,10 +28,25 @@ exports:
     name: Confidence
     type: type
   - isDefault: false
+    name: ConventionsDetectionInput
+    type: interface
+  - isDefault: false
     name: DependencyGraph
     type: interface
   - isDefault: false
+    name: detectConventions
+    type: function
+  - isDefault: false
+    name: detectLanguagesAndPatterns
+    type: function
+  - isDefault: false
     name: detectLayer
+    type: function
+  - isDefault: false
+    name: detectStructure
+    type: function
+  - isDefault: false
+    name: detectTechStack
     type: function
   - isDefault: false
     name: FileExport
@@ -68,10 +85,19 @@ exports:
     name: loadConfig
     type: function
   - isDefault: false
+    name: mergeDependencies
+    type: function
+  - isDefault: false
+    name: PackageJsonData
+    type: interface
+  - isDefault: false
     name: ParsedFile
     type: interface
   - isDefault: false
     name: parseFile
+    type: function
+  - isDefault: false
+    name: readPackageJson
     type: function
   - isDefault: false
     name: resetParser
@@ -82,20 +108,27 @@ exports:
   - isDefault: false
     name: ScanResult
     type: interface
+  - isDefault: false
+    name: TechStackDetectionInput
+    type: interface
 imports:
   external:
     - fast-glob
     - fs
     - path
     - ts-morph
+    - yaml
   internal:
+    - ../constants/versions.js
     - ../types/config.js
+    - ../types/context.js
     - ../utils/yaml-loader.js
     - ./graph.js
     - ./grouper.js
     - ./parser.js
     - ./scanner.js
-compositionHash: 607cc4ebfdf3278f6a4b05a236ef216a871a3bc85d45c5ff5869c954846223b2
+    - ./techStackHelpers.js
+compositionHash: daa40c107e3c07266411f9c140e130c20d026c0975ce3dbbf8c892f53e542d35
 metadata:
-  createdAt: 2026-01-05T10:17:11.275Z
-  updatedAt: 2026-01-05T10:44:26.102Z
+  createdAt: 2026-01-05T11:24:35.759Z
+  updatedAt: 2026-01-05T11:25:28.293Z

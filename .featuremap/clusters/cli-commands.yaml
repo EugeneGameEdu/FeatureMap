@@ -1,10 +1,9 @@
 version: 1
 id: cli-commands
-layer: infrastructure
+layer: shared
 layerDetection:
-  confidence: medium
-  signals:
-    - cluster id starts with cli-
+  confidence: low
+  signals: []
 files:
   - packages/cli/src/commands/init.ts
   - packages/cli/src/commands/scan.ts
@@ -33,17 +32,20 @@ imports:
     - url
     - zod
   internal:
+    - ../analyzer/conventions-detector.js
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
     - ../analyzer/scanner.js
+    - ../analyzer/tech-stack-detector.js
     - ../constants/versions.js
     - ../types/index.js
     - ../utils/cluster-builder.js
+    - ../utils/contextUtils.js
     - ../utils/layout-builder.js
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
     - ../utils/yaml-loader.js
 compositionHash: 5b1ae1dcabdf3b216b03139a92dccc9c47bafc406b44c0b4a33bcf8c3ef3d04b
 metadata:
-  createdAt: 2026-01-05T10:17:11.284Z
-  updatedAt: 2026-01-05T10:44:26.122Z
+  createdAt: 2026-01-05T11:24:35.764Z
+  updatedAt: 2026-01-05T11:25:28.299Z

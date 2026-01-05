@@ -1,10 +1,11 @@
 version: 1
 id: web-lib
-layer: frontend
+layer: shared
 layerDetection:
-  confidence: high
+  confidence: low
   signals:
-    - cluster id starts with web-
+    - path contains /web/
+    - path contains /lib/
 files:
   - packages/web/src/lib/loadFeatureMap.ts
   - packages/web/src/lib/types.ts
@@ -58,5 +59,5 @@ imports:
     - ./types
 compositionHash: 03b73fcabb74617e3c11d633352b7d5b7eee9b4caf704643c4ac20e841d1bea6
 metadata:
-  createdAt: 2026-01-05T10:17:11.312Z
-  updatedAt: 2026-01-05T10:44:26.188Z
+  createdAt: 2026-01-05T11:24:35.806Z
+  updatedAt: 2026-01-05T11:25:28.344Z

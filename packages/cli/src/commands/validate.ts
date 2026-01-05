@@ -5,10 +5,15 @@ import type { ZodType } from 'zod';
 import {
   ClusterSchema,
   ConfigSchema,
+  ConventionsSchema,
+  ConstraintsSchema,
+  DecisionsSchema,
   FeatureSchema,
   GraphSchema,
   RawGraphSchema,
   LayoutSchema,
+  OverviewSchema,
+  TechStackSchema,
 } from '../types/index.js';
 import type { FileType } from '../constants/versions.js';
 import { loadYAML } from '../utils/yaml-loader.js';
@@ -49,6 +54,26 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath === 'layout.yaml') {
     return { schema: LayoutSchema, fileType: 'layout' };
+  }
+
+  if (relativePath === 'context/tech-stack.yaml') {
+    return { schema: TechStackSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/conventions.yaml') {
+    return { schema: ConventionsSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/decisions.yaml') {
+    return { schema: DecisionsSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/constraints.yaml') {
+    return { schema: ConstraintsSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/overview.yaml') {
+    return { schema: OverviewSchema, fileType: 'context' };
   }
 
   if (relativePath.startsWith('features/')) {
