@@ -7,6 +7,7 @@ layerDetection:
     - path contains /utils/
 files:
   - packages/cli/src/utils/cluster-builder.ts
+  - packages/cli/src/utils/composition-hash.ts
   - packages/cli/src/utils/contextUtils.ts
   - packages/cli/src/utils/file-categories.ts
   - packages/cli/src/utils/layout-builder.ts
@@ -43,7 +44,13 @@ exports:
     name: findPackageJsonPaths
     type: function
   - isDefault: false
+    name: generateCompositionHash
+    type: function
+  - isDefault: false
     name: getKeyComparator
+    type: function
+  - isDefault: false
+    name: hasCompositionChanged
     type: function
   - isDefault: false
     name: isAuthoredFile
@@ -91,10 +98,11 @@ imports:
     - ../constants/versions.js
     - ../types/index.js
     - ../types/layout.js
+    - ./composition-hash.js
     - ./version-checker.js
     - ./yaml-key-order.js
     - ./yaml-loader.js
-compositionHash: 79c83590023736782378069bfcde859d67b4167fb96579ce5b6c0b10c10aa6fd
+compositionHash: 84610588726ba83f
 metadata:
   createdAt: 2026-01-05T11:24:35.775Z
-  updatedAt: 2026-01-05T11:25:28.323Z
+  updatedAt: 2026-01-05T11:42:32.857Z

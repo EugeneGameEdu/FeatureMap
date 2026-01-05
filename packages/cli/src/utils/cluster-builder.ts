@@ -1,7 +1,7 @@
-import { createHash } from 'crypto';
 import type { DependencyGraph } from '../analyzer/graph.js';
 import type { Cluster as FolderCluster } from '../analyzer/grouper.js';
 import { detectLayer } from '../analyzer/layer-detector.js';
+import { generateCompositionHash } from './composition-hash.js';
 import {
   type Cluster as ClusterFile,
   type ExportSymbol,
@@ -43,7 +43,7 @@ export function buildClusterFile(
     imports,
     purpose_hint: options.purpose_hint,
     entry_points: options.entry_points,
-    compositionHash: createCompositionHash(cluster.files),
+    compositionHash: generateCompositionHash(cluster.files),
     metadata: options.metadata,
   };
 }
@@ -105,8 +105,4 @@ function collectClusterImports(
     internal: [...internal].sort((a, b) => a.localeCompare(b)),
     external: [...external].sort((a, b) => a.localeCompare(b)),
   };
-}
-
-function createCompositionHash(values: string[]): string {
-  return createHash('sha256').update([...values].sort().join('|')).digest('hex');
 }

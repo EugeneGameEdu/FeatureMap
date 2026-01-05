@@ -32,6 +32,8 @@ imports:
     - url
     - zod
   internal:
+    - ../analyzer/cluster-id-matching.js
+    - ../analyzer/cluster-loader.js
     - ../analyzer/conventions-detector.js
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
@@ -45,7 +47,7 @@ imports:
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
     - ../utils/yaml-loader.js
-compositionHash: 5b1ae1dcabdf3b216b03139a92dccc9c47bafc406b44c0b4a33bcf8c3ef3d04b
+compositionHash: 3a7452a605d8b704
 metadata:
   createdAt: 2026-01-05T11:24:35.764Z
-  updatedAt: 2026-01-05T11:25:28.299Z
+  updatedAt: 2026-01-05T11:42:32.836Z

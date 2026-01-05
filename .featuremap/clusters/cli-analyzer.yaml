@@ -5,6 +5,9 @@ layerDetection:
   confidence: low
   signals: []
 files:
+  - packages/cli/src/analyzer/cluster-id-matching.ts
+  - packages/cli/src/analyzer/cluster-loader.ts
+  - packages/cli/src/analyzer/cluster-matcher.ts
   - packages/cli/src/analyzer/conventions-detector.ts
   - packages/cli/src/analyzer/graph.ts
   - packages/cli/src/analyzer/grouper.ts
@@ -19,10 +22,25 @@ files:
   - packages/cli/src/analyzer/test-scanner.ts
 exports:
   - isDefault: false
+    name: applyClusterMatching
+    type: function
+  - isDefault: false
     name: buildGraph
     type: function
   - isDefault: false
+    name: calculateFileOverlap
+    type: function
+  - isDefault: false
     name: Cluster
+    type: interface
+  - isDefault: false
+    name: ClusterIdMatch
+    type: interface
+  - isDefault: false
+    name: ClusterMatchingResult
+    type: interface
+  - isDefault: false
+    name: ClusterMatchResult
     type: interface
   - isDefault: false
     name: Confidence
@@ -48,6 +66,12 @@ exports:
   - isDefault: false
     name: detectTechStack
     type: function
+  - isDefault: false
+    name: ExistingCluster
+    type: interface
+  - isDefault: false
+    name: ExistingClusterInfo
+    type: interface
   - isDefault: false
     name: FileExport
     type: interface
@@ -85,8 +109,17 @@ exports:
     name: loadConfig
     type: function
   - isDefault: false
+    name: loadExistingClusters
+    type: function
+  - isDefault: false
+    name: matchCluster
+    type: function
+  - isDefault: false
     name: mergeDependencies
     type: function
+  - isDefault: false
+    name: NewClusterCandidate
+    type: interface
   - isDefault: false
     name: PackageJsonData
     type: interface
@@ -120,15 +153,18 @@ imports:
     - yaml
   internal:
     - ../constants/versions.js
+    - ../types/cluster.js
     - ../types/config.js
     - ../types/context.js
     - ../utils/yaml-loader.js
+    - ./cluster-loader.js
+    - ./cluster-matcher.js
     - ./graph.js
     - ./grouper.js
     - ./parser.js
     - ./scanner.js
     - ./techStackHelpers.js
-compositionHash: daa40c107e3c07266411f9c140e130c20d026c0975ce3dbbf8c892f53e542d35
+compositionHash: 3d62744bac3019a2
 metadata:
   createdAt: 2026-01-05T11:24:35.759Z
-  updatedAt: 2026-01-05T11:25:28.293Z
+  updatedAt: 2026-01-05T11:42:32.829Z

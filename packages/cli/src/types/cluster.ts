@@ -22,7 +22,7 @@ export const ClusterSchema = z.object({
   imports: ImportListSchema,
   purpose_hint: z.string().optional(),
   entry_points: z.array(z.string()).optional(),
-  compositionHash: z.string().optional(),
+  compositionHash: z.string(),
   metadata: MetadataSchema,
 });
 

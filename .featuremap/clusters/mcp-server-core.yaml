@@ -17,7 +17,7 @@ imports:
   internal:
     - ./tools/getCurrentFeatures.js
     - ./tools/updateFeature.js
-compositionHash: 0d61616d41c6fc88c7fba1074e28835c7a5a759f4d2189f92fe8eb4bc507abf7
+compositionHash: 0d61616d41c6fc88
 metadata:
   createdAt: 2026-01-05T11:24:35.778Z
-  updatedAt: 2026-01-05T11:25:28.327Z
+  updatedAt: 2026-01-05T11:42:32.860Z

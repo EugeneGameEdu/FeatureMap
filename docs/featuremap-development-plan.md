@@ -509,7 +509,7 @@ featuremap init
 
 ---
 
-### Шаг 1.4: Cluster ID stability
+### [done] Шаг 1.4: Cluster ID stability
 
 **Задача:** Обеспечить стабильные ID кластеров при переименовании папок/файлов.
 

@@ -15,7 +15,7 @@ imports:
     - ./commands/scan.js
     - ./commands/validate.js
     - ./commands/web.js
-compositionHash: 2fb448d11702324cc59d657d5945d59cd325540eb87b71f2e66a5bc01ada834c
+compositionHash: 2fb448d11702324c
 metadata:
   createdAt: 2026-01-05T11:24:35.768Z
-  updatedAt: 2026-01-05T11:25:28.305Z
+  updatedAt: 2026-01-05T11:42:32.841Z

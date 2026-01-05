@@ -5,6 +5,8 @@ import { buildGraph, getGraphStats, type DependencyGraph } from '../analyzer/gra
 import { groupByFolders, type Cluster as FolderCluster } from '../analyzer/grouper.js';
 import { detectConventions } from '../analyzer/conventions-detector.js';
 import { detectTechStack } from '../analyzer/tech-stack-detector.js';
+import { loadExistingClusters } from '../analyzer/cluster-loader.js';
+import { applyClusterMatching } from '../analyzer/cluster-id-matching.js';
 import { scanProject } from '../analyzer/scanner.js';
 import {
   type Cluster as ClusterFile,
@@ -69,14 +71,37 @@ export function createScanCommand(): Command {
         const graphStats = getGraphStats(graph);
         console.log(`  OK Built dependency graph (${graphStats.totalDependencies} dependencies)`);
 
+        const existingClusters = loadExistingClusters(path.join(featuremapDir, 'clusters'));
         const grouping = groupByFolders(graph);
-        console.log(`  OK Identified ${grouping.clusters.length} clusters`);
+        const matching = applyClusterMatching(grouping.clusters, existingClusters);
+        const clusters = matching.clusters;
+        console.log(`  OK Identified ${clusters.length} clusters`);
 
-        const clusterSave = saveClusters(featuremapDir, grouping.clusters, graph);
+        if (existingClusters.length > 0) {
+          const stableCount = matching.matchedIds.size;
+          const newCount = clusters.length - stableCount;
+          console.log(`  INFO ${stableCount} clusters matched, ${newCount} new`);
+        }
+
+        for (const match of matching.matches) {
+          const confidence = Math.round(match.confidence * 100);
+          console.log(
+            `  INFO Cluster "${match.suggestedId}" matched to existing "${match.matchedId}" (${confidence}% overlap)`
+          );
+        }
+
+        if (matching.orphaned.length > 0) {
+          console.log(`  WARN ${matching.orphaned.length} clusters no longer exist:`);
+          for (const orphan of matching.orphaned) {
+            console.log(`    - ${orphan.id}`);
+          }
+        }
+
+        const clusterSave = saveClusters(featuremapDir, clusters, graph);
         console.log(`  OK Created ${clusterSave.created} cluster files`);
         printLayerSummary(clusterSave.layerSummary);
 
-        saveGraphYaml(featuremapDir, grouping.clusters);
+        saveGraphYaml(featuremapDir, clusters);
         console.log('  OK Generated graph.yaml');
 
         const conventionsInput = buildConventionsInput(graph);
@@ -88,10 +113,10 @@ export function createScanCommand(): Command {
         );
         console.log('  OK Updated project context');
 
-        ensureLayout(featuremapDir, grouping.clusters);
+        ensureLayout(featuremapDir, clusters);
 
         console.log('\nClusters found:');
-        for (const cluster of grouping.clusters) {
+        for (const cluster of clusters) {
           console.log(`  - ${cluster.name} (${cluster.files.length} files)`);
         }
 
