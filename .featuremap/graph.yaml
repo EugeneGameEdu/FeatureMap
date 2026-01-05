@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-05T11:42:32.880Z
+generatedAt: 2026-01-05T11:54:06.750Z
 nodes:
   - fileCount: 15
     id: cli-analyzer
@@ -33,9 +33,17 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 2
+  - fileCount: 3
     id: mcp-server-tools
     label: Mcp Server Tools
+    type: cluster
+  - fileCount: 1
+    id: mcp-server-types
+    label: Mcp Server Types
+    type: cluster
+  - fileCount: 2
+    id: mcp-server-utils
+    label: Mcp Server Utils
     type: cluster
   - fileCount: 3
     id: web-components
@@ -82,3 +90,7 @@ edges:
     target: cli-types
   - source: mcp-server-core
     target: mcp-server-tools
+  - source: mcp-server-tools
+    target: mcp-server-utils
+  - source: mcp-server-utils
+    target: mcp-server-types

@@ -5,6 +5,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { getCurrentFeatures } from './tools/getCurrentFeatures.js';
 import { updateFeature } from './tools/updateFeature.js';
+import { getProjectContextTool } from './tools/getProjectContext.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -63,10 +64,18 @@ server.tool(
   }
 );
 
+// Tool: get_project_context
+server.tool(
+  getProjectContextTool.name,
+  getProjectContextTool.description,
+  getProjectContextTool.parameters,
+  getProjectContextTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 2 tools');
+  console.error('FeatureMap MCP server started with 3 tools');
 }
 
 main().catch((error) => {

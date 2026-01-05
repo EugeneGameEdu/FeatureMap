@@ -1,0 +1,32 @@
+version: 1
+id: mcp-server-utils
+layer: shared
+layerDetection:
+  confidence: low
+  signals:
+    - path contains /mcp-server/
+    - path contains /utils/
+files:
+  - packages/mcp-server/src/utils/contextLoader.ts
+  - packages/mcp-server/src/utils/findFeaturemapDir.ts
+exports:
+  - isDefault: false
+    name: findFeaturemapDir
+    type: function
+  - isDefault: false
+    name: loadProjectContext
+    type: function
+  - isDefault: false
+    name: ProjectContext
+    type: interface
+imports:
+  external:
+    - fs
+    - path
+    - yaml
+  internal:
+    - ../types/context.js
+compositionHash: 8650008b7560391c
+metadata:
+  createdAt: 2026-01-05T11:54:06.731Z
+  updatedAt: 2026-01-05T11:54:06.731Z

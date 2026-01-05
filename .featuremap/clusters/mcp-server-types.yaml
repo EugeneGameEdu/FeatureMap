@@ -1,0 +1,34 @@
+version: 1
+id: mcp-server-types
+layer: shared
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /mcp-server/
+    - path contains /types/
+    - exports only types
+files:
+  - packages/mcp-server/src/types/context.ts
+exports:
+  - isDefault: false
+    name: Constraint
+    type: interface
+  - isDefault: false
+    name: ConventionsInfo
+    type: interface
+  - isDefault: false
+    name: Decision
+    type: interface
+  - isDefault: false
+    name: Overview
+    type: interface
+  - isDefault: false
+    name: TechStackInfo
+    type: interface
+imports:
+  external: []
+  internal: []
+compositionHash: e00a5d489eab5b94
+metadata:
+  createdAt: 2026-01-05T11:54:06.730Z
+  updatedAt: 2026-01-05T11:54:06.730Z

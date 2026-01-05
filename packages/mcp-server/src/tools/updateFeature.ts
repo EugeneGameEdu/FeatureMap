@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
+import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
 
 export interface UpdateFeatureParams {
   id: string;
@@ -25,7 +26,7 @@ export interface UpdateFeatureResult {
 }
 
 export function updateFeature(
-  projectRoot: string,
+  projectRoot: string | undefined,
   params: UpdateFeatureParams
 ): UpdateFeatureResult {
   try {
@@ -38,7 +39,15 @@ export function updateFeature(
       };
     }
 
-    const featurePath = path.join(projectRoot, '.featuremap', 'features', `${id}.yaml`);
+    const featuremapDir = resolveFeaturemapDir(projectRoot);
+    if (!featuremapDir) {
+      return {
+        success: false,
+        error: 'No .featuremap directory found. Run "featuremap init" first.',
+      };
+    }
+
+    const featurePath = path.join(featuremapDir, 'features', `${id}.yaml`);
 
     if (!fs.existsSync(featurePath)) {
       return {
@@ -76,7 +85,7 @@ export function updateFeature(
 
       fs.writeFileSync(featurePath, yaml.stringify(feature), 'utf-8');
 
-      updateGraphYaml(projectRoot, id, name);
+      updateGraphYaml(featuremapDir, id, name);
     }
 
     return {
@@ -100,10 +109,10 @@ export function updateFeature(
   }
 }
 
-function updateGraphYaml(projectRoot: string, featureId: string, newName?: string): void {
+function updateGraphYaml(featuremapDir: string, featureId: string, newName?: string): void {
   if (!newName) return;
 
-  const graphPath = path.join(projectRoot, '.featuremap', 'graph.yaml');
+  const graphPath = path.join(featuremapDir, 'graph.yaml');
 
   if (!fs.existsSync(graphPath)) return;
 
@@ -124,4 +133,13 @@ function updateGraphYaml(projectRoot: string, featureId: string, newName?: strin
   } catch {
     // ignore update errors
   }
+}
+
+function resolveFeaturemapDir(projectRoot?: string): string | null {
+  if (projectRoot) {
+    const candidate = path.join(projectRoot, '.featuremap');
+    return fs.existsSync(candidate) ? candidate : null;
+  }
+
+  return findFeaturemapDir();
 }

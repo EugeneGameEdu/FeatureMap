@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'yaml';
+import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
 
 export interface Feature {
   id: string;
@@ -30,9 +31,17 @@ export interface CurrentFeaturesResult {
   error?: string;
 }
 
-export function getCurrentFeatures(projectRoot: string): CurrentFeaturesResult {
+export function getCurrentFeatures(projectRoot?: string): CurrentFeaturesResult {
   try {
-    const featuresDir = path.join(projectRoot, '.featuremap', 'features');
+    const featuremapDir = resolveFeaturemapDir(projectRoot);
+    if (!featuremapDir) {
+      return {
+        success: false,
+        error: 'No .featuremap directory found. Run "featuremap init" first.',
+      };
+    }
+
+    const featuresDir = path.join(featuremapDir, 'features');
 
     if (!fs.existsSync(featuresDir)) {
       return {
@@ -77,4 +86,13 @@ export function getCurrentFeatures(projectRoot: string): CurrentFeaturesResult {
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
+}
+
+function resolveFeaturemapDir(projectRoot?: string): string | null {
+  if (projectRoot) {
+    const candidate = path.join(projectRoot, '.featuremap');
+    return fs.existsSync(candidate) ? candidate : null;
+  }
+
+  return findFeaturemapDir();
 }

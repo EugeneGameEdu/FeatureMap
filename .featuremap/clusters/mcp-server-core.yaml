@@ -16,8 +16,9 @@ imports:
     - zod
   internal:
     - ./tools/getCurrentFeatures.js
+    - ./tools/getProjectContext.js
     - ./tools/updateFeature.js
 compositionHash: 0d61616d41c6fc88
 metadata:
   createdAt: 2026-01-05T11:24:35.778Z
-  updatedAt: 2026-01-05T11:42:32.860Z
+  updatedAt: 2026-01-05T11:54:06.725Z
