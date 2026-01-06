@@ -13,10 +13,13 @@ const CommentPositionSchema = z.object({
   y: z.number().finite(),
 });
 
+const CommentHomeViewSchema = z.enum(['features', 'clusters']);
+
 export const CommentNodeSchema = z
   .object({
     version: z.number().int().positive(),
     id: z.string().regex(KEBAB_CASE_REGEX, 'id must be kebab-case'),
+    homeView: CommentHomeViewSchema.optional(),
     content: z.string().refine((value) => value.trim().length > 0, {
       message: 'content required',
     }),
@@ -33,3 +36,4 @@ export const CommentNodeSchema = z
 
 export type CommentNode = z.infer<typeof CommentNodeSchema>;
 export type CommentLink = z.infer<typeof CommentLinkSchema>;
+export type CommentHomeView = z.infer<typeof CommentHomeViewSchema>;

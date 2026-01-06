@@ -70,6 +70,7 @@ export function useCommentPersistence({
     (comment: UiComment, override: Partial<CommentUpsertPayload> = {}): CommentUpsertPayload => {
       return {
         ...(comment.status === 'saved' ? { id: comment.id } : {}),
+        homeView: override.homeView ?? comment.homeView,
         content: override.content ?? comment.content,
         position: override.position ?? comment.position,
         links: override.links ?? comment.links,
@@ -102,7 +103,7 @@ export function useCommentPersistence({
         const payload =
           comment.status === 'draft'
             ? buildPayload(comment, override)
-            : { id: comment.id, ...override };
+            : { id: comment.id, ...(comment.homeView ? { homeView: comment.homeView } : {}), ...override };
         const saved = await upsertComment(payload);
         setComments((prev) => {
           const withoutOld = prev.filter((entry) => entry.id !== comment.id);

@@ -1,7 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { SUPPORTED_VERSIONS } from '../constants/versions.js';
-import { CommentNodeSchema, type CommentLink, type CommentNode } from '../types/index.js';
+import {
+  CommentNodeSchema,
+  type CommentHomeView,
+  type CommentLink,
+  type CommentNode,
+} from '../types/index.js';
 import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
 
 const COMMENT_FILE_PREFIX = 'comment-';
@@ -11,6 +16,7 @@ const KEBAB_CASE_REGEX = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
 export interface CommentUpsertInput {
   id?: string;
+  homeView?: CommentHomeView;
   content?: string;
   position?: { x: number; y: number };
   links?: CommentLink[];
@@ -37,7 +43,7 @@ export function listComments(projectRoot: string): CommentNode[] {
     const filePath = path.join(commentsDir, file);
     try {
       const comment = loadYAML(filePath, CommentNodeSchema, { fileType: 'comment' });
-      comments.push(comment);
+      comments.push(ensureHomeView(comment));
     } catch (error) {
       console.warn(`Skipping invalid comment file ${filePath}:`, error);
     }
@@ -65,7 +71,7 @@ export function upsertComment(projectRoot: string, input: CommentUpsertInput): C
     throw new Error('Missing required comment fields (content, position, links).');
   }
 
-  const finalId = existing?.id ?? requestedId ?? generateCommentId(content, existingIds);
+  const finalId = existing?.id ?? requestedId ?? generateCommentId(existingIds);
   const now = new Date().toISOString();
   const createdAt = input.createdAt ?? existing?.createdAt ?? now;
   const updatedAt = input.updatedAt ?? now;
@@ -73,10 +79,12 @@ export function upsertComment(projectRoot: string, input: CommentUpsertInput): C
     input.tags === undefined ? normalizeStringList(existing?.tags) : normalizeStringList(input.tags);
   const priority = input.priority ?? existing?.priority;
   const author = input.author ?? existing?.author;
+  const homeView = input.homeView ?? existing?.homeView ?? inferHomeViewFromLinks(links);
 
   const comment: CommentNode = {
     version: SUPPORTED_VERSIONS.comment,
     id: finalId,
+    homeView,
     content,
     position,
     links: sortLinks(links),
@@ -126,39 +134,17 @@ function isDraftId(id: string): boolean {
   return id.startsWith(DRAFT_PREFIX);
 }
 
-function generateCommentId(content: string, existingIds: Set<string>): string {
-  const firstLine = content.split('\n').find((line) => line.trim().length > 0) ?? '';
-  let candidate = slugify(firstLine);
-
-  if (!candidate) {
-    candidate = `comment-${Date.now()}`;
-  }
-
-  if (!KEBAB_CASE_REGEX.test(candidate)) {
-    candidate = `comment-${candidate}`;
-  }
-
-  if (!KEBAB_CASE_REGEX.test(candidate)) {
-    candidate = `comment-${Date.now()}`;
-  }
-
-  if (!existingIds.has(candidate)) {
-    return candidate;
+function generateCommentId(existingIds: Set<string>): string {
+  const base = `comment-${Date.now()}`;
+  if (!existingIds.has(base)) {
+    return base;
   }
 
   let index = 2;
-  while (existingIds.has(`${candidate}-${index}`)) {
+  while (existingIds.has(`${base}-${index}`)) {
     index += 1;
   }
-  return `${candidate}-${index}`;
-}
-
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/--+/g, '-');
+  return `${base}-${index}`;
 }
 
 function sortLinks(links: CommentLink[]): CommentLink[] {
@@ -177,4 +163,21 @@ function normalizeStringList(values: string[] | undefined): string[] {
   return [...new Set(values.map((value) => value.trim()).filter(Boolean))].sort((a, b) =>
     a.localeCompare(b)
   );
+}
+
+function ensureHomeView(comment: CommentNode): CommentNode {
+  if (comment.homeView) {
+    return comment;
+  }
+  return { ...comment, homeView: inferHomeViewFromLinks(comment.links) };
+}
+
+function inferHomeViewFromLinks(links: CommentLink[]): CommentHomeView {
+  if (links.some((link) => link.type === 'feature')) {
+    return 'features';
+  }
+  if (links.some((link) => link.type === 'cluster')) {
+    return 'clusters';
+  }
+  return 'features';
 }

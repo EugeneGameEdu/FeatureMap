@@ -18,6 +18,7 @@ import { CommentsApiError, useCommentsApi } from './useCommentsApi';
 interface UseCommentsToolInput {
   data: FeatureMapData | null;
   visibleGraph: GraphData | null;
+  currentView: 'features' | 'clusters';
   showComments: boolean;
   reactFlowInstance: ReactFlowInstance | null;
 }
@@ -37,6 +38,7 @@ export interface UseCommentsToolResult {
 export function useCommentsTool({
   data,
   visibleGraph,
+  currentView,
   showComments,
   reactFlowInstance,
 }: UseCommentsToolInput): UseCommentsToolResult {
@@ -159,10 +161,11 @@ export function useCommentsTool({
     return buildCommentElements({
       graph: visibleGraph,
       comments,
+      currentView,
       showComments,
       handlers,
     });
-  }, [comments, handlers, showComments, visibleGraph]);
+  }, [comments, currentView, handlers, showComments, visibleGraph]);
 
   const handleNodeClick = useCallback((nodeId: string): boolean => {
     return isCommentNodeId(nodeId);
@@ -177,11 +180,11 @@ export function useCommentsTool({
         x: event.clientX,
         y: event.clientY,
       });
-      const draft = createDraftComment(position);
+      const draft = createDraftComment(position, currentView);
       setComments((prev) => [...prev, draft]);
       setCommentToolMode('off');
     },
-    [commentToolMode, reactFlowInstance]
+    [commentToolMode, currentView, reactFlowInstance]
   );
 
   const handleConnect = useCallback(

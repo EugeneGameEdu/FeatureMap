@@ -23,6 +23,7 @@ export class CommentsApiError extends Error {
 
 export interface CommentUpsertPayload {
   id?: string;
+  homeView?: 'features' | 'clusters';
   content?: string;
   position?: CommentPosition;
   links?: CommentLink[];

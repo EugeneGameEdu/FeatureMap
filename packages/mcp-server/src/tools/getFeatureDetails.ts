@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
 import { normalizeStringList } from '../utils/listUtils.js';
 import { buildIndices } from '../utils/navigationLoaders.js';
+import { filterCommentsForNode, loadComments } from '../utils/commentLoader.js';
 
 const parametersSchema = z.object({
   featureId: z.string().min(1).describe('Feature ID to inspect.'),
@@ -55,6 +56,16 @@ export const getFeatureDetailsTool = {
     const dependsOn = normalizeStringList(feature.dependsOn);
     const groupIds = groupIdsByFeatureId.get(feature.id) ?? [];
     const missingClusters = clusterIds.filter((clusterId) => !clustersById.has(clusterId));
+    const comments = filterCommentsForNode(loadComments(featuremapDir), 'feature', feature.id);
+    const commentIds = comments.map((comment) => comment.id);
+    const commentEntries = comments.map((comment) => ({
+      id: comment.id,
+      homeView: comment.homeView,
+      content: comment.content,
+      links: comment.links,
+      ...(comment.createdAt ? { createdAt: comment.createdAt } : {}),
+      ...(comment.updatedAt ? { updatedAt: comment.updatedAt } : {}),
+    }));
 
     const featureDetails = {
       id: feature.id,
@@ -74,9 +85,15 @@ export const getFeatureDetailsTool = {
       feature: featureDetails,
       clusters,
       groupIds,
+      commentIds,
+      commentCount: commentIds.length,
+      comments: commentEntries,
       _meta: {
         clusterCount: clusters.length,
         missingClusters,
+        hints: {
+          commentsTool: `Use get_node_comments(feature,${feature.id}) for truncation or metadata-only access`,
+        },
       },
     };
 

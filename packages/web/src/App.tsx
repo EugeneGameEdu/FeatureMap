@@ -71,6 +71,7 @@ function App() {
   } = useCommentsTool({
     data,
     visibleGraph,
+    currentView: viewMode,
     showComments,
     reactFlowInstance,
   });

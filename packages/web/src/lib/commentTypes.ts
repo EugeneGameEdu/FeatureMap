@@ -2,6 +2,7 @@ export const COMMENT_NODE_PREFIX = 'comment:';
 export const COMMENT_EDGE_TYPE = 'comment_link';
 
 export type CommentLinkType = 'feature' | 'cluster';
+export type CommentHomeView = 'features' | 'clusters';
 export type CommentPriority = 'low' | 'medium' | 'high';
 
 export interface CommentLink {
@@ -17,6 +18,7 @@ export interface CommentPosition {
 export interface CommentNode {
   version: number;
   id: string;
+  homeView?: CommentHomeView;
   content: string;
   position: CommentPosition;
   links: CommentLink[];
@@ -59,4 +61,18 @@ export function sortCommentLinks(links: CommentLink[]): CommentLink[] {
     }
     return a.id.localeCompare(b.id);
   });
+}
+
+export function inferCommentHomeView(links: CommentLink[]): CommentHomeView {
+  if (links.some((link) => link.type === 'feature')) {
+    return 'features';
+  }
+  if (links.some((link) => link.type === 'cluster')) {
+    return 'clusters';
+  }
+  return 'features';
+}
+
+export function resolveCommentHomeView(comment: Pick<CommentNode, 'homeView' | 'links'>): CommentHomeView {
+  return comment.homeView ?? inferCommentHomeView(comment.links);
 }

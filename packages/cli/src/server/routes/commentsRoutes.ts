@@ -7,6 +7,7 @@ import { CommentNodeSchema } from '../../types/index.js';
 
 const CommentUpsertSchema = z.object({
   id: z.string().optional(),
+  homeView: z.enum(['features', 'clusters']).optional(),
   content: z.string().optional(),
   position: CommentNodeSchema.shape.position.optional(),
   links: CommentNodeSchema.shape.links.optional(),

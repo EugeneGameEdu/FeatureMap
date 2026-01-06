@@ -1,5 +1,5 @@
 import { CommentIndexSchema, CommentListSchema, CommentNodeSchema } from './commentSchema';
-import type { CommentNode } from './commentTypes';
+import { inferCommentHomeView, type CommentNode } from './commentTypes';
 import { parseYamlWithSchema } from './yamlParsing';
 
 const DATA_BASE_URL = '/featuremap-data';
@@ -53,7 +53,8 @@ async function loadCommentYaml(commentId: string): Promise<CommentNode> {
   }
 
   const text = await response.text();
-  return parseYamlWithSchema(text, CommentNodeSchema, `comments/${commentId}.yaml`);
+  const parsed = parseYamlWithSchema(text, CommentNodeSchema, `comments/${commentId}.yaml`);
+  return normalizeHomeView(parsed);
 }
 
 async function loadCommentsById(ids: Set<string>): Promise<Map<string, CommentNode>> {
@@ -62,7 +63,7 @@ async function loadCommentsById(ids: Set<string>): Promise<Map<string, CommentNo
     [...ids].map(async (commentId) => {
       const comment = await loadCommentYamlSafe(commentId);
       if (comment) {
-        comments.set(commentId, comment);
+        comments.set(commentId, normalizeHomeView(comment));
       }
     })
   );
@@ -79,7 +80,7 @@ async function loadCommentYamlSafe(commentId: string): Promise<CommentNode | nul
 }
 
 function sortComments(comments: CommentNode[]): CommentNode[] {
-  return [...comments].sort((a, b) => a.id.localeCompare(b.id));
+  return [...comments].map(normalizeHomeView).sort((a, b) => a.id.localeCompare(b.id));
 }
 
 function normalizeStringList(values: string[] | undefined): string[] {
@@ -125,9 +126,16 @@ async function loadCommentsFromApi(): Promise<CommentNode[] | null> {
       console.warn('Failed to parse comments API response:', parsed.error);
       return null;
     }
-    return parsed.data;
+    return parsed.data.map(normalizeHomeView);
   } catch (error) {
     console.warn('Failed to read comments API response:', error);
     return null;
   }
+}
+
+function normalizeHomeView(comment: CommentNode): CommentNode {
+  if (comment.homeView) {
+    return comment;
+  }
+  return { ...comment, homeView: inferCommentHomeView(comment.links) };
 }

@@ -13,10 +13,13 @@ const CommentPositionSchema = z.object({
   y: z.number().finite(),
 });
 
+const CommentHomeViewSchema = z.enum(['features', 'clusters']);
+
 export const CommentNodeSchema = z
   .object({
     version: z.number(),
     id: z.string().regex(KEBAB_CASE_REGEX, 'id must be kebab-case'),
+    homeView: CommentHomeViewSchema.optional(),
     content: z.string().refine((value) => value.trim().length > 0, {
       message: 'content required',
     }),

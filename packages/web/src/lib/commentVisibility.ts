@@ -4,6 +4,7 @@ import type { CommentNode } from './commentTypes';
 import {
   COMMENT_EDGE_TYPE,
   buildCommentNodeId,
+  resolveCommentHomeView,
   type CommentNodeData,
   sortCommentLinks,
 } from './commentTypes';
@@ -27,14 +28,36 @@ export interface CommentNodeHandlers {
   onCancelEdit: (id: string) => void;
 }
 
+export function getVisibleCommentIds(
+  visibleNodeIds: Set<string>,
+  comments: CommentNode[],
+  currentView: 'features' | 'clusters'
+): Set<string> {
+  const visible = new Set<string>();
+  for (const comment of comments) {
+    if (resolveCommentHomeView(comment) !== currentView) {
+      continue;
+    }
+    const hasVisibleLink = comment.links.some((link) => visibleNodeIds.has(link.id));
+    const isDraft = 'status' in comment && (comment as CommentNodeWithUi).status === 'draft';
+    if (!hasVisibleLink && !(isDraft && comment.links.length === 0)) {
+      continue;
+    }
+    visible.add(comment.id);
+  }
+  return visible;
+}
+
 export function buildCommentElements({
   graph,
   comments,
+  currentView,
   showComments,
   handlers,
 }: {
   graph: GraphData;
   comments: CommentNode[];
+  currentView: 'features' | 'clusters';
   showComments: boolean;
   handlers?: CommentNodeHandlers;
 }): { nodes: Node[]; edges: Edge[] } {
@@ -43,7 +66,10 @@ export function buildCommentElements({
   }
 
   const visibleTargetIds = new Set(graph.nodes.map((node) => node.id));
-  const sortedComments = [...comments].sort((a, b) => a.id.localeCompare(b.id));
+  const visibleCommentIds = getVisibleCommentIds(visibleTargetIds, comments, currentView);
+  const sortedComments = [...comments]
+    .filter((comment) => visibleCommentIds.has(comment.id))
+    .sort((a, b) => a.id.localeCompare(b.id));
 
   const nodes: Node[] = sortedComments.map((comment) => {
     const hasContent = comment.content.trim().length > 0;

@@ -13,6 +13,7 @@ import { getArchitectureOverviewTool } from './tools/getArchitectureOverview.js'
 import { getFeatureDetailsTool } from './tools/getFeatureDetails.js';
 import { getClusterFilesTool } from './tools/getClusterFiles.js';
 import { findRelevantFeaturesTool } from './tools/findRelevantFeatures.js';
+import { getNodeCommentsTool } from './tools/getNodeComments.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -167,10 +168,18 @@ server.tool(
   findRelevantFeaturesTool.execute
 );
 
+// Tool: get_node_comments
+server.tool(
+  getNodeCommentsTool.name,
+  getNodeCommentsTool.description,
+  getNodeCommentsTool.parameters,
+  getNodeCommentsTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 10 tools');
+  console.error('FeatureMap MCP server started with 11 tools');
 }
 
 main().catch((error) => {

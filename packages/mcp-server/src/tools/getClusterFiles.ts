@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
 import { normalizeStringList } from '../utils/listUtils.js';
 import { buildIndices } from '../utils/navigationLoaders.js';
+import { filterCommentsForNode, loadComments } from '../utils/commentLoader.js';
 
 const parametersSchema = z.object({
   clusterId: z.string().min(1).describe('Cluster ID to inspect.'),
@@ -49,6 +50,20 @@ export const getClusterFilesTool = {
     const entryPoints = normalizeStringList(cluster.entry_points);
     const importsExternal = normalizeStringList(cluster.imports?.external);
     const exportsCount = Array.isArray(cluster.exports) ? cluster.exports.length : 0;
+    const comments = filterCommentsForNode(
+      loadComments(featuremapDir),
+      'cluster',
+      cluster.id ?? params.clusterId
+    );
+    const commentIds = comments.map((comment) => comment.id);
+    const commentEntries = comments.map((comment) => ({
+      id: comment.id,
+      homeView: comment.homeView,
+      content: comment.content,
+      links: comment.links,
+      ...(comment.createdAt ? { createdAt: comment.createdAt } : {}),
+      ...(comment.updatedAt ? { updatedAt: comment.updatedAt } : {}),
+    }));
 
     const result = {
       cluster: {
@@ -60,11 +75,17 @@ export const getClusterFilesTool = {
         exportsCount,
       },
       files: filesReturned,
+      commentIds,
+      commentCount: commentIds.length,
+      comments: commentEntries,
       _meta: {
         totalFiles: files.length,
         returnedFiles: filesReturned.length,
         truncated,
         maxFiles,
+        hints: {
+          commentsTool: `Use get_node_comments(cluster,${cluster.id ?? params.clusterId}) for truncation or metadata-only access`,
+        },
       },
     };
 

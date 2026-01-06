@@ -42,6 +42,7 @@ export const KEY_ORDER: Record<string, string[]> = {
   comment: [
     'version',
     'id',
+    'homeView',
     'content',
     'position',
     'links',

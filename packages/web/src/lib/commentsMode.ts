@@ -1,4 +1,4 @@
-import type { CommentLink, CommentNode, CommentPosition } from './commentTypes';
+import type { CommentHomeView, CommentLink, CommentNode, CommentPosition } from './commentTypes';
 import { sortCommentLinks } from './commentTypes';
 
 export type CommentToolMode = 'off' | 'place';
@@ -14,10 +14,11 @@ export interface UiComment extends CommentNode {
 
 const DRAFT_PREFIX = 'draft-';
 
-export function createDraftComment(position: CommentPosition): UiComment {
+export function createDraftComment(position: CommentPosition, homeView: CommentHomeView): UiComment {
   return {
     version: 1,
     id: `${DRAFT_PREFIX}${Date.now()}`,
+    homeView,
     content: '',
     position,
     links: [],
