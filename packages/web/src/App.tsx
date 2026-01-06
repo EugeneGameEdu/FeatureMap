@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { FeatureMap } from '@/components/FeatureMap';
 import { ContextViewer } from '@/components/ContextViewer';
 import { Sidebar } from '@/components/Sidebar';
 import { Button } from '@/components/ui/button';
 import { formatDate, loadFeatureMap } from '@/lib/loadFeatureMap';
-import type { FeatureMapData, ViewMode } from '@/lib/types';
+import { applyLayerFilter, getLayerOrder } from '@/lib/layerFilters';
+import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
+
+const LAYER_FILTERS: Array<{ value: LayerFilter; label: string }> = [
+  { value: 'all', label: 'All' },
+  ...getLayerOrder().map((layer) => ({
+    value: layer,
+    label: `${layer[0].toUpperCase()}${layer.slice(1)}`,
+  })),
+];
 
 function App() {
   const [data, setData] = useState<FeatureMapData | null>(null);
@@ -13,6 +22,25 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
+  const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
+
+  const activeGraph = data
+    ? viewMode === 'clusters'
+      ? data.clusterGraph
+      : data.featureGraph
+    : null;
+
+  const visibleGraph = useMemo(() => {
+    if (!activeGraph) {
+      return null;
+    }
+    const { nodes, edges } = applyLayerFilter(
+      activeGraph.nodes,
+      activeGraph.edges,
+      selectedLayer
+    );
+    return { ...activeGraph, nodes, edges };
+  }, [activeGraph, selectedLayer]);
 
   const loadData = async () => {
     setLoading(true);
@@ -32,15 +60,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!data || !selectedNodeId) {
+    if (!selectedNodeId || !visibleGraph) {
       return;
     }
-    const graph = viewMode === 'clusters' ? data.clusterGraph : data.featureGraph;
-    const exists = graph.nodes.some((node) => node.id === selectedNodeId);
+    const exists = visibleGraph.nodes.some((node) => node.id === selectedNodeId);
     if (!exists) {
       setSelectedNodeId(null);
     }
-  }, [data, selectedNodeId, viewMode]);
+  }, [selectedNodeId, visibleGraph]);
 
   const handleNodeClick = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -85,13 +112,11 @@ function App() {
     );
   }
 
-  if (!data) return null;
+  if (!data || !activeGraph || !visibleGraph) return null;
 
   const selectedNode = selectedNodeId ? data.entities[selectedNodeId] : null;
   const clusterCount = data.clusterGraph.nodes.length;
   const featureCount = data.featureGraph.nodes.length;
-  const activeGraph = viewMode === 'clusters' ? data.clusterGraph : data.featureGraph;
-
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       <header className="bg-white border-b px-4 py-3 flex items-center justify-between shrink-0">
@@ -102,23 +127,40 @@ function App() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>View:</span>
-            <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
-              <Button
-                variant={viewMode === 'clusters' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('clusters')}
-              >
-                Clusters
-              </Button>
-              <Button
-                variant={viewMode === 'features' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('features')}
-              >
-                Features
-              </Button>
+          <div className="flex flex-col gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2">
+              <span>View:</span>
+              <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
+                <Button
+                  variant={viewMode === 'clusters' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('clusters')}
+                >
+                  Clusters
+                </Button>
+                <Button
+                  variant={viewMode === 'features' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('features')}
+                >
+                  Features
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>Layer:</span>
+              <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
+                {LAYER_FILTERS.map((filter) => (
+                  <Button
+                    key={filter.value}
+                    variant={selectedLayer === filter.value ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setSelectedLayer(filter.value)}
+                  >
+                    {filter.label}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
           <ContextViewer context={data.context} />
@@ -132,7 +174,7 @@ function App() {
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <FeatureMap
-            graph={activeGraph}
+            graph={visibleGraph}
             entities={data.entities}
             onNodeClick={handleNodeClick}
             selectedNodeId={selectedNodeId}

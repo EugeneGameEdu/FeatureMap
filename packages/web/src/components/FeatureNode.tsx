@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { Box, Folder, Layers } from 'lucide-react';
+import type { Layer } from '@/lib/types';
 
 export interface FeatureNodeData {
   label: string;
@@ -9,6 +10,8 @@ export interface FeatureNodeData {
   source: 'auto' | 'ai' | 'user';
   status: 'active' | 'deprecated' | 'ignored';
   dependencyCount: number;
+  layer?: Layer;
+  layers?: Layer[];
 }
 
 function FeatureNodeComponent({ data, selected }: NodeProps) {

@@ -6,6 +6,11 @@ import type { ContextData } from './contextTypes';
 export type NodeType = 'cluster' | 'feature';
 export type ViewMode = 'clusters' | 'features';
 
+const LayerSchema = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
+
+export type Layer = z.infer<typeof LayerSchema>;
+export type LayerFilter = Layer | 'all';
+
 export const GraphNodeSchema = z
   .object({
     id: z.string(),
@@ -13,6 +18,8 @@ export const GraphNodeSchema = z
     type: z.string().optional(),
     fileCount: z.number().optional(),
     clusterCount: z.number().optional(),
+    layer: LayerSchema.optional(),
+    layers: z.array(LayerSchema).optional(),
   })
   .passthrough();
 
@@ -34,8 +41,6 @@ export const GraphSchema = z.object({
 export type GraphNode = z.infer<typeof GraphNodeSchema>;
 export type GraphEdge = z.infer<typeof GraphEdgeSchema>;
 export type GraphData = z.infer<typeof GraphSchema>;
-
-const LayerSchema = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
 
 const ClusterExportSchema = z.object({
   name: z.string(),

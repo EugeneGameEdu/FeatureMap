@@ -80,6 +80,8 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
       const status = entity?.kind === 'feature' ? entity.data.status : 'active';
       const fileCount = node.fileCount ?? node.clusterCount ?? 0;
       const nodeType = (node.type ?? 'cluster') as NodeType;
+      const nodeLayer = nodeType === 'cluster' ? node.layer : undefined;
+      const nodeLayers = nodeType === 'feature' ? node.layers : undefined;
       return {
         id: node.id,
         type: nodeType,
@@ -90,6 +92,8 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
           source,
           status,
           dependencyCount: dependencyCountById[node.id] ?? 0,
+          layer: nodeLayer,
+          layers: nodeLayers,
         },
         position: { x: 0, y: 0 },
         selected: node.id === selectedNodeId,

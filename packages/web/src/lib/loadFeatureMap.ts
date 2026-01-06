@@ -14,6 +14,7 @@ import {
   type MapEntity,
   type NodeType,
 } from './types';
+import { deriveFeatureLayers } from './layerFilters';
 import { parseYamlWithSchema } from './yamlParsing';
 
 const DATA_BASE_URL = '/featuremap-data';
@@ -57,22 +58,31 @@ export async function loadFeatureMap(): Promise<FeatureMapData> {
     featureDetailsById.set(featureId, { ...feature, clustersDetailed });
   }
 
+  const clusterGraphWithLayers = attachClusterLayers(clusterGraph, clustersById);
+  const featureGraphWithLayers = attachFeatureLayers(featureGraph, featureDetailsById);
+
   const entities: Record<string, MapEntity> = {};
-  for (const node of clusterGraph.nodes) {
+  for (const node of clusterGraphWithLayers.nodes) {
     const cluster = clustersById.get(node.id);
     if (cluster) {
       entities[node.id] = { kind: 'cluster', label: node.label ?? node.id, data: cluster };
     }
   }
 
-  for (const node of featureGraph.nodes) {
+  for (const node of featureGraphWithLayers.nodes) {
     const feature = featureDetailsById.get(node.id);
     if (feature) {
       entities[node.id] = { kind: 'feature', label: node.label ?? node.id, data: feature };
     }
   }
 
-  return { graph, clusterGraph, featureGraph, entities, context };
+  return {
+    graph,
+    clusterGraph: clusterGraphWithLayers,
+    featureGraph: featureGraphWithLayers,
+    entities,
+    context,
+  };
 }
 
 async function loadGraphYaml(): Promise<GraphData> {
@@ -220,6 +230,34 @@ function buildFeatureClusterDetail(
     purpose_hint: cluster.purpose_hint,
     fileCount: cluster.files.length,
   };
+}
+
+function attachClusterLayers(graph: GraphData, clustersById: Map<string, Cluster>): GraphData {
+  const nodes = graph.nodes.map((node) => {
+    const cluster = clustersById.get(node.id);
+    if (!cluster) {
+      return node;
+    }
+    return { ...node, layer: cluster.layer };
+  });
+
+  return { ...graph, nodes };
+}
+
+function attachFeatureLayers(
+  graph: GraphData,
+  featuresById: Map<string, FeatureDetails>
+): GraphData {
+  const nodes = graph.nodes.map((node) => {
+    const feature = featuresById.get(node.id);
+    if (!feature) {
+      return node;
+    }
+    const layers = deriveFeatureLayers(feature);
+    return layers.length > 0 ? { ...node, layers } : node;
+  });
+
+  return { ...graph, nodes };
 }
 
 export function formatDate(isoString: string): string {
