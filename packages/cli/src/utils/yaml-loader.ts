@@ -149,6 +149,10 @@ function getTypeFromPath(filePath: string): string | null {
     return 'group';
   }
 
+  if (normalized.includes('/comments/')) {
+    return 'comment';
+  }
+
   return null;
 }
 

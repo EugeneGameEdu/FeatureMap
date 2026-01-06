@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import {
   Background,
+  BezierEdge,
   ConnectionMode,
   Controls,
   Edge,
@@ -10,16 +11,21 @@ import {
   type ReactFlowInstance,
   useEdgesState,
   useNodesState,
+  type EdgeTypes,
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
 import { FeatureNode, type FeatureNodeData } from './FeatureNode';
+import { CommentNode } from './CommentNode';
+import { COMMENT_EDGE_TYPE } from '@/lib/commentTypes';
 import type { GraphData, MapEntity, NodeType } from '@/lib/types';
 
 interface FeatureMapProps {
   graph: GraphData;
   entities: Record<string, MapEntity>;
+  commentNodes?: Node[];
+  commentEdges?: Edge[];
   onNodeClick?: (featureId: string) => void;
   onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
@@ -30,6 +36,11 @@ interface FeatureMapProps {
 const nodeTypes: NodeTypes = {
   feature: FeatureNode,
   cluster: FeatureNode,
+  comment: CommentNode,
+};
+
+const edgeTypes: EdgeTypes = {
+  [COMMENT_EDGE_TYPE]: BezierEdge,
 };
 
 const NODE_WIDTH = 180;
@@ -71,6 +82,8 @@ function getLayoutedElements(
 export function FeatureMap({
   graph,
   entities,
+  commentNodes = [],
+  commentEdges = [],
   onNodeClick,
   onInit,
   selectedNodeId,
@@ -85,7 +98,7 @@ export function FeatureMap({
     return counts;
   }, [graph.edges]);
 
-  const initialNodes: Node[] = useMemo(() => {
+  const graphNodes: Node[] = useMemo(() => {
     return graph.nodes.map((node) => {
       const entity = entities[node.id];
       const source = resolveSource(entity);
@@ -118,7 +131,7 @@ export function FeatureMap({
     });
   }, [graph.nodes, entities, dependencyCountById, selectedNodeId, focusedNodeId, focusedUntil]);
 
-  const initialEdges: Edge[] = useMemo(() => {
+  const graphEdges: Edge[] = useMemo(() => {
     return graph.edges.map((edge, index) => ({
       id: `e${index}-${edge.source}-${edge.target}`,
       source: edge.source,
@@ -133,9 +146,18 @@ export function FeatureMap({
     }));
   }, [graph.edges]);
 
-  const { nodes: layoutedNodes, edges: layoutedEdges } = useMemo(() => {
-    return getLayoutedElements(initialNodes, initialEdges, 'TB');
-  }, [initialNodes, initialEdges]);
+  const { nodes: layoutedGraphNodes, edges: layoutedGraphEdges } = useMemo(() => {
+    return getLayoutedElements(graphNodes, graphEdges, 'TB');
+  }, [graphEdges, graphNodes]);
+
+  const layoutedNodes = useMemo(
+    () => [...layoutedGraphNodes, ...commentNodes],
+    [commentNodes, layoutedGraphNodes]
+  );
+  const layoutedEdges = useMemo(
+    () => [...layoutedGraphEdges, ...commentEdges],
+    [commentEdges, layoutedGraphEdges]
+  );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
@@ -158,6 +180,7 @@ export function FeatureMap({
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
@@ -177,7 +200,8 @@ export function FeatureMap({
           position="top-left"
           className="bg-white/90 backdrop-blur px-3 py-2 rounded-lg shadow-sm text-sm text-gray-600"
         >
-          {graph.nodes.length} nodes - {graph.edges.length} connections
+          {graph.nodes.length + commentNodes.length} nodes -{' '}
+          {graph.edges.length + commentEdges.length} connections
         </Panel>
       </ReactFlow>
     </div>

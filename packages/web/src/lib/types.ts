@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ContextData } from './contextTypes';
+import type { CommentNode as CommentNodeType } from './commentTypes';
 
 // РўРёРїС< Р?Р°Р?Р?С<С: Р?Р>С? FeatureMap
 
@@ -201,6 +202,7 @@ export interface FeatureMapData {
   context: ContextData;
   groups: GroupSummary[];
   groupsById: Record<string, GroupSummary>;
+  comments: CommentNodeType[];
 }
 
 export * from './contextTypes';

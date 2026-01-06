@@ -141,6 +141,33 @@ async function copyFeatureMapData(sourceDir: string, targetDir: string): Promise
     }
   }
 
+  const commentsSource = path.join(sourceDir, 'comments');
+  const commentsTarget = path.join(targetDir, 'comments');
+
+  if (fs.existsSync(commentsSource)) {
+    if (fs.existsSync(commentsTarget)) {
+      fs.rmSync(commentsTarget, { recursive: true });
+    }
+    fs.mkdirSync(commentsTarget, { recursive: true });
+
+    const files = fs.readdirSync(commentsSource).filter((file) => file.endsWith('.yaml'));
+    const commentIds = files
+      .filter((file) => file !== 'index.yaml')
+      .map((file) => path.basename(file, '.yaml'))
+      .sort((a, b) => a.localeCompare(b));
+
+    for (const file of files) {
+      if (file !== 'index.yaml') {
+        fs.copyFileSync(path.join(commentsSource, file), path.join(commentsTarget, file));
+      }
+    }
+
+    const indexContent = stringify({ version: 1, comments: commentIds }, { lineWidth: 0 });
+    fs.writeFileSync(path.join(commentsTarget, 'index.yaml'), indexContent, 'utf-8');
+  } else if (fs.existsSync(commentsTarget)) {
+    fs.rmSync(commentsTarget, { recursive: true });
+  }
+
   const groupsSource = path.join(sourceDir, 'groups');
   const groupsTarget = path.join(targetDir, 'groups');
 

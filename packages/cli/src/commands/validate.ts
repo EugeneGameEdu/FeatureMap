@@ -4,6 +4,7 @@ import fg from 'fast-glob';
 import type { ZodType } from 'zod';
 import {
   ClusterSchema,
+  CommentNodeSchema,
   ConfigSchema,
   ConventionsSchema,
   ConstraintsSchema,
@@ -92,6 +93,10 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath.startsWith('groups/')) {
     return { schema: GroupSchema, fileType: 'group' };
+  }
+
+  if (relativePath.startsWith('comments/')) {
+    return { schema: CommentNodeSchema, fileType: 'comment' };
   }
 
   return null;

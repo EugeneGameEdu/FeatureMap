@@ -16,6 +16,7 @@ import {
 } from './types';
 import { deriveFeatureLayers } from './layerFilters';
 import { loadGroups } from './groupLoader';
+import { loadComments } from './commentLoader';
 import { parseYamlWithSchema } from './yamlParsing';
 
 const DATA_BASE_URL = '/featuremap-data';
@@ -62,6 +63,7 @@ export async function loadFeatureMap(): Promise<FeatureMapData> {
   const clusterGraphWithLayers = attachClusterLayers(clusterGraph, clustersById);
   const featureGraphWithLayers = attachFeatureLayers(featureGraph, featureDetailsById);
   const { groups, groupsById } = await loadGroups(featureDetailsById);
+  const comments = await loadComments();
 
   const entities: Record<string, MapEntity> = {};
   for (const node of clusterGraphWithLayers.nodes) {
@@ -86,6 +88,7 @@ export async function loadFeatureMap(): Promise<FeatureMapData> {
     context,
     groups,
     groupsById,
+    comments,
   };
 }
 

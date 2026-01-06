@@ -42,6 +42,7 @@ export function createInitCommand(): Command {
       const configPath = path.join(featuremapDir, 'config.yaml');
       const clustersDir = path.join(featuremapDir, 'clusters');
       const featuresDir = path.join(featuremapDir, 'features');
+      const commentsDir = path.join(featuremapDir, 'comments');
       const contextDir = path.join(featuremapDir, 'context');
       const decisionsPath = path.join(contextDir, 'decisions.yaml');
       const constraintsPath = path.join(contextDir, 'constraints.yaml');
@@ -65,6 +66,11 @@ export function createInitCommand(): Command {
       if (!fs.existsSync(featuresDir)) {
         fs.mkdirSync(featuresDir, { recursive: true });
         console.log('вњ“ Created .featuremap/features/');
+      }
+
+      if (!fs.existsSync(commentsDir)) {
+        fs.mkdirSync(commentsDir, { recursive: true });
+        console.log('в?" Created .featuremap/comments/');
       }
 
       if (!fs.existsSync(contextDir)) {

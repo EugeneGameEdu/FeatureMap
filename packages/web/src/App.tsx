@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { applyGroupFilter } from '@/lib/groupFilters';
 import { loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter } from '@/lib/layerFilters';
+import { buildCommentElements } from '@/lib/commentVisibility';
+import { isCommentNodeId } from '@/lib/commentTypes';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
 import { connectFeaturemapWs } from '@/lib/wsClient';
 import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
@@ -22,6 +24,7 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
   const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
+  const [showComments, setShowComments] = useState(true);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
 
@@ -54,6 +57,17 @@ function App() {
     () => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []),
     [visibleGraph]
   );
+
+  const commentElements = useMemo(() => {
+    if (!data || !visibleGraph) {
+      return { nodes: [], edges: [] };
+    }
+    return buildCommentElements({
+      graph: visibleGraph,
+      comments: data.comments,
+      showComments,
+    });
+  }, [data, showComments, visibleGraph]);
 
   const {
     searchOpen,
@@ -125,6 +139,9 @@ function App() {
   }, [data, selectedGroupId]);
 
   const handleNodeClick = (nodeId: string) => {
+    if (isCommentNodeId(nodeId)) {
+      return;
+    }
     setFocusedFilePath(null);
     setSelectedNodeId(nodeId);
   };
@@ -201,18 +218,26 @@ function App() {
         missingGroupFeatures={missingGroupFeatures}
         hasGroups={hasGroups}
         context={data.context}
+        showComments={showComments}
         onViewModeChange={setViewMode}
         onLayerChange={setSelectedLayer}
         onGroupChange={setSelectedGroupId}
+        onToggleComments={() => setShowComments((current) => !current)}
         onRefresh={loadData}
       />
 
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
-          <LeftToolbar onSearchClick={() => setSearchOpen(true)} />
+          <LeftToolbar
+            onSearchClick={() => setSearchOpen(true)}
+            showComments={showComments}
+            onToggleComments={() => setShowComments((current) => !current)}
+          />
           <FeatureMap
             graph={visibleGraph}
             entities={data.entities}
+            commentNodes={commentElements.nodes}
+            commentEdges={commentElements.edges}
             onNodeClick={handleNodeClick}
             onInit={setReactFlowInstance}
             selectedNodeId={selectedNodeId}
