@@ -6,7 +6,12 @@ layerDetection:
   signals:
     - path contains /mcp-server/
 files:
+  - packages/mcp-server/src/tools/createGroup.ts
+  - packages/mcp-server/src/tools/findRelevantFeatures.ts
+  - packages/mcp-server/src/tools/getArchitectureOverview.ts
+  - packages/mcp-server/src/tools/getClusterFiles.ts
   - packages/mcp-server/src/tools/getCurrentFeatures.ts
+  - packages/mcp-server/src/tools/getFeatureDetails.ts
   - packages/mcp-server/src/tools/getGroupingInput.ts
   - packages/mcp-server/src/tools/getGroupingInputUtils.ts
   - packages/mcp-server/src/tools/getProjectContext.ts
@@ -17,6 +22,9 @@ exports:
     name: applyLimits
     type: function
   - isDefault: false
+    name: createGroupTool
+    type: variable
+  - isDefault: false
     name: CurrentFeaturesResult
     type: interface
   - isDefault: false
@@ -26,8 +34,20 @@ exports:
     name: Feature
     type: interface
   - isDefault: false
+    name: findRelevantFeaturesTool
+    type: variable
+  - isDefault: false
+    name: getArchitectureOverviewTool
+    type: variable
+  - isDefault: false
+    name: getClusterFilesTool
+    type: variable
+  - isDefault: false
     name: getCurrentFeatures
     type: function
+  - isDefault: false
+    name: getFeatureDetailsTool
+    type: variable
   - isDefault: false
     name: getGroupingInputTool
     type: variable
@@ -38,14 +58,8 @@ exports:
     name: Limits
     type: type
   - isDefault: false
-    name: loadClusters
-    type: function
-  - isDefault: false
     name: loadDependencies
     type: function
-  - isDefault: false
-    name: RawCluster
-    type: interface
   - isDefault: false
     name: saveFeaturesFromGroupingTool
     type: variable
@@ -69,15 +83,20 @@ imports:
     - zod
   internal:
     - ../types/feature.js
+    - ../types/group.js
     - ../utils/contextLoader.js
     - ../utils/featureLoader.js
     - ../utils/featureMerge.js
     - ../utils/featureYaml.js
     - ../utils/findFeaturemapDir.js
     - ../utils/graphBuilder.js
+    - ../utils/groupYaml.js
     - ../utils/listUtils.js
+    - ../utils/navigationLoaders.js
+    - ../utils/searchScoring.js
+    - ../utils/slugify.js
     - ./getGroupingInputUtils.js
-compositionHash: 0d3e0138538c82d4
+compositionHash: 86a1d875dd5380cc
 metadata:
   createdAt: 2026-01-06T09:31:36.350Z
-  updatedAt: 2026-01-06T09:31:36.350Z
+  updatedAt: 2026-01-06T14:45:04.008Z

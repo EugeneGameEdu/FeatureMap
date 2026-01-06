@@ -1,10 +1,13 @@
 version: 1
 source: auto
-detectedAt: 2026-01-06T09:31:27.666Z
+detectedAt: 2026-01-06T14:44:47.655Z
 frameworks:
   - name: "@modelcontextprotocol/sdk"
     version: ^1.0.0
     usage: ai/mcp
+  - name: express
+    version: ^4.21.2
+    usage: backend API
   - name: react
     version: ^18.3.1
     usage: frontend UI
@@ -13,9 +16,9 @@ buildTools:
   - vite
 languages:
   - name: TypeScript
-    percentage: 97.5
+    percentage: 98.2
   - name: JavaScript
-    percentage: 2.5
+    percentage: 1.8
 structure:
   type: monorepo
   packages:

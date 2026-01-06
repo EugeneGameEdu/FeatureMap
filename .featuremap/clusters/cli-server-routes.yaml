@@ -1,0 +1,30 @@
+version: 1
+id: cli-server-routes
+layer: backend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /server/
+    - path contains /routes/
+    - imports express
+    - exports route handlers
+files:
+  - packages/cli/src/server/routes/contextUpdate.ts
+exports:
+  - isDefault: false
+    name: createContextUpdateHandler
+    type: function
+imports:
+  external:
+    - express
+    - fs
+    - path
+    - zod
+  internal:
+    - ../../types/context.js
+    - ../../utils/yaml-loader.js
+    - ../wsHub.js
+compositionHash: 8862c60963f6ba97
+metadata:
+  createdAt: 2026-01-06T14:45:03.976Z
+  updatedAt: 2026-01-06T14:45:03.976Z

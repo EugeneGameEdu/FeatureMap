@@ -1,0 +1,17 @@
+version: 1
+id: featuremap-serve-server
+name: Serve Web Server
+description: Hosts the FeatureMap web UI, API endpoints, and WebSocket updates during serve.
+source: ai
+status: active
+scope: backend
+clusters:
+  - cli-server
+  - cli-server-routes
+composition:
+  hash: 6a57aa1e198d5962
+metadata:
+  createdAt: 2026-01-06T14:52:31.789Z
+  updatedAt: 2026-01-06T14:52:31.789Z
+  lastModifiedBy: ai
+  version: 1

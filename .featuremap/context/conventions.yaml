@@ -1,9 +1,9 @@
 version: 1
 source: auto
-detectedAt: 2026-01-06T09:31:36.367Z
+detectedAt: 2026-01-06T14:45:04.065Z
 naming:
   files:
-    components: kebab-case.tsx
+    components: PascalCase.tsx
     utils: camelCase.ts
     types: kebab-case.ts
   exports:

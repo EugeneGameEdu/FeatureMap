@@ -12,6 +12,7 @@ files:
   - packages/cli/src/types/context.ts
   - packages/cli/src/types/feature.ts
   - packages/cli/src/types/graph.ts
+  - packages/cli/src/types/group.ts
   - packages/cli/src/types/index.ts
   - packages/cli/src/types/layout.ts
   - packages/cli/src/types/raw-graph.ts
@@ -80,6 +81,12 @@ exports:
     name: GraphSchema
     type: variable
   - isDefault: false
+    name: Group
+    type: type
+  - isDefault: false
+    name: GroupSchema
+    type: variable
+  - isDefault: false
     name: ImportList
     type: type
   - isDefault: false
@@ -138,7 +145,7 @@ imports:
     - zod
   internal:
     - ./common.js
-compositionHash: 3bfb25f75b92c218
+compositionHash: 80c488ab381bbee9
 metadata:
   createdAt: 2026-01-06T09:31:36.342Z
-  updatedAt: 2026-01-06T09:31:36.342Z
+  updatedAt: 2026-01-06T14:45:03.995Z

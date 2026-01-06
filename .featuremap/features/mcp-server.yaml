@@ -11,9 +11,9 @@ clusters:
   - mcp-server-types
   - mcp-server-utils
 composition:
-  hash: 2cb326c976ed7d23
+  hash: 74e89626362aa7ea
 metadata:
   createdAt: 2026-01-06T09:32:02.119Z
-  updatedAt: 2026-01-06T09:35:48.322Z
+  updatedAt: 2026-01-06T14:52:31.789Z
   lastModifiedBy: ai
-  version: 1
+  version: 2

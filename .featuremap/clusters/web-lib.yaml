@@ -1,19 +1,44 @@
 version: 1
 id: web-lib
-layer: shared
+layer: frontend
 layerDetection:
-  confidence: low
+  confidence: medium
   signals:
     - path contains /web/
     - path contains /lib/
+    - imports @xyflow/react
+    - imports react
+    - exports React components
 files:
   - packages/web/src/lib/contextLoader.ts
   - packages/web/src/lib/contextTypes.ts
+  - packages/web/src/lib/focusHelpers.ts
+  - packages/web/src/lib/groupFilters.ts
+  - packages/web/src/lib/groupLoader.ts
+  - packages/web/src/lib/layerFilters.ts
   - packages/web/src/lib/loadFeatureMap.ts
+  - packages/web/src/lib/searchIndex.ts
+  - packages/web/src/lib/searchScoring.ts
+  - packages/web/src/lib/searchVisibility.ts
   - packages/web/src/lib/types.ts
+  - packages/web/src/lib/useContextApi.ts
+  - packages/web/src/lib/useSearchNavigation.ts
   - packages/web/src/lib/utils.ts
+  - packages/web/src/lib/wsClient.ts
   - packages/web/src/lib/yamlParsing.ts
 exports:
+  - isDefault: false
+    name: applyGroupFilter
+    type: function
+  - isDefault: false
+    name: applyLayerFilter
+    type: function
+  - isDefault: false
+    name: buildFocusState
+    type: function
+  - isDefault: false
+    name: buildSearchIndex
+    type: function
   - isDefault: false
     name: Cluster
     type: type
@@ -30,11 +55,20 @@ exports:
     name: cn
     type: function
   - isDefault: false
+    name: connectFeaturemapWs
+    type: function
+  - isDefault: false
     name: Constraints
     type: type
   - isDefault: false
     name: ConstraintsSchema
     type: variable
+  - isDefault: false
+    name: ContextApiError
+    type: class
+  - isDefault: false
+    name: ContextApiErrorType
+    type: type
   - isDefault: false
     name: ContextData
     type: interface
@@ -44,6 +78,9 @@ exports:
   - isDefault: false
     name: ContextStatus
     type: type
+  - isDefault: false
+    name: ContextUpdateResult
+    type: interface
   - isDefault: false
     name: Conventions
     type: type
@@ -56,6 +93,9 @@ exports:
   - isDefault: false
     name: DecisionsSchema
     type: variable
+  - isDefault: false
+    name: deriveFeatureLayers
+    type: function
   - isDefault: false
     name: DesignSystem
     type: type
@@ -81,10 +121,22 @@ exports:
     name: FeatureMapData
     type: interface
   - isDefault: false
+    name: FeaturemapWsMessage
+    type: type
+  - isDefault: false
     name: FeatureSchema
     type: variable
   - isDefault: false
+    name: focusNode
+    type: function
+  - isDefault: false
     name: formatDate
+    type: function
+  - isDefault: false
+    name: getGroupsForFeature
+    type: function
+  - isDefault: false
+    name: getLayerOrder
     type: function
   - isDefault: false
     name: GraphData
@@ -105,10 +157,34 @@ exports:
     name: GraphSchema
     type: variable
   - isDefault: false
+    name: Group
+    type: type
+  - isDefault: false
+    name: GroupIndexSchema
+    type: variable
+  - isDefault: false
+    name: GroupSchema
+    type: variable
+  - isDefault: false
+    name: GroupSource
+    type: type
+  - isDefault: false
+    name: GroupSummary
+    type: interface
+  - isDefault: false
+    name: Layer
+    type: type
+  - isDefault: false
+    name: LayerFilter
+    type: type
+  - isDefault: false
     name: loadContextFiles
     type: function
   - isDefault: false
     name: loadFeatureMap
+    type: function
+  - isDefault: false
+    name: loadGroups
     type: function
   - isDefault: false
     name: MapEntity
@@ -116,6 +192,9 @@ exports:
   - isDefault: false
     name: NodeType
     type: type
+  - isDefault: false
+    name: normalizeText
+    type: function
   - isDefault: false
     name: Overview
     type: type
@@ -126,26 +205,62 @@ exports:
     name: parseYamlWithSchema
     type: function
   - isDefault: false
+    name: rankSearchResults
+    type: function
+  - isDefault: false
+    name: resolveVisibility
+    type: function
+  - isDefault: false
+    name: SearchIndexEntry
+    type: interface
+  - isDefault: false
+    name: SearchResultType
+    type: type
+  - isDefault: false
+    name: SearchWarning
+    type: interface
+  - isDefault: false
     name: TechStack
     type: type
   - isDefault: false
     name: TechStackSchema
     type: variable
   - isDefault: false
+    name: tokenize
+    type: function
+  - isDefault: false
+    name: useContextApi
+    type: function
+  - isDefault: false
+    name: useSearchNavigation
+    type: function
+  - isDefault: false
     name: ViewMode
     type: type
+  - isDefault: false
+    name: VisibilityResult
+    type: interface
 imports:
   external:
+    - "@xyflow/react"
     - clsx
     - js-yaml
+    - react
     - tailwind-merge
     - zod
   internal:
     - ./contextLoader
     - ./contextTypes
+    - ./focusHelpers
+    - ./groupFilters
+    - ./groupLoader
+    - ./layerFilters
+    - ./searchIndex
+    - ./searchScoring
+    - ./searchVisibility
     - ./types
     - ./yamlParsing
-compositionHash: f25ab626aefdd0ef
+compositionHash: 10f56e290b850776
 metadata:
   createdAt: 2026-01-06T09:31:36.359Z
-  updatedAt: 2026-01-06T09:31:36.359Z
+  updatedAt: 2026-01-06T14:45:04.034Z

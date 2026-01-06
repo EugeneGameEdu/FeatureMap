@@ -1,8 +1,7 @@
 version: 1
 id: code-analysis-engine
 name: Code Reader
-description: Reads the project files and figures out how pieces connect so the
-  map can be built.
+description: Reads the project files and figures out how pieces connect so the map can be built.
 source: ai
 status: active
 scope: shared
@@ -12,9 +11,9 @@ clusters:
   - cli-types
   - cli-utils
 composition:
-  hash: ecddbd386c6fb566
+  hash: 793863314c38a37e
 metadata:
   createdAt: 2026-01-06T09:32:02.119Z
-  updatedAt: 2026-01-06T09:35:46.789Z
+  updatedAt: 2026-01-06T14:52:31.789Z
   lastModifiedBy: ai
-  version: 1
+  version: 2

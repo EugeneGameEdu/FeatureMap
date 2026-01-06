@@ -1252,7 +1252,7 @@ featuremap web
 
 ---
 
-### Шаг 7.2: Context Editor UI
+### [done] Шаг 7.2: Context Editor UI
 
 **Задача:** Веб-интерфейс для редактирования контекста.
 
@@ -1520,7 +1520,7 @@ featuremap web
 
 ### Фаза 7: Редактор
 - [done] 7.1 Команда serve (API+WS+MCP)
-- [ ] 7.2 Context Editor UI
+- [done] 7.2 Context Editor UI
 
 ### Фаза 8: Комментарии
 - [ ] 8.1 Структура данных

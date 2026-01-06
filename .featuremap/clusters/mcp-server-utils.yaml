@@ -13,19 +13,47 @@ files:
   - packages/mcp-server/src/utils/featureYaml.ts
   - packages/mcp-server/src/utils/findFeaturemapDir.ts
   - packages/mcp-server/src/utils/graphBuilder.ts
+  - packages/mcp-server/src/utils/groupYaml.ts
   - packages/mcp-server/src/utils/listUtils.ts
+  - packages/mcp-server/src/utils/navigationLoaders.ts
+  - packages/mcp-server/src/utils/searchScoring.ts
+  - packages/mcp-server/src/utils/slugify.ts
 exports:
   - isDefault: false
     name: buildFeatureOverlay
     type: function
   - isDefault: false
+    name: buildGroupYaml
+    type: function
+  - isDefault: false
+    name: buildIndices
+    type: function
+  - isDefault: false
     name: computeFeatureCompositionHash
+    type: function
+  - isDefault: false
+    name: DerivedLayer
+    type: type
+  - isDefault: false
+    name: deriveFeatureLayers
     type: function
   - isDefault: false
     name: findDuplicateIds
     type: function
   - isDefault: false
     name: findFeaturemapDir
+    type: function
+  - isDefault: false
+    name: getGroupPath
+    type: function
+  - isDefault: false
+    name: getGroupsDir
+    type: function
+  - isDefault: false
+    name: groupExists
+    type: function
+  - isDefault: false
+    name: isKebabCase
     type: function
   - isDefault: false
     name: loadClusters
@@ -35,6 +63,9 @@ exports:
     type: function
   - isDefault: false
     name: loadFeatures
+    type: function
+  - isDefault: false
+    name: loadGroups
     type: function
   - isDefault: false
     name: loadProjectContext
@@ -49,19 +80,52 @@ exports:
     name: mergeGraphs
     type: function
   - isDefault: false
+    name: NavigationIndices
+    type: interface
+  - isDefault: false
     name: normalizeStringList
     type: function
   - isDefault: false
     name: ProjectContext
     type: interface
   - isDefault: false
+    name: RankedFeature
+    type: interface
+  - isDefault: false
+    name: rankFeatures
+    type: function
+  - isDefault: false
+    name: RankOptions
+    type: interface
+  - isDefault: false
+    name: RankResult
+    type: interface
+  - isDefault: false
+    name: RawCluster
+    type: interface
+  - isDefault: false
     name: readExistingGraphYaml
+    type: function
+  - isDefault: false
+    name: readGroupYaml
+    type: function
+  - isDefault: false
+    name: SearchCluster
+    type: interface
+  - isDefault: false
+    name: SearchFeature
+    type: interface
+  - isDefault: false
+    name: slugifyToKebab
     type: function
   - isDefault: false
     name: writeFeatureYaml
     type: function
   - isDefault: false
     name: writeGraphYaml
+    type: function
+  - isDefault: false
+    name: writeGroupYaml
     type: function
 imports:
   external:
@@ -72,8 +136,11 @@ imports:
   internal:
     - ../types/context.js
     - ../types/feature.js
+    - ../types/group.js
+    - ./featureLoader.js
+    - ./groupYaml.js
     - ./listUtils.js
-compositionHash: 92753eaadb068d99
+compositionHash: 0971463d851e3490
 metadata:
   createdAt: 2026-01-06T09:31:36.354Z
-  updatedAt: 2026-01-06T09:31:36.354Z
+  updatedAt: 2026-01-06T14:45:04.018Z
