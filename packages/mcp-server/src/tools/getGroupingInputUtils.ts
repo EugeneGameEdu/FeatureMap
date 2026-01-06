@@ -1,7 +1,9 @@
-import { existsSync, readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync } from 'fs';
 import { parse } from 'yaml';
 import { normalizeStringList } from '../utils/listUtils.js';
+import type { RawCluster } from '../utils/navigationLoaders.js';
+export { loadClusters } from '../utils/navigationLoaders.js';
+export type { RawCluster } from '../utils/navigationLoaders.js';
 
 export const DEFAULT_LIMITS = {
   externalImportsTopN: 10,
@@ -10,17 +12,6 @@ export const DEFAULT_LIMITS = {
 };
 
 export type Limits = typeof DEFAULT_LIMITS;
-
-export interface RawCluster {
-  id?: string;
-  layer?: string;
-  layerDetection?: unknown;
-  purpose_hint?: string;
-  entry_points?: string[];
-  imports?: { external?: string[] };
-  files?: string[];
-  compositionHash?: string;
-}
 
 interface GraphData {
   edges?: Array<{ source?: string; target?: string }>;
@@ -32,29 +23,6 @@ export function applyLimits(limits?: Partial<Limits>): Limits {
     keyPathsTopN: limits?.keyPathsTopN ?? DEFAULT_LIMITS.keyPathsTopN,
     maxClusters: limits?.maxClusters ?? DEFAULT_LIMITS.maxClusters,
   };
-}
-
-export function loadClusters(clustersDir: string): RawCluster[] {
-  if (!existsSync(clustersDir)) {
-    return [];
-  }
-
-  const files = readdirSync(clustersDir).filter((file) => file.endsWith('.yaml'));
-  const clusters: RawCluster[] = [];
-
-  for (const file of files) {
-    try {
-      const content = readFileSync(join(clustersDir, file), 'utf-8');
-      const parsed = parse(content) as RawCluster;
-      if (parsed?.id && parsed?.layer) {
-        clusters.push(parsed);
-      }
-    } catch {
-      // Skip invalid cluster files.
-    }
-  }
-
-  return clusters;
 }
 
 export function summarizeCluster(

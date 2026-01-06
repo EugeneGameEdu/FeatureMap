@@ -72,7 +72,7 @@ Guidance for AI usage:
     }
 
     const limits = applyLimits(params.limits);
-    const rawClusters = loadClusters(join(featuremapDir, 'clusters'));
+    const rawClusters = loadClusters(featuremapDir);
     const clustersById = buildClusterInfoMap(rawClusters);
     const filteredClusters = params.layer
       ? rawClusters.filter((cluster) => cluster.layer === params.layer)

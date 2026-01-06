@@ -9,6 +9,10 @@ import { getProjectContextTool } from './tools/getProjectContext.js';
 import { getGroupingInputTool } from './tools/getGroupingInput.js';
 import { saveFeaturesFromGroupingTool } from './tools/saveFeaturesFromGrouping.js';
 import { createGroupTool } from './tools/createGroup.js';
+import { getArchitectureOverviewTool } from './tools/getArchitectureOverview.js';
+import { getFeatureDetailsTool } from './tools/getFeatureDetails.js';
+import { getClusterFilesTool } from './tools/getClusterFiles.js';
+import { findRelevantFeaturesTool } from './tools/findRelevantFeatures.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -131,10 +135,42 @@ server.tool(
   createGroupTool.execute
 );
 
+// Tool: get_architecture_overview
+server.tool(
+  getArchitectureOverviewTool.name,
+  getArchitectureOverviewTool.description,
+  getArchitectureOverviewTool.parameters,
+  getArchitectureOverviewTool.execute
+);
+
+// Tool: get_feature_details
+server.tool(
+  getFeatureDetailsTool.name,
+  getFeatureDetailsTool.description,
+  getFeatureDetailsTool.parameters,
+  getFeatureDetailsTool.execute
+);
+
+// Tool: get_cluster_files
+server.tool(
+  getClusterFilesTool.name,
+  getClusterFilesTool.description,
+  getClusterFilesTool.parameters,
+  getClusterFilesTool.execute
+);
+
+// Tool: find_relevant_features
+server.tool(
+  findRelevantFeaturesTool.name,
+  findRelevantFeaturesTool.description,
+  findRelevantFeaturesTool.parameters,
+  findRelevantFeaturesTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 6 tools');
+  console.error('FeatureMap MCP server started with 10 tools');
 }
 
 main().catch((error) => {
