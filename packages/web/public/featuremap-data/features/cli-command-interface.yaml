@@ -1,0 +1,19 @@
+version: 1
+id: cli-command-interface
+name: Command Line Tools
+description: Lets you run scans and other tasks from the terminal.
+source: ai
+status: active
+scope: shared
+clusters:
+  - cli-commands
+  - cli-core
+dependsOn:
+  - code-analysis-engine
+composition:
+  hash: 89f4db5b96c91478
+metadata:
+  createdAt: 2026-01-06T09:32:02.119Z
+  updatedAt: 2026-01-06T09:35:46.977Z
+  lastModifiedBy: ai
+  version: 1

@@ -10,6 +10,9 @@
     "dev": "npm run dev --workspace=@featuremap/web",
     "cli": "node packages/cli/dist/index.js",
     "scan": "node packages/cli/dist/index.js scan",
-    "web": "node packages/cli/dist/index.js web"
+    "web": "node packages/cli/dist/index.js web",
+    "mcp:build": "npm run build --workspace=@featuremap/mcp-server",
+    "mcp:codex:snippet": "node scripts/print-codex-mcp-snippet.mjs",
+    "mcp:codex:add": "node scripts/print-codex-mcp-add-command.mjs"
   }
 }

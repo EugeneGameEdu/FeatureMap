@@ -70,6 +70,15 @@ Add to `~/.cursor/mcp.json`:
 - *"What are the main features of this project?"*
 - *"Mark the legacy-auth feature as deprecated"*
 
+## Connect Codex to FeatureMap MCP
+
+```bash
+npm run mcp:build
+npm run mcp:codex:snippet
+```
+
+Full setup guide: `docs/mcp/codex-vscode-setup.md`
+
 ## 📁 Project Structure
 
 ```

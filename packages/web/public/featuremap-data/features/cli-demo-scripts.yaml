@@ -1,0 +1,18 @@
+version: 1
+id: cli-demo-scripts
+name: Demo Scripts
+description: Sample scripts that run analyses for demos or quick experiments.
+source: ai
+status: active
+scope: backend
+clusters:
+  - cli-scripts
+dependsOn:
+  - code-analysis-engine
+composition:
+  hash: 18822391fdb2cfc5
+metadata:
+  createdAt: 2026-01-06T09:32:02.119Z
+  updatedAt: 2026-01-06T09:35:47.641Z
+  lastModifiedBy: ai
+  version: 1

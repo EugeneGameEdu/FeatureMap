@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-05T16:16:50.205Z
+detectedAt: 2026-01-06T09:31:36.367Z
 naming:
   files:
     components: kebab-case.tsx

@@ -14,6 +14,38 @@ const server = new McpServer({
   version: '0.1.0',
 });
 
+const agentGuide = `FeatureMap MCP quick guide
+
+- Prefer MCP tools over direct file access when possible.
+- Use get_project_context first to load project context.
+  - Pass layer or subject to keep context focused.
+  - designSystem is only returned for frontend layer.
+- Use get_grouping_input to understand clusters before grouping.
+- Use get_current_features to list existing features.
+- Use update_feature or save_features_from_grouping to persist updates.
+
+If resources list is empty, the server may only expose tools.
+This resource exists so clients can discover basic usage quickly.`;
+
+server.registerResource(
+  'agent-guide',
+  'featuremap://guide/agent',
+  {
+    title: 'FeatureMap MCP agent guide',
+    description: 'Quick usage notes for MCP tools and context loading.',
+    mimeType: 'text/markdown',
+  },
+  () => ({
+    contents: [
+      {
+        uri: 'featuremap://guide/agent',
+        mimeType: 'text/markdown',
+        text: agentGuide,
+      },
+    ],
+  })
+);
+
 // Tool: get_current_features
 server.tool(
   'get_current_features',

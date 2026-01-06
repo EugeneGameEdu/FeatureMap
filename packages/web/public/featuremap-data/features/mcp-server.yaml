@@ -1,0 +1,19 @@
+version: 1
+id: mcp-server
+name: AI Bridge Server
+description: Shares the project map with AI tools and handles their requests.
+source: ai
+status: active
+scope: fullstack
+clusters:
+  - mcp-server-core
+  - mcp-server-tools
+  - mcp-server-types
+  - mcp-server-utils
+composition:
+  hash: 2cb326c976ed7d23
+metadata:
+  createdAt: 2026-01-06T09:32:02.119Z
+  updatedAt: 2026-01-06T09:35:48.322Z
+  lastModifiedBy: ai
+  version: 1
