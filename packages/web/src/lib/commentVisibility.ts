@@ -39,9 +39,11 @@ export function buildCommentElements({
       content: comment.content,
       tags: comment.tags,
       priority: comment.priority,
+      linkCount: comment.links.length,
+      isDraft: 'status' in comment ? comment.status === 'draft' : false,
     } as CommentNodeData,
     draggable: false,
-    selectable: false,
+    selectable: true,
   }));
 
   const edges: Edge[] = [];

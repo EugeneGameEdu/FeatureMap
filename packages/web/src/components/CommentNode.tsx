@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { Link2 } from 'lucide-react';
 import type { CommentNodeData } from '@/lib/commentTypes';
 
 const priorityStyles: Record<string, string> = {
@@ -9,13 +10,15 @@ const priorityStyles: Record<string, string> = {
 };
 
 function CommentNodeComponent({ data }: NodeProps) {
-  const { content, tags, priority } = data as CommentNodeData;
+  const { content, tags, priority, linkCount = 0, isDraft } = data as CommentNodeData;
 
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50/80 shadow-sm px-3 py-2 min-w-[200px] max-w-[260px]">
       <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-amber-400" />
       <div className="flex items-start justify-between gap-2">
-        <span className="text-[10px] uppercase tracking-wide text-amber-600">Comment</span>
+        <span className="text-[10px] uppercase tracking-wide text-amber-600">
+          {isDraft ? 'Draft' : 'Comment'}
+        </span>
         {priority && (
           <span className={`text-[10px] px-1.5 py-0.5 rounded ${priorityStyles[priority]}`}>
             {priority}
@@ -35,6 +38,12 @@ function CommentNodeComponent({ data }: NodeProps) {
               {tag}
             </span>
           ))}
+        </div>
+      )}
+      {linkCount > 0 && (
+        <div className="mt-2 text-[10px] text-amber-700 flex items-center gap-1">
+          <Link2 size={12} />
+          {linkCount}
         </div>
       )}
       <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-amber-400" />

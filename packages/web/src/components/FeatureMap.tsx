@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
 import {
   Background,
   BezierEdge,
@@ -27,6 +27,7 @@ interface FeatureMapProps {
   commentNodes?: Node[];
   commentEdges?: Edge[];
   onNodeClick?: (featureId: string) => void;
+  onPaneClick?: (event: MouseEvent) => void;
   onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
   focusedNodeId?: string | null;
@@ -85,6 +86,7 @@ export function FeatureMap({
   commentNodes = [],
   commentEdges = [],
   onNodeClick,
+  onPaneClick,
   onInit,
   selectedNodeId,
   focusedNodeId,
@@ -184,6 +186,7 @@ export function FeatureMap({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
+        onPaneClick={onPaneClick}
         onInit={onInit}
         connectionMode={ConnectionMode.Loose}
         fitView

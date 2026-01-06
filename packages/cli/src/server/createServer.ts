@@ -2,6 +2,7 @@ import * as http from 'http';
 import type { Server } from 'http';
 import express from 'express';
 import { createContextUpdateHandler } from './routes/contextUpdate.js';
+import { createCommentsRouter } from './routes/commentsRoutes.js';
 import { enforceLocalhost, requireToken } from './security.js';
 import { createWsHub } from './wsHub.js';
 import type { WsHub } from './wsHub.js';
@@ -41,6 +42,14 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
   });
 
   apiRouter.post('/context/update', requireToken(options.sessionToken), contextUpdateHandler);
+  apiRouter.use(
+    '/comments',
+    createCommentsRouter({
+      projectRoot: options.projectRoot,
+      sessionToken: options.sessionToken,
+      wsHub,
+    })
+  );
   app.use('/api', apiRouter);
 
   const webHosting = await setupWebHosting(app, {

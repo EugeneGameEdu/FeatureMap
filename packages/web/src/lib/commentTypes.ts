@@ -37,6 +37,8 @@ export interface CommentNodeData {
   content: string;
   tags?: string[];
   priority?: CommentPriority;
+  linkCount?: number;
+  isDraft?: boolean;
 }
 
 export function buildCommentNodeId(commentId: string): string {

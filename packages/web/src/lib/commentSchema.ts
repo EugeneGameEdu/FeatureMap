@@ -32,3 +32,5 @@ export const CommentIndexSchema = z.object({
   version: z.number().optional(),
   comments: z.array(z.string()),
 });
+
+export const CommentListSchema = z.array(CommentNodeSchema);

@@ -1523,9 +1523,9 @@ featuremap web
 - [done] 7.2 Context Editor UI
 
 ### Фаза 8: Комментарии
-- [ ] 8.1 Структура данных
-- [ ] 8.2 MCP get_feature_comments
-- [ ] 8.3 UI для комментариев
+- [done] 8.1 Структура данных
+- [done] 8.2 MCP get_feature_comments
+- [done] 8.3 UI для комментариев
 
 ### Фаза 9: Обратная совместимость
 - [ ] 9.1 WebSocket live updates

@@ -6,12 +6,12 @@ import { Sidebar } from '@/components/Sidebar';
 import { LeftToolbar } from '@/components/LeftToolbar';
 import { MapHeader } from '@/components/MapHeader';
 import { SearchPalette } from '@/components/SearchPalette';
+import { CommentEditor } from '@/components/CommentEditor';
 import { Button } from '@/components/ui/button';
 import { applyGroupFilter } from '@/lib/groupFilters';
 import { loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter } from '@/lib/layerFilters';
-import { buildCommentElements } from '@/lib/commentVisibility';
-import { isCommentNodeId } from '@/lib/commentTypes';
+import { useCommentsTool } from '@/lib/useCommentsTool';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
 import { connectFeaturemapWs } from '@/lib/wsClient';
 import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
@@ -58,16 +58,25 @@ function App() {
     [visibleGraph]
   );
 
-  const commentElements = useMemo(() => {
-    if (!data || !visibleGraph) {
-      return { nodes: [], edges: [] };
-    }
-    return buildCommentElements({
-      graph: visibleGraph,
-      comments: data.comments,
-      showComments,
-    });
-  }, [data, showComments, visibleGraph]);
+  const {
+    commentElements,
+    commentToolMode,
+    activeComment,
+    commentSaveError,
+    isSavingComment,
+    handleNodeClick: handleCommentNodeClick,
+    handlePaneClick,
+    handleCommentChange,
+    handleCommentCancel,
+    handleCommentSave,
+    toggleAddMode,
+    toggleLinkMode,
+  } = useCommentsTool({
+    data,
+    visibleGraph,
+    showComments,
+    reactFlowInstance,
+  });
 
   const {
     searchOpen,
@@ -139,7 +148,12 @@ function App() {
   }, [data, selectedGroupId]);
 
   const handleNodeClick = (nodeId: string) => {
-    if (isCommentNodeId(nodeId)) {
+    const commentResult = handleCommentNodeClick(nodeId);
+    if (commentResult) {
+      if (commentResult === 'comment') {
+        setFocusedFilePath(null);
+        setSelectedNodeId(null);
+      }
       return;
     }
     setFocusedFilePath(null);
@@ -230,8 +244,8 @@ function App() {
         <main className="flex-1 relative">
           <LeftToolbar
             onSearchClick={() => setSearchOpen(true)}
-            showComments={showComments}
-            onToggleComments={() => setShowComments((current) => !current)}
+            commentMode={commentToolMode}
+            onToggleAddMode={toggleAddMode}
           />
           <FeatureMap
             graph={visibleGraph}
@@ -239,11 +253,24 @@ function App() {
             commentNodes={commentElements.nodes}
             commentEdges={commentElements.edges}
             onNodeClick={handleNodeClick}
+            onPaneClick={handlePaneClick}
             onInit={setReactFlowInstance}
             selectedNodeId={selectedNodeId}
             focusedNodeId={focusedNodeId}
             focusedUntil={focusedUntil}
           />
+          {activeComment && (
+            <CommentEditor
+              comment={activeComment}
+              isSaving={isSavingComment}
+              saveError={commentSaveError}
+              linkMode={commentToolMode === 'link'}
+              onChange={handleCommentChange}
+              onSave={handleCommentSave}
+              onCancel={handleCommentCancel}
+              onToggleLinkMode={toggleLinkMode}
+            />
+          )}
         </main>
 
         <Sidebar

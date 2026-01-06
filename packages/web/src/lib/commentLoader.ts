@@ -1,10 +1,15 @@
-import { CommentIndexSchema, CommentNodeSchema } from './commentSchema';
+import { CommentIndexSchema, CommentListSchema, CommentNodeSchema } from './commentSchema';
 import type { CommentNode } from './commentTypes';
 import { parseYamlWithSchema } from './yamlParsing';
 
 const DATA_BASE_URL = '/featuremap-data';
 
 export async function loadComments(): Promise<CommentNode[]> {
+  const apiComments = await loadCommentsFromApi();
+  if (apiComments) {
+    return sortComments(apiComments);
+  }
+
   const commentIds = await loadCommentIndex();
   if (commentIds.length === 0) {
     return [];
@@ -90,4 +95,39 @@ function looksLikeHtml(text: string, contentType: string): boolean {
     return true;
   }
   return trimmed.startsWith('<!doctype') || trimmed.startsWith('<html') || trimmed.startsWith('<head');
+}
+
+async function loadCommentsFromApi(): Promise<CommentNode[] | null> {
+  let response: Response;
+  try {
+    response = await fetch('/api/comments');
+  } catch {
+    return null;
+  }
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return null;
+    }
+    console.warn('Failed to load comments from API:', response.statusText);
+    return null;
+  }
+
+  try {
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      return null;
+    }
+
+    const data = (await response.json()) as unknown;
+    const parsed = CommentListSchema.safeParse(data);
+    if (!parsed.success) {
+      console.warn('Failed to parse comments API response:', parsed.error);
+      return null;
+    }
+    return parsed.data;
+  } catch (error) {
+    console.warn('Failed to read comments API response:', error);
+    return null;
+  }
 }
