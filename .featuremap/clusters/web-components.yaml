@@ -11,15 +11,20 @@ layerDetection:
     - imports react
     - exports React components
 files:
+  - packages/web/src/components/CommentNode.tsx
   - packages/web/src/components/ContextEditor.tsx
   - packages/web/src/components/ContextViewer.tsx
   - packages/web/src/components/FeatureMap.tsx
   - packages/web/src/components/FeatureNode.tsx
   - packages/web/src/components/LeftToolbar.tsx
+  - packages/web/src/components/MapControlsRow.tsx
   - packages/web/src/components/MapHeader.tsx
   - packages/web/src/components/SearchPalette.tsx
   - packages/web/src/components/Sidebar.tsx
 exports:
+  - isDefault: false
+    name: CommentNode
+    type: variable
   - isDefault: false
     name: ContextEditor
     type: function
@@ -39,6 +44,9 @@ exports:
     name: LeftToolbar
     type: function
   - isDefault: false
+    name: MapControlsRow
+    type: function
+  - isDefault: false
     name: MapHeader
     type: function
   - isDefault: false
@@ -51,11 +59,14 @@ imports:
   external:
     - "@/components/ContextEditor"
     - "@/components/ContextViewer"
+    - "@/components/MapControlsRow"
     - "@/components/ui/badge"
     - "@/components/ui/button"
     - "@/components/ui/dialog"
     - "@/components/ui/scroll-area"
     - "@/components/ui/sheet"
+    - "@/lib/commentsMode"
+    - "@/lib/commentTypes"
     - "@/lib/contextTypes"
     - "@/lib/groupFilters"
     - "@/lib/layerFilters"
@@ -71,8 +82,9 @@ imports:
     - react
     - zod
   internal:
+    - ./CommentNode
     - ./FeatureNode
-compositionHash: c64a669ba09b9ea8
+compositionHash: 816426ba0b2f6508
 metadata:
   createdAt: 2026-01-06T09:31:36.355Z
-  updatedAt: 2026-01-06T14:45:04.023Z
+  updatedAt: 2026-01-06T20:10:45.490Z

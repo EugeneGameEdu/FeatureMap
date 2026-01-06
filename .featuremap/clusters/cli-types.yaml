@@ -7,6 +7,7 @@ layerDetection:
     - path contains /types/
 files:
   - packages/cli/src/types/cluster.ts
+  - packages/cli/src/types/comment.ts
   - packages/cli/src/types/common.ts
   - packages/cli/src/types/config.ts
   - packages/cli/src/types/context.ts
@@ -22,6 +23,18 @@ exports:
     type: type
   - isDefault: false
     name: ClusterSchema
+    type: variable
+  - isDefault: false
+    name: CommentHomeView
+    type: type
+  - isDefault: false
+    name: CommentLink
+    type: type
+  - isDefault: false
+    name: CommentNode
+    type: type
+  - isDefault: false
+    name: CommentNodeSchema
     type: variable
   - isDefault: false
     name: Config
@@ -145,7 +158,7 @@ imports:
     - zod
   internal:
     - ./common.js
-compositionHash: 80c488ab381bbee9
+compositionHash: 26a6168d39f3d617
 metadata:
   createdAt: 2026-01-06T09:31:36.342Z
-  updatedAt: 2026-01-06T14:45:03.995Z
+  updatedAt: 2026-01-06T20:10:45.461Z

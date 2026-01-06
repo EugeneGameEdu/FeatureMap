@@ -29,6 +29,7 @@ imports:
     - "@/lib/layerFilters"
     - "@/lib/loadFeatureMap"
     - "@/lib/types"
+    - "@/lib/useCommentsTool"
     - "@/lib/useSearchNavigation"
     - "@/lib/wsClient"
     - "@xyflow/react"
@@ -41,4 +42,4 @@ imports:
 compositionHash: 3f5c50ccf093e648
 metadata:
   createdAt: 2026-01-06T09:31:36.358Z
-  updatedAt: 2026-01-06T14:45:04.029Z
+  updatedAt: 2026-01-06T20:10:45.497Z

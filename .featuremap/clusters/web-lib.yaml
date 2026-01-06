@@ -10,6 +10,11 @@ layerDetection:
     - imports react
     - exports React components
 files:
+  - packages/web/src/lib/commentLoader.ts
+  - packages/web/src/lib/commentSchema.ts
+  - packages/web/src/lib/commentsMode.ts
+  - packages/web/src/lib/commentTypes.ts
+  - packages/web/src/lib/commentVisibility.ts
   - packages/web/src/lib/contextLoader.ts
   - packages/web/src/lib/contextTypes.ts
   - packages/web/src/lib/focusHelpers.ts
@@ -21,6 +26,9 @@ files:
   - packages/web/src/lib/searchScoring.ts
   - packages/web/src/lib/searchVisibility.ts
   - packages/web/src/lib/types.ts
+  - packages/web/src/lib/useCommentPersistence.ts
+  - packages/web/src/lib/useCommentsApi.ts
+  - packages/web/src/lib/useCommentsTool.ts
   - packages/web/src/lib/useContextApi.ts
   - packages/web/src/lib/useSearchNavigation.ts
   - packages/web/src/lib/utils.ts
@@ -28,10 +36,19 @@ files:
   - packages/web/src/lib/yamlParsing.ts
 exports:
   - isDefault: false
+    name: addCommentLink
+    type: function
+  - isDefault: false
     name: applyGroupFilter
     type: function
   - isDefault: false
     name: applyLayerFilter
+    type: function
+  - isDefault: false
+    name: buildCommentElements
+    type: function
+  - isDefault: false
+    name: buildCommentNodeId
     type: function
   - isDefault: false
     name: buildFocusState
@@ -54,6 +71,63 @@ exports:
   - isDefault: false
     name: cn
     type: function
+  - isDefault: false
+    name: COMMENT_EDGE_TYPE
+    type: variable
+  - isDefault: false
+    name: COMMENT_NODE_PREFIX
+    type: variable
+  - isDefault: false
+    name: CommentHomeView
+    type: type
+  - isDefault: false
+    name: CommentIndex
+    type: interface
+  - isDefault: false
+    name: CommentIndexSchema
+    type: variable
+  - isDefault: false
+    name: CommentLink
+    type: interface
+  - isDefault: false
+    name: CommentLinkType
+    type: type
+  - isDefault: false
+    name: CommentListSchema
+    type: variable
+  - isDefault: false
+    name: CommentNode
+    type: interface
+  - isDefault: false
+    name: CommentNodeData
+    type: interface
+  - isDefault: false
+    name: CommentNodeHandlers
+    type: interface
+  - isDefault: false
+    name: CommentNodeSchema
+    type: variable
+  - isDefault: false
+    name: CommentPosition
+    type: interface
+  - isDefault: false
+    name: CommentPriority
+    type: type
+  - isDefault: false
+    name: CommentsApiError
+    type: class
+  - isDefault: false
+    name: CommentsApiErrorType
+    type: type
+  - isDefault: false
+    name: CommentSaveState
+    type: type
+  - isDefault: false
+    name: CommentToolMode
+    type: type
+  - isDefault: false
+    name: CommentUpsertPayload
+    type: interface
   - isDefault: false
     name: connectFeaturemapWs
     type: function
@@ -87,6 +161,9 @@ exports:
   - isDefault: false
     name: ConventionsSchema
     type: variable
+  - isDefault: false
+    name: createDraftComment
+    type: function
   - isDefault: false
     name: Decisions
     type: type
@@ -139,6 +216,9 @@ exports:
     name: getLayerOrder
     type: function
   - isDefault: false
+    name: getVisibleCommentIds
+    type: function
+  - isDefault: false
     name: GraphData
     type: type
   - isDefault: false
@@ -172,11 +252,26 @@ exports:
     name: GroupSummary
     type: interface
   - isDefault: false
+    name: inferCommentHomeView
+    type: function
+  - isDefault: false
+    name: isCommentNodeId
+    type: function
+  - isDefault: false
+    name: isDraftComment
+    type: function
+  - isDefault: false
+    name: isDraftId
+    type: function
+  - isDefault: false
     name: Layer
     type: type
   - isDefault: false
     name: LayerFilter
     type: type
+  - isDefault: false
+    name: loadComments
+    type: function
   - isDefault: false
     name: loadContextFiles
     type: function
@@ -189,6 +284,9 @@ exports:
   - isDefault: false
     name: MapEntity
     type: type
+  - isDefault: false
+    name: mergeSavedComments
+    type: function
   - isDefault: false
     name: NodeType
     type: type
@@ -208,6 +306,12 @@ exports:
     name: rankSearchResults
     type: function
   - isDefault: false
+    name: removeCommentLink
+    type: function
+  - isDefault: false
+    name: resolveCommentHomeView
+    type: function
+  - isDefault: false
     name: resolveVisibility
     type: function
   - isDefault: false
@@ -220,14 +324,35 @@ exports:
     name: SearchWarning
     type: interface
   - isDefault: false
+    name: sortCommentLinks
+    type: function
+  - isDefault: false
     name: TechStack
     type: type
   - isDefault: false
     name: TechStackSchema
     type: variable
   - isDefault: false
+    name: toggleAddMode
+    type: function
+  - isDefault: false
     name: tokenize
     type: function
+  - isDefault: false
+    name: UiComment
+    type: interface
+  - isDefault: false
+    name: useCommentPersistence
+    type: function
+  - isDefault: false
+    name: useCommentsApi
+    type: function
+  - isDefault: false
+    name: useCommentsTool
+    type: function
+  - isDefault: false
+    name: UseCommentsToolResult
+    type: interface
   - isDefault: false
     name: useContextApi
     type: function
@@ -249,6 +374,11 @@ imports:
     - tailwind-merge
     - zod
   internal:
+    - ./commentLoader
+    - ./commentSchema
+    - ./commentsMode
+    - ./commentTypes
+    - ./commentVisibility
     - ./contextLoader
     - ./contextTypes
     - ./focusHelpers
@@ -259,8 +389,10 @@ imports:
     - ./searchScoring
     - ./searchVisibility
     - ./types
+    - ./useCommentPersistence
+    - ./useCommentsApi
     - ./yamlParsing
-compositionHash: 10f56e290b850776
+compositionHash: 476e1bb633cd1fbc
 metadata:
   createdAt: 2026-01-06T09:31:36.359Z
-  updatedAt: 2026-01-06T14:45:04.034Z
+  updatedAt: 2026-01-06T20:10:45.506Z

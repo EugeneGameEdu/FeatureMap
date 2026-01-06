@@ -7,6 +7,7 @@ layerDetection:
     - path contains /mcp-server/
     - path contains /utils/
 files:
+  - packages/mcp-server/src/utils/commentLoader.ts
   - packages/mcp-server/src/utils/contextLoader.ts
   - packages/mcp-server/src/utils/featureLoader.ts
   - packages/mcp-server/src/utils/featureMerge.ts
@@ -29,6 +30,24 @@ exports:
     name: buildIndices
     type: function
   - isDefault: false
+    name: CommentHomeView
+    type: type
+  - isDefault: false
+    name: CommentLink
+    type: type
+  - isDefault: false
+    name: CommentNode
+    type: type
+  - isDefault: false
+    name: CommentNodeSchema
+    type: variable
+  - isDefault: false
+    name: CommentNodeType
+    type: type
+  - isDefault: false
+    name: CommentNodeWithHomeView
+    type: type
+  - isDefault: false
     name: computeFeatureCompositionHash
     type: function
   - isDefault: false
@@ -36,6 +55,9 @@ exports:
     type: type
   - isDefault: false
     name: deriveFeatureLayers
+    type: function
+  - isDefault: false
+    name: filterCommentsForNode
     type: function
   - isDefault: false
     name: findDuplicateIds
@@ -57,6 +79,9 @@ exports:
     type: function
   - isDefault: false
     name: loadClusters
+    type: function
+  - isDefault: false
+    name: loadComments
     type: function
   - isDefault: false
     name: loadContextFile
@@ -133,6 +158,7 @@ imports:
     - fs
     - path
     - yaml
+    - zod
   internal:
     - ../types/context.js
     - ../types/feature.js
@@ -140,7 +166,7 @@ imports:
     - ./featureLoader.js
     - ./groupYaml.js
     - ./listUtils.js
-compositionHash: 0971463d851e3490
+compositionHash: 8c5e14ea69e780f6
 metadata:
   createdAt: 2026-01-06T09:31:36.354Z
-  updatedAt: 2026-01-06T14:45:04.018Z
+  updatedAt: 2026-01-06T20:10:45.485Z

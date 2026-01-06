@@ -9,8 +9,12 @@ layerDetection:
     - imports express
     - exports route handlers
 files:
+  - packages/cli/src/server/routes/commentsRoutes.ts
   - packages/cli/src/server/routes/contextUpdate.ts
 exports:
+  - isDefault: false
+    name: createCommentsRouter
+    type: function
   - isDefault: false
     name: createContextUpdateHandler
     type: function
@@ -22,9 +26,12 @@ imports:
     - zod
   internal:
     - ../../types/context.js
+    - ../../types/index.js
     - ../../utils/yaml-loader.js
+    - ../commentsStore.js
+    - ../security.js
     - ../wsHub.js
-compositionHash: 8862c60963f6ba97
+compositionHash: ce05799f90d8d7c1
 metadata:
   createdAt: 2026-01-06T14:45:03.976Z
-  updatedAt: 2026-01-06T14:45:03.976Z
+  updatedAt: 2026-01-06T20:10:45.455Z

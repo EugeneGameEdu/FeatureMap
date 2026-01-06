@@ -7,16 +7,23 @@ layerDetection:
     - path contains /server/
     - imports express
 files:
+  - packages/cli/src/server/commentsStore.ts
   - packages/cli/src/server/createServer.ts
   - packages/cli/src/server/security.ts
   - packages/cli/src/server/webHosting.ts
   - packages/cli/src/server/wsHub.ts
 exports:
   - isDefault: false
+    name: CommentUpsertInput
+    type: interface
+  - isDefault: false
     name: createServer
     type: function
   - isDefault: false
     name: createWsHub
+    type: function
+  - isDefault: false
+    name: deleteComment
     type: function
   - isDefault: false
     name: enforceLocalhost
@@ -31,10 +38,16 @@ exports:
     name: isLocalhostRequest
     type: function
   - isDefault: false
+    name: listComments
+    type: function
+  - isDefault: false
     name: requireToken
     type: function
   - isDefault: false
     name: setupWebHosting
+    type: function
+  - isDefault: false
+    name: upsertComment
     type: function
   - isDefault: false
     name: WebHostingHandle
@@ -51,11 +64,15 @@ imports:
     - path
     - ws
   internal:
+    - ../constants/versions.js
+    - ../types/index.js
+    - ../utils/yaml-loader.js
+    - ./routes/commentsRoutes.js
     - ./routes/contextUpdate.js
     - ./security.js
     - ./webHosting.js
     - ./wsHub.js
-compositionHash: 1afcca524ea0f58a
+compositionHash: 469578aa67bdbab7
 metadata:
   createdAt: 2026-01-06T14:45:03.975Z
-  updatedAt: 2026-01-06T14:45:03.975Z
+  updatedAt: 2026-01-06T20:10:45.452Z

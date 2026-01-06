@@ -9,9 +9,9 @@ clusters:
   - cli-server
   - cli-server-routes
 composition:
-  hash: 6a57aa1e198d5962
+  hash: cb62f54ddd52d2ce
 metadata:
   createdAt: 2026-01-06T14:52:31.789Z
-  updatedAt: 2026-01-06T14:52:31.789Z
+  updatedAt: 2026-01-06T20:11:31.617Z
   lastModifiedBy: ai
-  version: 1
+  version: 2

@@ -14,6 +14,7 @@ files:
   - packages/mcp-server/src/tools/getFeatureDetails.ts
   - packages/mcp-server/src/tools/getGroupingInput.ts
   - packages/mcp-server/src/tools/getGroupingInputUtils.ts
+  - packages/mcp-server/src/tools/getNodeComments.ts
   - packages/mcp-server/src/tools/getProjectContext.ts
   - packages/mcp-server/src/tools/saveFeaturesFromGrouping.ts
   - packages/mcp-server/src/tools/updateFeature.ts
@@ -52,6 +53,9 @@ exports:
     name: getGroupingInputTool
     type: variable
   - isDefault: false
+    name: getNodeCommentsTool
+    type: variable
+  - isDefault: false
     name: getProjectContextTool
     type: variable
   - isDefault: false
@@ -84,6 +88,7 @@ imports:
   internal:
     - ../types/feature.js
     - ../types/group.js
+    - ../utils/commentLoader.js
     - ../utils/contextLoader.js
     - ../utils/featureLoader.js
     - ../utils/featureMerge.js
@@ -96,7 +101,7 @@ imports:
     - ../utils/searchScoring.js
     - ../utils/slugify.js
     - ./getGroupingInputUtils.js
-compositionHash: 86a1d875dd5380cc
+compositionHash: 9c1d41bfc27eedde
 metadata:
   createdAt: 2026-01-06T09:31:36.350Z
-  updatedAt: 2026-01-06T14:45:04.008Z
+  updatedAt: 2026-01-06T20:10:45.475Z

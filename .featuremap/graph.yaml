@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-06T14:52:31.789Z
+generatedAt: 2026-01-06T20:11:31.617Z
 nodes:
   - fileCount: 15
     id: cli-analyzer
@@ -21,15 +21,15 @@ nodes:
     id: cli-scripts
     label: Cli Scripts
     type: cluster
-  - fileCount: 4
+  - fileCount: 5
     id: cli-server
     label: Cli Server
     type: cluster
-  - fileCount: 1
+  - fileCount: 2
     id: cli-server-routes
     label: Cli Server Routes
     type: cluster
-  - fileCount: 10
+  - fileCount: 11
     id: cli-types
     label: Cli Types
     type: cluster
@@ -41,7 +41,7 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 11
+  - fileCount: 12
     id: mcp-server-tools
     label: Mcp Server Tools
     type: cluster
@@ -49,11 +49,11 @@ nodes:
     id: mcp-server-types
     label: Mcp Server Types
     type: cluster
-  - fileCount: 11
+  - fileCount: 12
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 8
+  - fileCount: 10
     id: web-components
     label: Web Components
     type: cluster
@@ -65,7 +65,7 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 16
+  - fileCount: 24
     id: web-lib
     label: Web Lib
     type: cluster
@@ -80,19 +80,19 @@ nodes:
   - id: code-analysis-engine
     label: Code Reader
     type: feature
-    fileCount: 36
+    fileCount: 37
   - id: featuremap-serve-server
     label: Serve Web Server
     type: feature
-    fileCount: 5
+    fileCount: 7
   - id: mcp-server
     label: AI Bridge Server
     type: feature
-    fileCount: 26
+    fileCount: 28
   - id: web-featuremap-viewer
     label: Project Map Viewer
     type: feature
-    fileCount: 32
+    fileCount: 42
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -117,7 +117,13 @@ edges:
   - source: cli-scripts
     target: cli-utils
   - source: cli-server
+    target: cli-constants
+  - source: cli-server
     target: cli-server-routes
+  - source: cli-server
+    target: cli-types
+  - source: cli-server
+    target: cli-utils
   - source: cli-server-routes
     target: cli-server
   - source: cli-server-routes
