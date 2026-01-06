@@ -1163,7 +1163,7 @@ ls .featuremap/context/
 
 **Цель:** Удобное редактирование всех context файлов.
 
-### Шаг 7.1: Команда serve (API + WebSocket + MCP)
+### [done] Шаг 7.1: Команда serve (API + WebSocket + MCP)
 
 **Задача:** Создать единый серверный процесс для API, WebSocket и веба.
 
@@ -1519,7 +1519,7 @@ featuremap web
 - [ ] 6.2 MCP design system для frontend
 
 ### Фаза 7: Редактор
-- [ ] 7.1 Команда serve (API+WS+MCP)
+- [done] 7.1 Команда serve (API+WS+MCP)
 - [ ] 7.2 Context Editor UI
 
 ### Фаза 8: Комментарии

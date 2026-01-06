@@ -6,6 +6,7 @@ import { createScanCommand } from './commands/scan.js';
 import { validateCommand } from './commands/validate.js';
 import { createWebCommand } from './commands/web.js';
 import { createContextCommand } from './commands/context.js';
+import { createServeCommand } from './commands/serve.js';
 
 const program = new Command();
 
@@ -24,5 +25,6 @@ program
   .option('-q, --quiet', 'Only output errors')
   .action(validateCommand);
 program.addCommand(createWebCommand());
+program.addCommand(createServeCommand());
 
 program.parse();
