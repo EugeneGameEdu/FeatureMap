@@ -1,21 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { ReactFlowInstance } from '@xyflow/react';
 import { RefreshCw } from 'lucide-react';
 import { FeatureMap } from '@/components/FeatureMap';
-import { ContextViewer } from '@/components/ContextViewer';
 import { Sidebar } from '@/components/Sidebar';
+import { LeftToolbar } from '@/components/LeftToolbar';
+import { MapHeader } from '@/components/MapHeader';
+import { SearchPalette } from '@/components/SearchPalette';
 import { Button } from '@/components/ui/button';
 import { applyGroupFilter } from '@/lib/groupFilters';
-import { formatDate, loadFeatureMap } from '@/lib/loadFeatureMap';
-import { applyLayerFilter, getLayerOrder } from '@/lib/layerFilters';
+import { loadFeatureMap } from '@/lib/loadFeatureMap';
+import { applyLayerFilter } from '@/lib/layerFilters';
+import { useSearchNavigation } from '@/lib/useSearchNavigation';
 import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
-
-const LAYER_FILTERS: Array<{ value: LayerFilter; label: string }> = [
-  { value: 'all', label: 'All' },
-  ...getLayerOrder().map((layer) => ({
-    value: layer,
-    label: `${layer[0].toUpperCase()}${layer.slice(1)}`,
-  })),
-];
 
 function App() {
   const [data, setData] = useState<FeatureMapData | null>(null);
@@ -25,6 +21,8 @@ function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
   const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
 
   const activeGraph = data
     ? viewMode === 'clusters'
@@ -51,6 +49,34 @@ function App() {
     );
     return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
   }, [activeGraph, data, selectedGroupId, selectedLayer, viewMode]);
+  const visibleNodeIds = useMemo(
+    () => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []),
+    [visibleGraph]
+  );
+
+  const {
+    searchOpen,
+    setSearchOpen,
+    searchQuery,
+    setSearchQuery,
+    searchResults,
+    searchWarning,
+    focusedNodeId,
+    focusedUntil,
+    onSearchSelect,
+  } = useSearchNavigation({
+    data,
+    viewMode,
+    selectedLayer,
+    selectedGroupId,
+    reactFlowInstance,
+    visibleNodeIds,
+    onViewModeChange: setViewMode,
+    onSelectedLayerChange: setSelectedLayer,
+    onSelectedGroupChange: setSelectedGroupId,
+    onSelectedNodeChange: setSelectedNodeId,
+    onFocusedFilePathChange: setFocusedFilePath,
+  });
 
   const loadData = async () => {
     setLoading(true);
@@ -89,6 +115,7 @@ function App() {
   }, [data, selectedGroupId]);
 
   const handleNodeClick = (nodeId: string) => {
+    setFocusedFilePath(null);
     setSelectedNodeId(nodeId);
   };
 
@@ -101,12 +128,15 @@ function App() {
     if (!exists && viewMode === 'features') {
       setViewMode('clusters');
     }
+    setFocusedFilePath(null);
     setSelectedNodeId(nodeId);
   };
 
   const handleCloseSidebar = () => {
+    setFocusedFilePath(null);
     setSelectedNodeId(null);
   };
+
 
   if (loading) {
     return (
@@ -141,86 +171,43 @@ function App() {
   const hasGroups = data.groups.length > 0;
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      <header className="bg-white border-b px-4 py-3 flex items-center justify-between shrink-0">
-        <div>
-          <h1 className="text-xl font-bold text-gray-800">FeatureMap</h1>
-          <p className="text-sm text-gray-500">
-            {clusterCount} clusters, {featureCount} features - Updated {formatDate(data.graph.generatedAt)}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col gap-2 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <span>View:</span>
-              <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
-                <Button
-                  variant={viewMode === 'clusters' ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('clusters')}
-                >
-                  Clusters
-                </Button>
-                <Button
-                  variant={viewMode === 'features' ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('features')}
-                >
-                  Features
-                </Button>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>Layer:</span>
-              <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
-                {LAYER_FILTERS.map((filter) => (
-                  <Button
-                    key={filter.value}
-                    variant={selectedLayer === filter.value ? 'secondary' : 'ghost'}
-                    size="sm"
-                    onClick={() => setSelectedLayer(filter.value)}
-                  >
-                    {filter.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>Group:</span>
-              <select
-                className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700"
-                value={selectedGroupId}
-                onChange={(event) => setSelectedGroupId(event.target.value)}
-                disabled={!hasGroups}
-              >
-                <option value="all">All groups</option>
-                {data.groups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name} ({group.featureIds.length})
-                  </option>
-                ))}
-              </select>
-            </div>
-            {missingGroupFeatures.length > 0 && (
-              <div className="text-xs text-amber-600">
-                Missing features in group: {missingGroupFeatures.join(', ')}
-              </div>
-            )}
-          </div>
-          <ContextViewer context={data.context} />
-          <Button variant="outline" size="sm" onClick={loadData}>
-            <RefreshCw size={14} className="mr-1" />
-            Refresh
-          </Button>
-        </div>
-      </header>
+      <SearchPalette
+        open={searchOpen}
+        query={searchQuery}
+        results={searchResults}
+        warning={searchWarning}
+        onOpenChange={setSearchOpen}
+        onQueryChange={setSearchQuery}
+        onSelectResult={onSearchSelect}
+      />
+      <MapHeader
+        clusterCount={clusterCount}
+        featureCount={featureCount}
+        generatedAt={data.graph.generatedAt}
+        viewMode={viewMode}
+        selectedLayer={selectedLayer}
+        selectedGroupId={selectedGroupId}
+        groups={data.groups}
+        missingGroupFeatures={missingGroupFeatures}
+        hasGroups={hasGroups}
+        context={data.context}
+        onViewModeChange={setViewMode}
+        onLayerChange={setSelectedLayer}
+        onGroupChange={setSelectedGroupId}
+        onRefresh={loadData}
+      />
 
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
+          <LeftToolbar onSearchClick={() => setSearchOpen(true)} />
           <FeatureMap
             graph={visibleGraph}
             entities={data.entities}
             onNodeClick={handleNodeClick}
+            onInit={setReactFlowInstance}
             selectedNodeId={selectedNodeId}
+            focusedNodeId={focusedNodeId}
+            focusedUntil={focusedUntil}
           />
         </main>
 
@@ -229,6 +216,7 @@ function App() {
           onClose={handleCloseSidebar}
           onDependencyClick={handleDependencyClick}
           groups={data.groups}
+          focusedFilePath={focusedFilePath}
         />
       </div>
     </div>

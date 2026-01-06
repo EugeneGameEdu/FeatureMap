@@ -7,6 +7,7 @@ import {
   Node,
   Panel,
   ReactFlow,
+  type ReactFlowInstance,
   useEdgesState,
   useNodesState,
   type NodeTypes,
@@ -20,7 +21,10 @@ interface FeatureMapProps {
   graph: GraphData;
   entities: Record<string, MapEntity>;
   onNodeClick?: (featureId: string) => void;
+  onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
+  focusedNodeId?: string | null;
+  focusedUntil?: number | null;
 }
 
 const nodeTypes: NodeTypes = {
@@ -64,7 +68,15 @@ function getLayoutedElements(
   return { nodes: layoutedNodes, edges };
 }
 
-export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: FeatureMapProps) {
+export function FeatureMap({
+  graph,
+  entities,
+  onNodeClick,
+  onInit,
+  selectedNodeId,
+  focusedNodeId,
+  focusedUntil,
+}: FeatureMapProps) {
   const dependencyCountById = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const edge of graph.edges) {
@@ -82,6 +94,10 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
       const nodeType = (node.type ?? 'cluster') as NodeType;
       const nodeLayer = nodeType === 'cluster' ? node.layer : undefined;
       const nodeLayers = nodeType === 'feature' ? node.layers : undefined;
+      const isFocused =
+        focusedNodeId === node.id &&
+        typeof focusedUntil === 'number' &&
+        focusedUntil > Date.now();
       return {
         id: node.id,
         type: nodeType,
@@ -94,12 +110,13 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
           dependencyCount: dependencyCountById[node.id] ?? 0,
           layer: nodeLayer,
           layers: nodeLayers,
+          isFocused,
         },
         position: { x: 0, y: 0 },
         selected: node.id === selectedNodeId,
       };
     });
-  }, [graph.nodes, entities, dependencyCountById, selectedNodeId]);
+  }, [graph.nodes, entities, dependencyCountById, selectedNodeId, focusedNodeId, focusedUntil]);
 
   const initialEdges: Edge[] = useMemo(() => {
     return graph.edges.map((edge, index) => ({
@@ -144,6 +161,7 @@ export function FeatureMap({ graph, entities, onNodeClick, selectedNodeId }: Fea
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
+        onInit={onInit}
         connectionMode={ConnectionMode.Loose}
         fitView
         fitViewOptions={{ padding: 0.2 }}

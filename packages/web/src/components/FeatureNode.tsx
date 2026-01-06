@@ -12,10 +12,11 @@ export interface FeatureNodeData {
   dependencyCount: number;
   layer?: Layer;
   layers?: Layer[];
+  isFocused?: boolean;
 }
 
 function FeatureNodeComponent({ data, selected }: NodeProps) {
-  const { label, kind, fileCount, source, status, dependencyCount } =
+  const { label, kind, fileCount, source, status, dependencyCount, isFocused } =
     data as unknown as FeatureNodeData;
 
   const Icon = fileCount > 5 ? Layers : fileCount > 1 ? Folder : Box;
@@ -35,6 +36,10 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
       ? 'bg-gray-100'
       : 'bg-white';
 
+  const focusRing = isFocused
+    ? 'ring-2 ring-amber-300 ring-offset-2 ring-offset-white animate-pulse'
+    : '';
+
   return (
     <div
       className={`
@@ -42,6 +47,7 @@ function FeatureNodeComponent({ data, selected }: NodeProps) {
         transition-all duration-150
         ${borderColor} ${bgColor}
         ${selected ? 'shadow-md ring-2 ring-blue-200' : 'hover:shadow-md'}
+        ${focusRing}
       `}
     >
       <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-gray-400" />

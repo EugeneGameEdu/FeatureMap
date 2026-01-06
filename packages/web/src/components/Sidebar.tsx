@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { AlertTriangle, ArrowRight, Clock, FileCode, Layers, Tag, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,9 +12,16 @@ interface SidebarProps {
   onClose: () => void;
   onDependencyClick?: (featureId: string) => void;
   groups?: GroupSummary[];
+  focusedFilePath?: string | null;
 }
 
-export function Sidebar({ node, onClose, onDependencyClick, groups = [] }: SidebarProps) {
+export function Sidebar({
+  node,
+  onClose,
+  onDependencyClick,
+  groups = [],
+  focusedFilePath,
+}: SidebarProps) {
   const sourceColors = {
     auto: 'bg-gray-100 text-gray-700',
     ai: 'bg-green-100 text-green-700',
@@ -32,6 +40,20 @@ export function Sidebar({ node, onClose, onDependencyClick, groups = [] }: Sideb
     shared: 'bg-gray-100 text-gray-600',
     infrastructure: 'bg-indigo-100 text-indigo-700',
   };
+
+  const fileRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+
+  useEffect(() => {
+    fileRowRefs.current.clear();
+  }, [node?.data.id]);
+
+  useEffect(() => {
+    if (!focusedFilePath || !node || node.kind !== 'cluster') {
+      return;
+    }
+    const row = fileRowRefs.current.get(focusedFilePath);
+    row?.scrollIntoView({ block: 'center' });
+  }, [focusedFilePath, node]);
 
   if (!node) {
     return (
@@ -153,7 +175,11 @@ export function Sidebar({ node, onClose, onDependencyClick, groups = [] }: Sideb
                 {node.data.files.map((file, index) => (
                   <div
                     key={index}
-                    className="text-xs text-gray-600 py-1.5 px-2 bg-gray-50 rounded hover:bg-gray-100 font-mono"
+                    ref={(element) => fileRowRefs.current.set(file, element)}
+                    className={`text-xs text-gray-600 py-1.5 px-2 bg-gray-50 rounded hover:bg-gray-100 font-mono ${
+                      focusedFilePath === file ? 'ring-1 ring-amber-200 bg-amber-50' : ''
+                    }`}
+                    title={file}
                   >
                     {file.split('/').slice(-2).join('/')}
                   </div>
