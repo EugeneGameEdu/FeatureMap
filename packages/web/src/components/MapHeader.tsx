@@ -6,6 +6,7 @@ import type { GroupSummary, LayerFilter, ViewMode } from '@/lib/types';
 interface MapHeaderProps {
   clusterCount: number;
   featureCount: number;
+  fileCount: number;
   generatedAt: string;
   viewMode: ViewMode;
   selectedLayer: LayerFilter;
@@ -25,6 +26,7 @@ interface MapHeaderProps {
 export function MapHeader({
   clusterCount,
   featureCount,
+  fileCount,
   generatedAt,
   viewMode,
   selectedLayer,
@@ -46,7 +48,8 @@ export function MapHeader({
         <div>
           <h1 className="text-xl font-bold text-gray-800">FeatureMap</h1>
           <p className="text-sm text-gray-500">
-            {clusterCount} clusters, {featureCount} features - Updated {formatDate(generatedAt)}
+            {clusterCount} clusters, {featureCount} features, {fileCount} files - Updated{' '}
+            {formatDate(generatedAt)}
           </p>
         </div>
       </div>

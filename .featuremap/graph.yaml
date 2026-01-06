@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-06T20:11:31.617Z
+generatedAt: 2026-01-06T22:36:09.236Z
 nodes:
   - fileCount: 15
     id: cli-analyzer
@@ -65,7 +65,7 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 24
+  - fileCount: 26
     id: web-lib
     label: Web Lib
     type: cluster
@@ -92,7 +92,7 @@ nodes:
   - id: web-featuremap-viewer
     label: Project Map Viewer
     type: feature
-    fileCount: 42
+    fileCount: 44
 edges:
   - source: cli-analyzer
     target: cli-constants

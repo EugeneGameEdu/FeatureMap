@@ -22,6 +22,7 @@ export interface CommentNode {
   content: string;
   position: CommentPosition;
   links: CommentLink[];
+  pinned?: boolean;
   tags?: string[];
   priority?: CommentPriority;
   author?: string;
@@ -39,11 +40,14 @@ export interface CommentNodeData {
   content: string;
   isDraft: boolean;
   isEditing: boolean;
+  isPinned?: boolean;
+  showOrphanWarning?: boolean;
   saveState?: 'idle' | 'saving' | 'saved' | 'error';
   saveError?: string | null;
   onStartEdit?: () => void;
   onCommitEdit?: (value: string) => void;
   onCancelEdit?: () => void;
+  onTogglePin?: () => void;
 }
 
 export function buildCommentNodeId(commentId: string): string {

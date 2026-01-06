@@ -25,6 +25,8 @@ imports:
     - "@/components/SearchPalette"
     - "@/components/Sidebar"
     - "@/components/ui/button"
+    - "@/lib/commentLoader"
+    - "@/lib/commentTypes"
     - "@/lib/groupFilters"
     - "@/lib/layerFilters"
     - "@/lib/loadFeatureMap"
@@ -42,4 +44,4 @@ imports:
 compositionHash: 3f5c50ccf093e648
 metadata:
   createdAt: 2026-01-06T09:31:36.358Z
-  updatedAt: 2026-01-06T20:10:45.497Z
+  updatedAt: 2026-01-06T22:04:33.559Z

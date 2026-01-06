@@ -13,12 +13,15 @@ import {
   type UiComment,
 } from './commentsMode';
 import { useCommentPersistence } from './useCommentPersistence';
-import { CommentsApiError, useCommentsApi } from './useCommentsApi';
+import { useCommentDeletion } from './useCommentDeletion';
+import { useOrphanedComments } from './useOrphanedComments';
+import { useCommentsApi } from './useCommentsApi';
 
 interface UseCommentsToolInput {
   data: FeatureMapData | null;
   visibleGraph: GraphData | null;
   currentView: 'features' | 'clusters';
+  selectedCommentId?: string | null;
   showComments: boolean;
   reactFlowInstance: ReactFlowInstance | null;
 }
@@ -39,6 +42,7 @@ export function useCommentsTool({
   data,
   visibleGraph,
   currentView,
+  selectedCommentId,
   showComments,
   reactFlowInstance,
 }: UseCommentsToolInput): UseCommentsToolResult {
@@ -70,50 +74,20 @@ export function useCommentsTool({
     updateComment,
     upsertComment,
   });
+  const handleDelete = useCommentDeletion({
+    comments,
+    deleteComment,
+    updateComment,
+    setComments,
+  });
 
-  const handleDelete = useCallback(
-    async (id: string) => {
-      const comment = comments.find((entry) => entry.id === id);
-      if (!comment) {
-        return;
-      }
-
-      if (comment.status === 'draft') {
-        setComments((prev) => prev.filter((entry) => entry.id !== id));
-        return;
-      }
-
-      updateComment(id, (entry) => ({
-        ...entry,
-        saveState: 'saving',
-        saveError: null,
-      }));
-
-      try {
-        await deleteComment(id);
-        setComments((prev) => prev.filter((entry) => entry.id !== id));
-      } catch (error) {
-        if (error instanceof CommentsApiError) {
-          const message =
-            error.type === 'token_missing' || error.type === 'forbidden'
-              ? 'Token required to delete comments (run featuremap serve and paste token).'
-              : error.message;
-          updateComment(id, (entry) => ({
-            ...entry,
-            saveState: 'error',
-            saveError: message,
-          }));
-        } else {
-          updateComment(id, (entry) => ({
-            ...entry,
-            saveState: 'error',
-            saveError: 'Failed to delete comment.',
-          }));
-        }
-      }
-    },
-    [comments, deleteComment, updateComment]
-  );
+  const { promptOrphan } = useOrphanedComments({
+    comments,
+    canPersist,
+    persistComment,
+    updateComment,
+    handleDelete,
+  });
 
   const handlers: CommentNodeHandlers = useMemo(
     () => ({
@@ -150,8 +124,28 @@ export function useCommentsTool({
           saveError: null,
         }));
       },
+      onTogglePin: (id) => {
+        const comment = comments.find((entry) => entry.id === id);
+        if (!comment) {
+          return;
+        }
+        const nextPinned = !comment.pinned;
+        const next: UiComment = { ...comment, pinned: nextPinned, isDirty: true };
+        updateComment(id, () => next);
+        if (comment.status === 'saved') {
+          if (next.links.length === 0 && !nextPinned) {
+            promptOrphan(next);
+            return;
+          }
+          persistComment(next, { pinned: nextPinned, links: next.links }, false);
+          return;
+        }
+        if (comment.status === 'draft' && !comment.isEditing && canPersist(next)) {
+          persistComment(next, { pinned: nextPinned }, false);
+        }
+      },
     }),
-    [canPersist, comments, persistComment, updateComment]
+    [canPersist, comments, persistComment, promptOrphan, updateComment]
   );
 
   const commentElements = useMemo(() => {
@@ -162,10 +156,11 @@ export function useCommentsTool({
       graph: visibleGraph,
       comments,
       currentView,
+      selectedCommentId,
       showComments,
       handlers,
     });
-  }, [comments, currentView, handlers, showComments, visibleGraph]);
+  }, [comments, currentView, handlers, selectedCommentId, showComments, visibleGraph]);
 
   const handleNodeClick = useCallback((nodeId: string): boolean => {
     return isCommentNodeId(nodeId);
@@ -231,25 +226,23 @@ export function useCommentsTool({
       if (!comment) {
         return;
       }
-      if (comment.status === 'saved' && comment.links.length <= 1) {
-        updateComment(commentId, (entry) => ({
-          ...entry,
-          saveState: 'error',
-          saveError: 'At least one link is required. Delete the comment to remove all links.',
-        }));
-        return;
-      }
       const next = removeCommentLink(comment, {
         type: linkType as 'feature' | 'cluster',
         id: linkId,
       });
       updateComment(commentId, () => next);
-      if (!canPersist(next)) {
-        return;
+      if (comment.status === 'saved') {
+        if (next.links.length === 0 && !next.pinned) {
+          promptOrphan(next);
+          return;
+        }
+        if (!canPersist(next)) {
+          return;
+        }
+        persistComment(next, { links: next.links }, false);
       }
-      persistComment(next, { links: next.links }, false);
     },
-    [canPersist, comments, persistComment, updateComment]
+    [canPersist, comments, persistComment, promptOrphan, updateComment]
   );
 
   const handleNodeDragStop = useCallback(

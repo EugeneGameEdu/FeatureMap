@@ -14,9 +14,10 @@ imports:
     - ./commands/context.js
     - ./commands/init.js
     - ./commands/scan.js
+    - ./commands/serve.js
     - ./commands/validate.js
     - ./commands/web.js
 compositionHash: 2fb448d11702324c
 metadata:
   createdAt: 2026-01-06T09:31:36.332Z
-  updatedAt: 2026-01-06T09:31:36.332Z
+  updatedAt: 2026-01-06T22:04:33.511Z

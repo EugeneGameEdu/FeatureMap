@@ -26,6 +26,7 @@ export interface CommentNodeHandlers {
   onStartEdit: (id: string) => void;
   onCommitEdit: (id: string, value: string) => void;
   onCancelEdit: (id: string) => void;
+  onTogglePin?: (id: string) => void;
 }
 
 export function getVisibleCommentIds(
@@ -38,9 +39,9 @@ export function getVisibleCommentIds(
     if (resolveCommentHomeView(comment) !== currentView) {
       continue;
     }
+    const isUnlinked = comment.links.length === 0;
     const hasVisibleLink = comment.links.some((link) => visibleNodeIds.has(link.id));
-    const isDraft = 'status' in comment && (comment as CommentNodeWithUi).status === 'draft';
-    if (!hasVisibleLink && !(isDraft && comment.links.length === 0)) {
+    if (!hasVisibleLink && !isUnlinked) {
       continue;
     }
     visible.add(comment.id);
@@ -52,12 +53,14 @@ export function buildCommentElements({
   graph,
   comments,
   currentView,
+  selectedCommentId,
   showComments,
   handlers,
 }: {
   graph: GraphData;
   comments: CommentNode[];
   currentView: 'features' | 'clusters';
+  selectedCommentId?: string | null;
   showComments: boolean;
   handlers?: CommentNodeHandlers;
 }): { nodes: Node[]; edges: Edge[] } {
@@ -73,21 +76,26 @@ export function buildCommentElements({
 
   const nodes: Node[] = sortedComments.map((comment) => {
     const hasContent = comment.content.trim().length > 0;
+    const isPinned = Boolean(comment.pinned);
     const hasLinks = comment.links.length > 0;
     const isDraft =
-      ('status' in comment ? comment.status === 'draft' : false) || !hasContent || !hasLinks;
+      ('status' in comment ? comment.status === 'draft' : false) || !hasContent;
     const isEditing =
       'isEditing' in comment ? Boolean((comment as CommentNodeWithUi).isEditing) : false;
     const saveState =
       'saveState' in comment ? (comment as CommentNodeWithUi).saveState : undefined;
     const saveError =
       'saveError' in comment ? (comment as CommentNodeWithUi).saveError : undefined;
+    const showOrphanWarning =
+      !hasLinks && !isPinned && ('status' in comment ? comment.status === 'saved' : false);
 
     const data: CommentNodeData = {
       id: comment.id,
       content: comment.content,
       isDraft,
       isEditing,
+      isPinned,
+      showOrphanWarning,
       saveState,
       saveError,
       onStartEdit: handlers?.onStartEdit ? () => handlers.onStartEdit(comment.id) : undefined,
@@ -95,6 +103,7 @@ export function buildCommentElements({
         ? (value) => handlers.onCommitEdit(comment.id, value)
         : undefined,
       onCancelEdit: handlers?.onCancelEdit ? () => handlers.onCancelEdit(comment.id) : undefined,
+      onTogglePin: handlers?.onTogglePin ? () => handlers.onTogglePin?.(comment.id) : undefined,
     };
 
     return {
@@ -102,6 +111,7 @@ export function buildCommentElements({
       type: 'comment',
       position: { ...comment.position },
       data,
+      selected: comment.id === selectedCommentId,
       draggable: !isEditing,
       deletable: true,
       selectable: true,
@@ -123,6 +133,10 @@ export function buildCommentElements({
         target: link.id,
         type: COMMENT_EDGE_TYPE,
         deletable: true,
+        selectable: true,
+        focusable: true,
+        interactionWidth: 16,
+        className: 'comment-link',
         style: COMMENT_EDGE_STYLE,
         animated: false,
       });

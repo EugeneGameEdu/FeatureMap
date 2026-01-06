@@ -1,7 +1,7 @@
 version: 1
 id: web-featuremap-viewer
 name: Project Map Viewer
-description: Web page that shows the feature map and lets you explore it.
+description: React UI for visualizing the feature map with filters, navigation, comments, and details panels.
 source: ai
 status: active
 scope: fullstack
@@ -11,9 +11,9 @@ clusters:
   - web-core
   - web-lib
 composition:
-  hash: 4d9a2fce11bb363a
+  hash: 3ceaaa0da419736c
 metadata:
   createdAt: 2026-01-06T09:32:02.119Z
-  updatedAt: 2026-01-06T09:35:49.111Z
+  updatedAt: 2026-01-06T22:36:09.236Z
   lastModifiedBy: ai
-  version: 1
+  version: 4

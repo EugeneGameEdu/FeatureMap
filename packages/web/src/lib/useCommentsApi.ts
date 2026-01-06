@@ -27,6 +27,7 @@ export interface CommentUpsertPayload {
   content?: string;
   position?: CommentPosition;
   links?: CommentLink[];
+  pinned?: boolean;
   tags?: string[];
   priority?: 'low' | 'medium' | 'high';
   author?: string;

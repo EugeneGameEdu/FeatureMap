@@ -6,6 +6,7 @@ layerDetection:
   signals:
     - path contains /web/
     - file extension .tsx
+    - imports @xyflow/react
     - imports react
     - imports react-dom
     - exports React components
@@ -18,12 +19,22 @@ exports:
     type: function
 imports:
   external:
-    - "@/components/ContextViewer"
     - "@/components/FeatureMap"
+    - "@/components/LeftToolbar"
+    - "@/components/MapHeader"
+    - "@/components/SearchPalette"
     - "@/components/Sidebar"
     - "@/components/ui/button"
+    - "@/lib/commentLoader"
+    - "@/lib/commentTypes"
+    - "@/lib/groupFilters"
+    - "@/lib/layerFilters"
     - "@/lib/loadFeatureMap"
     - "@/lib/types"
+    - "@/lib/useCommentsTool"
+    - "@/lib/useSearchNavigation"
+    - "@/lib/wsClient"
+    - "@xyflow/react"
     - lucide-react
     - react
     - react-dom/client
@@ -33,4 +44,4 @@ imports:
 compositionHash: 3f5c50ccf093e648
 metadata:
   createdAt: 2026-01-06T09:31:36.358Z
-  updatedAt: 2026-01-06T09:31:36.358Z
+  updatedAt: 2026-01-06T22:04:33.559Z

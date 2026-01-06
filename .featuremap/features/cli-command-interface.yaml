@@ -1,7 +1,7 @@
 version: 1
 id: cli-command-interface
 name: Command Line Tools
-description: Lets you run scans and other tasks from the terminal.
+description: CLI entrypoints and commands for scanning, serving, and managing FeatureMap workflows.
 source: ai
 status: active
 scope: shared
@@ -14,6 +14,6 @@ composition:
   hash: 2df6747d4a4b3d18
 metadata:
   createdAt: 2026-01-06T09:32:02.119Z
-  updatedAt: 2026-01-06T14:52:31.789Z
+  updatedAt: 2026-01-06T22:36:09.236Z
   lastModifiedBy: ai
-  version: 2
+  version: 3

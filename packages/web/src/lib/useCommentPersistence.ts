@@ -55,8 +55,8 @@ export function useCommentPersistence({
     if (!comment.content.trim()) {
       return 'Content required to save.';
     }
-    if (comment.links.length === 0) {
-      return 'Add at least one link to save.';
+    if (comment.links.length === 0 && !comment.pinned) {
+      return 'Add at least one link or pin the note to save.';
     }
     return null;
   }, []);
@@ -74,6 +74,7 @@ export function useCommentPersistence({
         content: override.content ?? comment.content,
         position: override.position ?? comment.position,
         links: override.links ?? comment.links,
+        pinned: override.pinned ?? comment.pinned,
         ...(comment.author ? { author: comment.author } : {}),
         ...(comment.createdAt ? { createdAt: comment.createdAt } : {}),
         ...(comment.updatedAt ? { updatedAt: comment.updatedAt } : {}),
@@ -105,12 +106,14 @@ export function useCommentPersistence({
             ? buildPayload(comment, override)
             : { id: comment.id, ...(comment.homeView ? { homeView: comment.homeView } : {}), ...override };
         const saved = await upsertComment(payload);
+        const resolvedPinned = saved.pinned ?? override.pinned ?? comment.pinned ?? false;
         setComments((prev) => {
           const withoutOld = prev.filter((entry) => entry.id !== comment.id);
           return [
             ...withoutOld,
             {
               ...saved,
+              pinned: resolvedPinned,
               status: 'saved',
               isDirty: false,
               isEditing: false,

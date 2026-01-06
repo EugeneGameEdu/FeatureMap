@@ -46,6 +46,7 @@ export const KEY_ORDER: Record<string, string[]> = {
     'content',
     'position',
     'links',
+    'pinned',
     'tags',
     'priority',
     'author',

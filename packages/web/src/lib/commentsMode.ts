@@ -19,6 +19,7 @@ export function createDraftComment(position: CommentPosition, homeView: CommentH
     version: 1,
     id: `${DRAFT_PREFIX}${Date.now()}`,
     homeView,
+    pinned: false,
     content: '',
     position,
     links: [],
@@ -49,8 +50,10 @@ export function mergeSavedComments(
     if (current?.isDirty) {
       return current;
     }
+    const pinned = comment.pinned ?? current?.pinned ?? false;
     return {
       ...comment,
+      pinned,
       status: 'saved',
       isEditing: current?.isEditing ?? false,
       saveState: current?.saveState ?? 'idle',

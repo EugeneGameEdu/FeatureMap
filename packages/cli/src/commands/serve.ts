@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createServer } from '../server/createServer.js';
+import { copyFeatureMapData, findWebPackagePath } from '../utils/featuremapWebSync.js';
 
 interface ServeOptions {
   port: string;
@@ -26,6 +27,16 @@ export function createServeCommand(): Command {
       if (!fs.existsSync(featuremapDir)) {
         console.error('Error: .featuremap/ not found. Run "featuremap init" first.');
         process.exit(1);
+      }
+
+      if (options.dev) {
+        const webPackagePath = findWebPackagePath();
+        if (!webPackagePath) {
+          throw new Error('Could not find @featuremap/web package.');
+        }
+        const webPublicData = path.join(webPackagePath, 'public', 'featuremap-data');
+        await copyFeatureMapData(featuremapDir, webPublicData);
+        console.log('Synced feature map data to web');
       }
 
       const sessionToken = randomBytes(24).toString('hex');

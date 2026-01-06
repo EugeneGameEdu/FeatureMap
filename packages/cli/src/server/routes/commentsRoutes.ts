@@ -11,6 +11,7 @@ const CommentUpsertSchema = z.object({
   content: z.string().optional(),
   position: CommentNodeSchema.shape.position.optional(),
   links: CommentNodeSchema.shape.links.optional(),
+  pinned: z.boolean().optional(),
   tags: z.array(z.string()).optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   author: z.string().optional(),

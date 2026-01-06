@@ -15,12 +15,18 @@ imports:
     - "@modelcontextprotocol/sdk/server/stdio.js"
     - zod
   internal:
+    - ./tools/createGroup.js
+    - ./tools/findRelevantFeatures.js
+    - ./tools/getArchitectureOverview.js
+    - ./tools/getClusterFiles.js
     - ./tools/getCurrentFeatures.js
+    - ./tools/getFeatureDetails.js
     - ./tools/getGroupingInput.js
+    - ./tools/getNodeComments.js
     - ./tools/getProjectContext.js
     - ./tools/saveFeaturesFromGrouping.js
     - ./tools/updateFeature.js
 compositionHash: 0d61616d41c6fc88
 metadata:
   createdAt: 2026-01-06T09:31:36.348Z
-  updatedAt: 2026-01-06T09:31:36.348Z
+  updatedAt: 2026-01-06T22:04:33.534Z

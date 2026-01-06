@@ -14,6 +14,7 @@ files:
   - packages/web/src/components/ui/badge.tsx
   - packages/web/src/components/ui/button.tsx
   - packages/web/src/components/ui/card.tsx
+  - packages/web/src/components/ui/dialog.tsx
   - packages/web/src/components/ui/scroll-area.tsx
   - packages/web/src/components/ui/sheet.tsx
 exports:
@@ -36,7 +37,7 @@ imports:
     - lucide-react
     - react
   internal: []
-compositionHash: 684c5864486da5f4
+compositionHash: 54e905d93f23df1c
 metadata:
   createdAt: 2026-01-06T09:31:36.357Z
-  updatedAt: 2026-01-06T09:31:36.357Z
+  updatedAt: 2026-01-06T22:04:33.556Z

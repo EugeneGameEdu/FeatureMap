@@ -26,10 +26,12 @@ files:
   - packages/web/src/lib/searchScoring.ts
   - packages/web/src/lib/searchVisibility.ts
   - packages/web/src/lib/types.ts
+  - packages/web/src/lib/useCommentDeletion.ts
   - packages/web/src/lib/useCommentPersistence.ts
   - packages/web/src/lib/useCommentsApi.ts
   - packages/web/src/lib/useCommentsTool.ts
   - packages/web/src/lib/useContextApi.ts
+  - packages/web/src/lib/useOrphanedComments.ts
   - packages/web/src/lib/useSearchNavigation.ts
   - packages/web/src/lib/utils.ts
   - packages/web/src/lib/wsClient.ts
@@ -342,6 +344,9 @@ exports:
     name: UiComment
     type: interface
   - isDefault: false
+    name: useCommentDeletion
+    type: function
+  - isDefault: false
     name: useCommentPersistence
     type: function
   - isDefault: false
@@ -355,6 +360,9 @@ exports:
     type: interface
   - isDefault: false
     name: useContextApi
+    type: function
+  - isDefault: false
+    name: useOrphanedComments
     type: function
   - isDefault: false
     name: useSearchNavigation
@@ -389,10 +397,12 @@ imports:
     - ./searchScoring
     - ./searchVisibility
     - ./types
+    - ./useCommentDeletion
     - ./useCommentPersistence
     - ./useCommentsApi
+    - ./useOrphanedComments
     - ./yamlParsing
-compositionHash: 476e1bb633cd1fbc
+compositionHash: e13155e60b28c5bd
 metadata:
   createdAt: 2026-01-06T09:31:36.359Z
-  updatedAt: 2026-01-06T20:10:45.506Z
+  updatedAt: 2026-01-06T22:04:33.569Z

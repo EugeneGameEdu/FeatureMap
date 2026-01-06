@@ -9,7 +9,6 @@ import {
   type Connection,
   type NodeChange,
   Node,
-  Panel,
   ReactFlow,
   type ReactFlowInstance,
   useEdgesState,
@@ -243,6 +242,7 @@ export function FeatureMap({
         onNodeDragStop={handleNodeDragStop}
         onInit={onInit}
         connectionMode={ConnectionMode.Loose}
+        deleteKeyCode={['Backspace', 'Delete']}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.3}
@@ -254,13 +254,6 @@ export function FeatureMap({
       >
         <Background color="#e5e7eb" gap={20} size={1} />
         <Controls showInteractive={false} />
-        <Panel
-          position="top-left"
-          className="bg-white/90 backdrop-blur px-3 py-2 rounded-lg shadow-sm text-sm text-gray-600"
-        >
-          {graph.nodes.length + commentNodes.length} nodes -{' '}
-          {graph.edges.length + commentEdges.length} connections
-        </Panel>
       </ReactFlow>
     </div>
   );

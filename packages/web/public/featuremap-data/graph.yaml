@@ -1,11 +1,11 @@
 version: 1
-generatedAt: 2026-01-06T09:35:49.115Z
+generatedAt: 2026-01-06T22:36:09.236Z
 nodes:
   - fileCount: 15
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
-  - fileCount: 5
+  - fileCount: 6
     id: cli-commands
     label: Cli Commands
     type: cluster
@@ -21,7 +21,15 @@ nodes:
     id: cli-scripts
     label: Cli Scripts
     type: cluster
-  - fileCount: 9
+  - fileCount: 5
+    id: cli-server
+    label: Cli Server
+    type: cluster
+  - fileCount: 2
+    id: cli-server-routes
+    label: Cli Server Routes
+    type: cluster
+  - fileCount: 11
     id: cli-types
     label: Cli Types
     type: cluster
@@ -33,23 +41,23 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 6
+  - fileCount: 12
     id: mcp-server-tools
     label: Mcp Server Tools
     type: cluster
-  - fileCount: 2
+  - fileCount: 3
     id: mcp-server-types
     label: Mcp Server Types
     type: cluster
-  - fileCount: 7
+  - fileCount: 12
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 4
+  - fileCount: 10
     id: web-components
     label: Web Components
     type: cluster
-  - fileCount: 5
+  - fileCount: 6
     id: web-components-ui
     label: Web Components Ui
     type: cluster
@@ -57,14 +65,14 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 6
+  - fileCount: 26
     id: web-lib
     label: Web Lib
     type: cluster
   - id: cli-command-interface
     label: Command Line Tools
     type: feature
-    fileCount: 6
+    fileCount: 7
   - id: cli-demo-scripts
     label: Demo Scripts
     type: feature
@@ -72,15 +80,19 @@ nodes:
   - id: code-analysis-engine
     label: Code Reader
     type: feature
-    fileCount: 35
+    fileCount: 37
+  - id: featuremap-serve-server
+    label: Serve Web Server
+    type: feature
+    fileCount: 7
   - id: mcp-server
     label: AI Bridge Server
     type: feature
-    fileCount: 16
+    fileCount: 28
   - id: web-featuremap-viewer
     label: Project Map Viewer
     type: feature
-    fileCount: 17
+    fileCount: 44
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -93,6 +105,8 @@ edges:
   - source: cli-commands
     target: cli-constants
   - source: cli-commands
+    target: cli-server
+  - source: cli-commands
     target: cli-types
   - source: cli-commands
     target: cli-utils
@@ -101,6 +115,20 @@ edges:
   - source: cli-scripts
     target: cli-types
   - source: cli-scripts
+    target: cli-utils
+  - source: cli-server
+    target: cli-constants
+  - source: cli-server
+    target: cli-server-routes
+  - source: cli-server
+    target: cli-types
+  - source: cli-server
+    target: cli-utils
+  - source: cli-server-routes
+    target: cli-server
+  - source: cli-server-routes
+    target: cli-types
+  - source: cli-server-routes
     target: cli-utils
   - source: cli-utils
     target: cli-analyzer
@@ -136,6 +164,12 @@ edges:
     type: contains
   - source: code-analysis-engine
     target: cli-utils
+    type: contains
+  - source: featuremap-serve-server
+    target: cli-server
+    type: contains
+  - source: featuremap-serve-server
+    target: cli-server-routes
     type: contains
   - source: mcp-server
     target: mcp-server-core

@@ -2,14 +2,14 @@ version: 1
 id: mcp-server-types
 layer: shared
 layerDetection:
-  confidence: medium
+  confidence: low
   signals:
     - path contains /mcp-server/
     - path contains /types/
-    - exports only types
 files:
   - packages/mcp-server/src/types/context.ts
   - packages/mcp-server/src/types/feature.ts
+  - packages/mcp-server/src/types/group.ts
 exports:
   - isDefault: false
     name: ClusterInfo
@@ -51,15 +51,37 @@ exports:
     name: GraphNode
     type: interface
   - isDefault: false
+    name: GroupFile
+    type: type
+  - isDefault: false
+    name: GroupLocks
+    type: type
+  - isDefault: false
+    name: GroupLocksSchema
+    type: variable
+  - isDefault: false
+    name: GroupMetadata
+    type: type
+  - isDefault: false
+    name: GroupMetadataSchema
+    type: variable
+  - isDefault: false
+    name: GroupSchema
+    type: variable
+  - isDefault: false
+    name: GroupSourceSchema
+    type: variable
+  - isDefault: false
     name: Overview
     type: interface
   - isDefault: false
     name: TechStackInfo
     type: interface
 imports:
-  external: []
+  external:
+    - zod
   internal: []
-compositionHash: d2209ed4f9870e2f
+compositionHash: 14dd2ccb99f31e63
 metadata:
   createdAt: 2026-01-06T09:31:36.352Z
-  updatedAt: 2026-01-06T09:31:36.352Z
+  updatedAt: 2026-01-06T22:04:33.543Z

@@ -8,6 +8,7 @@ files:
   - packages/cli/src/commands/context.ts
   - packages/cli/src/commands/init.ts
   - packages/cli/src/commands/scan.ts
+  - packages/cli/src/commands/serve.ts
   - packages/cli/src/commands/validate.ts
   - packages/cli/src/commands/web.ts
 exports:
@@ -21,6 +22,9 @@ exports:
     name: createScanCommand
     type: function
   - isDefault: false
+    name: createServeCommand
+    type: function
+  - isDefault: false
     name: createWebCommand
     type: function
   - isDefault: false
@@ -30,10 +34,12 @@ imports:
   external:
     - child_process
     - commander
+    - crypto
     - fast-glob
     - fs
     - path
     - url
+    - yaml
     - zod
   internal:
     - ../analyzer/cluster-id-matching.js
@@ -44,6 +50,7 @@ imports:
     - ../analyzer/scanner.js
     - ../analyzer/tech-stack-detector.js
     - ../constants/versions.js
+    - ../server/createServer.js
     - ../types/index.js
     - ../utils/cluster-builder.js
     - ../utils/contextTemplates.js
@@ -52,7 +59,7 @@ imports:
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
     - ../utils/yaml-loader.js
-compositionHash: aa551dbeb6f0a91b
+compositionHash: 739e908fbe699880
 metadata:
   createdAt: 2026-01-06T09:31:36.327Z
-  updatedAt: 2026-01-06T09:31:36.327Z
+  updatedAt: 2026-01-06T22:04:33.506Z

@@ -20,6 +20,7 @@ export interface CommentUpsertInput {
   content?: string;
   position?: { x: number; y: number };
   links?: CommentLink[];
+  pinned?: boolean;
   tags?: string[];
   priority?: 'low' | 'medium' | 'high';
   author?: string;
@@ -80,6 +81,7 @@ export function upsertComment(projectRoot: string, input: CommentUpsertInput): C
   const priority = input.priority ?? existing?.priority;
   const author = input.author ?? existing?.author;
   const homeView = input.homeView ?? existing?.homeView ?? inferHomeViewFromLinks(links);
+  const pinned = input.pinned ?? existing?.pinned ?? false;
 
   const comment: CommentNode = {
     version: SUPPORTED_VERSIONS.comment,
@@ -88,6 +90,7 @@ export function upsertComment(projectRoot: string, input: CommentUpsertInput): C
     content,
     position,
     links: sortLinks(links),
+    ...(pinned ? { pinned } : {}),
     ...(tags.length > 0 ? { tags } : {}),
     ...(priority ? { priority } : {}),
     ...(author ? { author } : {}),
@@ -95,10 +98,14 @@ export function upsertComment(projectRoot: string, input: CommentUpsertInput): C
     ...(updatedAt ? { updatedAt } : {}),
   };
 
-  const filePath = path.join(commentsDir, `${COMMENT_FILE_PREFIX}${finalId}.yaml`);
+  const filePath = path.join(commentsDir, buildCommentFileName(finalId));
   saveYAML(filePath, comment, CommentNodeSchema, {
     sortArrayFields: ['tags'],
   });
+  const legacyPath = path.join(commentsDir, `${COMMENT_FILE_PREFIX}${finalId}.yaml`);
+  if (legacyPath !== filePath && fs.existsSync(legacyPath)) {
+    fs.unlinkSync(legacyPath);
+  }
 
   return comment;
 }
@@ -109,13 +116,18 @@ export function deleteComment(projectRoot: string, id: string): void {
   }
 
   const commentsDir = getCommentsDir(projectRoot);
-  const filePath = path.join(commentsDir, `${COMMENT_FILE_PREFIX}${id}.yaml`);
+  const filePath = path.join(commentsDir, buildCommentFileName(id));
+  const legacyPath = path.join(commentsDir, `${COMMENT_FILE_PREFIX}${id}.yaml`);
+  const paths = new Set([filePath, legacyPath]);
+  const existingPaths = [...paths].filter((entry) => fs.existsSync(entry));
 
-  if (!fs.existsSync(filePath)) {
+  if (existingPaths.length === 0) {
     throw new Error('Comment not found.');
   }
 
-  fs.unlinkSync(filePath);
+  for (const existingPath of existingPaths) {
+    fs.unlinkSync(existingPath);
+  }
 }
 
 function getCommentsDir(projectRoot: string): string {
@@ -132,6 +144,12 @@ function ensureCommentsDir(projectRoot: string): string {
 
 function isDraftId(id: string): boolean {
   return id.startsWith(DRAFT_PREFIX);
+}
+
+function buildCommentFileName(id: string): string {
+  return id.startsWith(COMMENT_FILE_PREFIX)
+    ? `${id}.yaml`
+    : `${COMMENT_FILE_PREFIX}${id}.yaml`;
 }
 
 function generateCommentId(existingIds: Set<string>): string {

@@ -7,6 +7,8 @@ import { LeftToolbar } from '@/components/LeftToolbar';
 import { MapHeader } from '@/components/MapHeader';
 import { SearchPalette } from '@/components/SearchPalette';
 import { Button } from '@/components/ui/button';
+import { loadComments } from '@/lib/commentLoader';
+import { COMMENT_NODE_PREFIX } from '@/lib/commentTypes';
 import { applyGroupFilter } from '@/lib/groupFilters';
 import { loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter } from '@/lib/layerFilters';
@@ -20,19 +22,18 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
   const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [showComments, setShowComments] = useState(true);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
-
   const activeGraph = data
     ? viewMode === 'clusters'
       ? data.clusterGraph
       : data.featureGraph
     : null;
-
   const visibleGraph = useMemo(() => {
     if (!activeGraph || !data) {
       return null;
@@ -51,12 +52,8 @@ function App() {
       data.entities
     );
     return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
-  }, [activeGraph, data, selectedGroupId, selectedLayer, viewMode]);
-  const visibleNodeIds = useMemo(
-    () => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []),
-    [visibleGraph]
-  );
-
+  }, [activeGraph, data?.entities, data?.groupsById, selectedGroupId, selectedLayer, viewMode]);
+  const visibleNodeIds = useMemo(() => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []), [visibleGraph]);
   const {
     commentElements,
     commentToolMode,
@@ -72,10 +69,10 @@ function App() {
     data,
     visibleGraph,
     currentView: viewMode,
+    selectedCommentId,
     showComments,
     reactFlowInstance,
   });
-
   const {
     searchOpen,
     setSearchOpen,
@@ -99,33 +96,50 @@ function App() {
     onSelectedNodeChange: setSelectedNodeId,
     onFocusedFilePathChange: setFocusedFilePath,
   });
-
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const loadData = useCallback(async (options?: { showLoading?: boolean }) => {
+    const showLoading = options?.showLoading ?? true;
+    if (showLoading) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const featureMap = await loadFeatureMap();
       setData(featureMap);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+      if (showLoading) {
+        setError(err instanceof Error ? err.message : 'Failed to load data');
+      } else {
+        console.warn('Failed to refresh data:', err);
+      }
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   }, []);
-
+  const refreshComments = useCallback(async () => {
+    try {
+      const comments = await loadComments();
+      setData((prev) => (prev ? { ...prev, comments } : prev));
+    } catch (err) {
+      console.warn('Failed to refresh comments:', err);
+    }
+  }, []);
   useEffect(() => {
     loadData();
   }, [loadData]);
-
   useEffect(() => {
     const disconnect = connectFeaturemapWs((message) => {
       if (message.type === 'featuremap_changed') {
-        loadData();
+        if (message.reason === 'comments_updated' || message.file?.startsWith('comments/')) {
+          refreshComments();
+          return;
+        }
+        loadData({ showLoading: false });
       }
     });
     return disconnect;
-  }, [loadData]);
-
+  }, [loadData, refreshComments]);
   useEffect(() => {
     if (!selectedNodeId || !visibleGraph) {
       return;
@@ -135,7 +149,16 @@ function App() {
       setSelectedNodeId(null);
     }
   }, [selectedNodeId, visibleGraph]);
-
+  useEffect(() => {
+    if (!selectedCommentId) {
+      return;
+    }
+    const commentNodeId = `${COMMENT_NODE_PREFIX}${selectedCommentId}`;
+    const exists = commentElements.nodes.some((node) => node.id === commentNodeId);
+    if (!exists) {
+      setSelectedCommentId(null);
+    }
+  }, [commentElements.nodes, selectedCommentId]);
   useEffect(() => {
     if (!data) {
       return;
@@ -144,17 +167,15 @@ function App() {
       setSelectedGroupId('all');
     }
   }, [data, selectedGroupId]);
-
   const handleNodeClick = (nodeId: string) => {
     if (handleCommentNodeClick(nodeId)) {
-      setFocusedFilePath(null);
-      setSelectedNodeId(null);
+      setFocusedFilePath(null); setSelectedNodeId(null);
+      setSelectedCommentId(nodeId.slice(COMMENT_NODE_PREFIX.length));
       return;
     }
-    setFocusedFilePath(null);
+    setFocusedFilePath(null); setSelectedCommentId(null);
     setSelectedNodeId(nodeId);
   };
-
   const handleDependencyClick = (nodeId: string) => {
     if (!data?.entities[nodeId]) {
       return;
@@ -164,15 +185,13 @@ function App() {
     if (!exists && viewMode === 'features') {
       setViewMode('clusters');
     }
-    setFocusedFilePath(null);
+    setFocusedFilePath(null); setSelectedCommentId(null);
     setSelectedNodeId(nodeId);
   };
-
   const handleCloseSidebar = () => {
     setFocusedFilePath(null);
     setSelectedNodeId(null);
   };
-
 
   if (loading) {
     return (
@@ -202,6 +221,10 @@ function App() {
   const selectedNode = selectedNodeId ? data.entities[selectedNodeId] : null;
   const clusterCount = data.clusterGraph.nodes.length;
   const featureCount = data.featureGraph.nodes.length;
+  const fileCount = Object.values(data.entities).reduce(
+    (sum, entity) => (entity.kind === 'cluster' ? sum + entity.data.files.length : sum),
+    0
+  );
   const selectedGroup = selectedGroupId === 'all' ? null : data.groupsById[selectedGroupId];
   const missingGroupFeatures = selectedGroup?.missingFeatureIds ?? [];
   const hasGroups = data.groups.length > 0;
@@ -216,10 +239,11 @@ function App() {
         onQueryChange={setSearchQuery}
         onSelectResult={onSearchSelect}
       />
-      <MapHeader
-        clusterCount={clusterCount}
-        featureCount={featureCount}
-        generatedAt={data.graph.generatedAt}
+        <MapHeader
+          clusterCount={clusterCount}
+          featureCount={featureCount}
+          fileCount={fileCount}
+          generatedAt={data.graph.generatedAt}
         viewMode={viewMode}
         selectedLayer={selectedLayer}
         selectedGroupId={selectedGroupId}
@@ -234,7 +258,6 @@ function App() {
         onToggleComments={() => setShowComments((current) => !current)}
         onRefresh={loadData}
       />
-
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <LeftToolbar
