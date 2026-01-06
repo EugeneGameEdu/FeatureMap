@@ -29,6 +29,16 @@ export const KEY_ORDER: Record<string, string[]> = {
     'metadata',
     'reasoning',
   ],
+  group: [
+    'version',
+    'id',
+    'name',
+    'description',
+    'featureIds',
+    'source',
+    'locks',
+    'metadata',
+  ],
   graph: ['version', 'generatedAt', 'nodes', 'edges'],
   layout: ['version', 'positions', 'viewport', 'metadata'],
 };

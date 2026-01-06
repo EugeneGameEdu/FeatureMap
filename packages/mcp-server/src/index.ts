@@ -8,6 +8,7 @@ import { updateFeature } from './tools/updateFeature.js';
 import { getProjectContextTool } from './tools/getProjectContext.js';
 import { getGroupingInputTool } from './tools/getGroupingInput.js';
 import { saveFeaturesFromGroupingTool } from './tools/saveFeaturesFromGrouping.js';
+import { createGroupTool } from './tools/createGroup.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -122,10 +123,18 @@ server.tool(
   saveFeaturesFromGroupingTool.execute
 );
 
+// Tool: create_group
+server.tool(
+  createGroupTool.name,
+  createGroupTool.description,
+  createGroupTool.parameters,
+  createGroupTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 5 tools');
+  console.error('FeatureMap MCP server started with 6 tools');
 }
 
 main().catch((error) => {

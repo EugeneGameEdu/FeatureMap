@@ -145,6 +145,10 @@ function getTypeFromPath(filePath: string): string | null {
     return 'cluster';
   }
 
+  if (normalized.includes('/groups/')) {
+    return 'group';
+  }
+
   return null;
 }
 

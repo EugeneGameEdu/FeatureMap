@@ -10,6 +10,7 @@ import {
   DecisionsSchema,
   DesignSystemSchema,
   FeatureSchema,
+  GroupSchema,
   GraphSchema,
   RawGraphSchema,
   LayoutSchema,
@@ -87,6 +88,10 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath.startsWith('clusters/')) {
     return { schema: ClusterSchema, fileType: 'cluster' };
+  }
+
+  if (relativePath.startsWith('groups/')) {
+    return { schema: GroupSchema, fileType: 'group' };
   }
 
   return null;

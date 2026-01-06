@@ -3,6 +3,7 @@ export * from './config.js';
 export * from './raw-graph.js';
 export * from './cluster.js';
 export * from './feature.js';
+export * from './group.js';
 export * from './graph.js';
 export * from './layout.js';
 export * from './context.js';
