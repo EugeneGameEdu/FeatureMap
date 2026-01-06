@@ -583,7 +583,7 @@ featuremap scan
 
 ---
 
-## Фаза 2: AI-группировка в фичи
+## [done] Фаза 2: AI-группировка в фичи
 
 **Цель:** Реализовать ядро — группировку кластеров в архитектурные фичи.
 
@@ -658,7 +658,7 @@ cat .featuremap/context/conventions.yaml
 
 ---
 
-### Шаг 2.4a: MCP Tool — get_grouping_input
+### [done] Шаг 2.4a: MCP Tool — get_grouping_input
 
 **Задача:** Подготовить компактные данные для AI-анализа группировки.
 
@@ -842,11 +842,11 @@ featuremap scan --ai
 
 ---
 
-## Фаза 3: Project Context (полный)
+## [done] Фаза 3: Project Context (полный)
 
 **Цель:** Дать AI полный контекст проекта для умных решений.
 
-### Шаг 3.1: Команда context init
+### [done] Шаг 3.1: Команда context init
 
 **Задача:** CLI команда для инициализации контекста.
 
@@ -869,7 +869,7 @@ featuremap context init
 
 ---
 
-### Шаг 3.2: Ручное редактирование constraints и decisions
+### [done] Шаг 3.2: Ручное редактирование constraints и decisions
 
 **Задача:** Пользователь может вручную добавить constraints.
 
@@ -892,7 +892,7 @@ featuremap scan --ai
 
 ---
 
-### Шаг 3.3: MCP Tool — conditional context loading
+### [done] Шаг 3.3: MCP Tool — conditional context loading
 
 **Задача:** AI получает только релевантный контекст.
 
@@ -1498,9 +1498,9 @@ featuremap web
 - [done] 2.6 Стабильность (composition hash)
 
 ### Фаза 3: Project Context
-- [ ] 3.1 Команда context init
+- [done] 3.1 Команда context init
 - [ ] 3.2 Ручное редактирование
-- [ ] 3.3 Conditional context loading
+- [done] 3.3 Conditional context loading
 
 ### Фаза 4: Слои и группы
 - [ ] 4.1 Слои в данных

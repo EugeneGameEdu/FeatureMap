@@ -34,7 +34,7 @@ export function loadProjectContext(featuremapDir: string): ProjectContext {
   };
 }
 
-function loadContextFile<T>(dir: string, filename: string): T | null {
+export function loadContextFile<T>(dir: string, filename: string): T | null {
   const filePath = join(dir, filename);
   if (!existsSync(filePath)) {
     return null;
