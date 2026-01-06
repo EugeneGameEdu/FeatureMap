@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactFlowInstance } from '@xyflow/react';
 import { RefreshCw } from 'lucide-react';
 import { FeatureMap } from '@/components/FeatureMap';
@@ -11,6 +11,7 @@ import { applyGroupFilter } from '@/lib/groupFilters';
 import { loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter } from '@/lib/layerFilters';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
+import { connectFeaturemapWs } from '@/lib/wsClient';
 import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
 
 function App() {
@@ -78,7 +79,7 @@ function App() {
     onFocusedFilePathChange: setFocusedFilePath,
   });
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -89,11 +90,20 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
+
+  useEffect(() => {
+    const disconnect = connectFeaturemapWs((message) => {
+      if (message.type === 'featuremap_changed') {
+        loadData();
+      }
+    });
+    return disconnect;
+  }, [loadData]);
 
   useEffect(() => {
     if (!selectedNodeId || !visibleGraph) {

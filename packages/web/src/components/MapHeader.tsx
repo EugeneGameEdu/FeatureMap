@@ -113,7 +113,7 @@ export function MapHeader({
             </div>
           )}
         </div>
-        <ContextViewer context={context} />
+        <ContextViewer context={context} onRefresh={onRefresh} />
         <Button variant="outline" size="sm" onClick={onRefresh}>
           <RefreshCw size={14} className="mr-1" />
           Refresh

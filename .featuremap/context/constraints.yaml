@@ -1,12 +1,39 @@
 version: 1
 source: manual
-updatedAt: "2024-01-01T00:00:00Z"
-
+updatedAt: 2026-01-06T00:00:00Z
 constraints:
-  # Example - uncomment and edit:
-  # - id: avoid-ssr
-  #   type: technical
-  #   title: "Client-only rendering"
-  #   description: "The app must run without server-side rendering"
-  #   impact: "All pages must be compatible with static hosting"
-  []
+  - id: max-300-lines
+    type: technical
+    title: Max 300 lines per file
+    description: |
+      Keep each source file under 300 LOC. If a file grows, split into focused helpers/modules.
+    impact: |
+      Improves maintainability and prevents "god files".
+  - id: zod-at-boundaries
+    type: technical
+    title: Validate inputs/YAML with Zod at boundaries
+    description: |
+      Use Zod validation for YAML parsing and for all tool/API inputs (CLI, MCP server, Web, Serve API).
+    impact: |
+      Prevents schema drift and makes failures explicit.
+  - id: authored-not-overwritten
+    type: compliance
+    title: Never overwrite authored files automatically
+    description: |
+      Authored files (features/*.yaml, groups/*.yaml, comments/*.yaml, layout.yaml, context/{decisions,constraints,overview,design-system}.yaml) must never be overwritten by scan/AI. Derived files may be regenerated freely.
+    impact: |
+      Protects manual curation and lock semantics.
+  - id: deterministic-output
+    type: performance
+    title: Deterministic outputs and stable IDs
+    description: |
+      Generated YAML and tool responses must be deterministic (stable sorting, stable key order). IDs should remain stable across scans whenever possible.
+    impact: |
+      Reduces noisy diffs and prevents unstable feature/group churn.
+  - id: token-gated-writes
+    type: compliance
+    title: Local-only server; token required for writes
+    description: |
+      featuremap serve must be localhost-only. Any write endpoint must require a session token. Web should store the token only for the session (sessionStorage) and never silently persist it.
+    impact: |
+      Prevents unintended writes and keeps local editing safe.
