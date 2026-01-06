@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react';
-import type { Edge, Node, ReactFlowInstance } from '@xyflow/react';
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
+import type { Connection, Edge, Node, ReactFlowInstance } from '@xyflow/react';
 import type { FeatureMapData, GraphData } from './types';
-import { buildCommentElements } from './commentVisibility';
+import { buildCommentElements, type CommentNodeHandlers } from './commentVisibility';
 import { COMMENT_NODE_PREFIX, isCommentNodeId } from './commentTypes';
 import {
+  addCommentLink,
   createDraftComment,
-  isDraftComment,
   mergeSavedComments,
+  removeCommentLink,
   toggleAddMode,
-  toggleCommentLink,
   type CommentToolMode,
   type UiComment,
 } from './commentsMode';
+import { useCommentPersistence } from './useCommentPersistence';
 import { CommentsApiError, useCommentsApi } from './useCommentsApi';
 
 interface UseCommentsToolInput {
@@ -20,20 +21,17 @@ interface UseCommentsToolInput {
   showComments: boolean;
   reactFlowInstance: ReactFlowInstance | null;
 }
-
 export interface UseCommentsToolResult {
   commentElements: { nodes: Node[]; edges: Edge[] };
   commentToolMode: CommentToolMode;
-  activeComment: UiComment | null;
-  commentSaveError: string | null;
-  isSavingComment: boolean;
-  handleNodeClick: (nodeId: string) => 'comment' | 'link' | null;
+  placementActive: boolean;
+  handleNodeClick: (nodeId: string) => boolean;
   handlePaneClick: (event: MouseEvent) => void;
-  handleCommentChange: (updates: Partial<UiComment>) => void;
-  handleCommentCancel: () => void;
-  handleCommentSave: () => Promise<void>;
-  toggleAddMode: () => void;
-  toggleLinkMode: () => void;
+  handleConnect: (connection: Connection) => void;
+  handleEdgeRemove: (edgeId: string) => void;
+  handleNodeDragStop: (node: Node) => void;
+  handleNodeRemove: (nodeId: string) => void;
+  togglePlacementMode: () => void;
 }
 
 export function useCommentsTool({
@@ -43,28 +41,8 @@ export function useCommentsTool({
   reactFlowInstance,
 }: UseCommentsToolInput): UseCommentsToolResult {
   const [commentToolMode, setCommentToolMode] = useState<CommentToolMode>('off');
-  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [comments, setComments] = useState<UiComment[]>([]);
-  const [commentSaveError, setCommentSaveError] = useState<string | null>(null);
-  const [isSavingComment, setIsSavingComment] = useState(false);
-
-  const { upsertComment } = useCommentsApi();
-
-  const commentElements = useMemo(() => {
-    if (!visibleGraph) {
-      return { nodes: [], edges: [] };
-    }
-    return buildCommentElements({
-      graph: visibleGraph,
-      comments,
-      showComments,
-    });
-  }, [comments, showComments, visibleGraph]);
-
-  const activeComment = activeCommentId
-    ? comments.find((comment) => comment.id === activeCommentId) ?? null
-    : null;
-
+  const { upsertComment, deleteComment } = useCommentsApi();
   useEffect(() => {
     if (!data) {
       return;
@@ -82,158 +60,241 @@ export function useCommentsTool({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (!activeCommentId) {
-      return;
-    }
-    const exists = comments.some((comment) => comment.id === activeCommentId);
-    if (!exists) {
-      setActiveCommentId(null);
-      setCommentToolMode('off');
-    }
-  }, [activeCommentId, comments]);
+  const updateComment = useCallback((id: string, updater: (comment: UiComment) => UiComment) => {
+    setComments((prev) => prev.map((comment) => (comment.id === id ? updater(comment) : comment)));
+  }, []);
+  const { persistComment, canPersist } = useCommentPersistence({
+    setComments,
+    updateComment,
+    upsertComment,
+  });
 
-  const handleNodeClick = (nodeId: string): 'comment' | 'link' | null => {
-    if (isCommentNodeId(nodeId)) {
-      const commentId = nodeId.slice(COMMENT_NODE_PREFIX.length);
-      setActiveCommentId(commentId);
-      setCommentSaveError(null);
-      return 'comment';
-    }
-
-    if (commentToolMode === 'link' && activeCommentId && data?.entities[nodeId]) {
-      const target = data.entities[nodeId];
-      const linkType = target.kind === 'feature' ? 'feature' : 'cluster';
-      setComments((prev) =>
-        prev.map((comment) =>
-          comment.id === activeCommentId
-            ? toggleCommentLink(comment, { type: linkType, id: nodeId })
-            : comment
-        )
-      );
-      return 'link';
-    }
-
-    return null;
-  };
-
-  const handlePaneClick = (event: MouseEvent) => {
-    if (commentToolMode !== 'add' || !reactFlowInstance) {
-      return;
-    }
-
-    const position = reactFlowInstance.screenToFlowPosition({
-      x: event.clientX,
-      y: event.clientY,
-    });
-    const draft = createDraftComment(position);
-    setComments((prev) => [...prev, draft]);
-    setActiveCommentId(draft.id);
-    setCommentSaveError(null);
-  };
-
-  const handleCommentChange = (updates: Partial<UiComment>) => {
-    if (!activeComment) {
-      return;
-    }
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === activeComment.id ? { ...comment, ...updates } : comment
-      )
-    );
-  };
-
-  const handleCommentCancel = () => {
-    if (!activeComment) {
-      return;
-    }
-    if (isDraftComment(activeComment)) {
-      setComments((prev) => prev.filter((comment) => comment.id !== activeComment.id));
-    } else if (data) {
-      const saved = data.comments.find((comment) => comment.id === activeComment.id);
-      if (saved) {
-        setComments((prev) =>
-          prev.map((comment) =>
-            comment.id === saved.id ? { ...saved, status: 'saved', isDirty: false } : comment
-          )
-        );
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const comment = comments.find((entry) => entry.id === id);
+      if (!comment) {
+        return;
       }
-    }
-    setActiveCommentId(null);
-    setCommentToolMode('off');
-    setCommentSaveError(null);
-  };
 
-  const handleCommentSave = async () => {
-    if (!activeComment) {
-      return;
-    }
-    setIsSavingComment(true);
-    setCommentSaveError(null);
+      if (comment.status === 'draft') {
+        setComments((prev) => prev.filter((entry) => entry.id !== id));
+        return;
+      }
 
-    try {
-      const payload = {
-        id: isDraftComment(activeComment) ? undefined : activeComment.id,
-        content: activeComment.content,
-        position: activeComment.position,
-        links: activeComment.links,
-        tags: activeComment.tags,
-        priority: activeComment.priority,
-        author: activeComment.author,
-        createdAt: activeComment.createdAt,
-        updatedAt: activeComment.updatedAt,
-      };
+      updateComment(id, (entry) => ({
+        ...entry,
+        saveState: 'saving',
+        saveError: null,
+      }));
 
-      const saved = await upsertComment(payload);
-      setComments((prev) => {
-        const withoutOld = prev.filter((comment) => comment.id !== activeComment.id);
-        return [...withoutOld, { ...saved, status: 'saved', isDirty: false }].sort((a, b) =>
-          a.id.localeCompare(b.id)
-        );
-      });
-      setActiveCommentId(saved.id);
-      setCommentToolMode('off');
-    } catch (error) {
-      if (error instanceof CommentsApiError) {
-        if (error.type === 'token_missing' || error.type === 'forbidden') {
-          setCommentSaveError(
-            'Token required to save comments (run featuremap serve and paste token).'
-          );
+      try {
+        await deleteComment(id);
+        setComments((prev) => prev.filter((entry) => entry.id !== id));
+      } catch (error) {
+        if (error instanceof CommentsApiError) {
+          const message =
+            error.type === 'token_missing' || error.type === 'forbidden'
+              ? 'Token required to delete comments (run featuremap serve and paste token).'
+              : error.message;
+          updateComment(id, (entry) => ({
+            ...entry,
+            saveState: 'error',
+            saveError: message,
+          }));
         } else {
-          setCommentSaveError(error.message);
+          updateComment(id, (entry) => ({
+            ...entry,
+            saveState: 'error',
+            saveError: 'Failed to delete comment.',
+          }));
         }
-      } else {
-        setCommentSaveError('Failed to save comment.');
       }
-    } finally {
-      setIsSavingComment(false);
-    }
-  };
+    },
+    [comments, deleteComment, updateComment]
+  );
 
-  const toggleAddModeHandler = () => {
+  const handlers: CommentNodeHandlers = useMemo(
+    () => ({
+      onStartEdit: (id) => {
+        updateComment(id, (comment) => ({
+          ...comment,
+          isEditing: true,
+          saveError: null,
+        }));
+      },
+      onCommitEdit: (id, value) => {
+        const comment = comments.find((entry) => entry.id === id);
+        if (!comment) {
+          return;
+        }
+        const nextContent = value.trimEnd();
+        const nextComment: UiComment = {
+          ...comment,
+          content: nextContent,
+          isEditing: false,
+          isDirty: true,
+          saveError: null,
+        };
+        setComments((prev) => prev.map((entry) => (entry.id === id ? nextComment : entry)));
+        if (nextComment.status === 'draft' && !canPersist(nextComment)) {
+          return;
+        }
+        persistComment(nextComment, { content: nextContent });
+      },
+      onCancelEdit: (id) => {
+        updateComment(id, (comment) => ({
+          ...comment,
+          isEditing: false,
+          saveError: null,
+        }));
+      },
+    }),
+    [canPersist, comments, persistComment, updateComment]
+  );
+
+  const commentElements = useMemo(() => {
+    if (!visibleGraph) {
+      return { nodes: [], edges: [] };
+    }
+    return buildCommentElements({
+      graph: visibleGraph,
+      comments,
+      showComments,
+      handlers,
+    });
+  }, [comments, handlers, showComments, visibleGraph]);
+
+  const handleNodeClick = useCallback((nodeId: string): boolean => {
+    return isCommentNodeId(nodeId);
+  }, []);
+
+  const handlePaneClick = useCallback(
+    (event: MouseEvent) => {
+      if (commentToolMode !== 'place' || !reactFlowInstance) {
+        return;
+      }
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+      const draft = createDraftComment(position);
+      setComments((prev) => [...prev, draft]);
+      setCommentToolMode('off');
+    },
+    [commentToolMode, reactFlowInstance]
+  );
+
+  const handleConnect = useCallback(
+    (connection: Connection) => {
+      if (!connection.source || !connection.target) {
+        return;
+      }
+      if (!isCommentNodeId(connection.source)) {
+        return;
+      }
+      if (!data?.entities[connection.target]) {
+        return;
+      }
+
+      const commentId = connection.source.slice(COMMENT_NODE_PREFIX.length);
+      const target = data.entities[connection.target];
+      const linkType = target.kind === 'feature' ? 'feature' : 'cluster';
+
+      const comment = comments.find((entry) => entry.id === commentId);
+      if (!comment) {
+        return;
+      }
+      const next = addCommentLink(comment, { type: linkType, id: connection.target });
+      updateComment(commentId, () => next);
+      if (!canPersist(next)) {
+        return;
+      }
+      persistComment(next, { links: next.links }, false);
+    },
+    [canPersist, comments, data, persistComment, updateComment]
+  );
+
+  const handleEdgeRemove = useCallback(
+    (edgeId: string) => {
+      if (!edgeId.startsWith('comment-link:')) {
+        return;
+      }
+      const parts = edgeId.split(':');
+      if (parts.length < 4) {
+        return;
+      }
+      const [, commentId, linkType, linkId] = parts;
+      const comment = comments.find((entry) => entry.id === commentId);
+      if (!comment) {
+        return;
+      }
+      if (comment.status === 'saved' && comment.links.length <= 1) {
+        updateComment(commentId, (entry) => ({
+          ...entry,
+          saveState: 'error',
+          saveError: 'At least one link is required. Delete the comment to remove all links.',
+        }));
+        return;
+      }
+      const next = removeCommentLink(comment, {
+        type: linkType as 'feature' | 'cluster',
+        id: linkId,
+      });
+      updateComment(commentId, () => next);
+      if (!canPersist(next)) {
+        return;
+      }
+      persistComment(next, { links: next.links }, false);
+    },
+    [canPersist, comments, persistComment, updateComment]
+  );
+
+  const handleNodeDragStop = useCallback(
+    (node: Node) => {
+      if (!isCommentNodeId(node.id)) {
+        return;
+      }
+      const commentId = node.id.slice(COMMENT_NODE_PREFIX.length);
+      const position = node.position;
+      const comment = comments.find((entry) => entry.id === commentId);
+      if (!comment) {
+        return;
+      }
+      const next = { ...comment, position, isDirty: true };
+      updateComment(commentId, () => next);
+      if (!canPersist(next)) {
+        return;
+      }
+      persistComment(next, { position }, false);
+    },
+    [canPersist, comments, persistComment, updateComment]
+  );
+
+  const handleNodeRemove = useCallback(
+    (nodeId: string) => {
+      if (!isCommentNodeId(nodeId)) {
+        return;
+      }
+      const commentId = nodeId.slice(COMMENT_NODE_PREFIX.length);
+      handleDelete(commentId);
+    },
+    [handleDelete]
+  );
+
+  const togglePlacementMode = useCallback(() => {
     setCommentToolMode((mode) => toggleAddMode(mode));
-    setCommentSaveError(null);
-  };
-
-  const toggleLinkModeHandler = () => {
-    if (!activeComment) {
-      return;
-    }
-    setCommentToolMode((mode) => (mode === 'link' ? 'off' : 'link'));
-  };
+  }, []);
 
   return {
     commentElements,
     commentToolMode,
-    activeComment,
-    commentSaveError,
-    isSavingComment,
+    placementActive: commentToolMode === 'place',
     handleNodeClick,
     handlePaneClick,
-    handleCommentChange,
-    handleCommentCancel,
-    handleCommentSave,
-    toggleAddMode: toggleAddModeHandler,
-    toggleLinkMode: toggleLinkModeHandler,
+    handleConnect,
+    handleEdgeRemove,
+    handleNodeDragStop,
+    handleNodeRemove,
+    togglePlacementMode,
   };
 }

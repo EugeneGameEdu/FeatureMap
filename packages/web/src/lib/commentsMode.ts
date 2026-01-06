@@ -1,11 +1,15 @@
 import type { CommentLink, CommentNode, CommentPosition } from './commentTypes';
 import { sortCommentLinks } from './commentTypes';
 
-export type CommentToolMode = 'off' | 'add' | 'link';
+export type CommentToolMode = 'off' | 'place';
+export type CommentSaveState = 'idle' | 'saving' | 'saved' | 'error';
 
 export interface UiComment extends CommentNode {
   status: 'draft' | 'saved';
   isDirty?: boolean;
+  isEditing?: boolean;
+  saveState?: CommentSaveState;
+  saveError?: string | null;
 }
 
 const DRAFT_PREFIX = 'draft-';
@@ -18,6 +22,9 @@ export function createDraftComment(position: CommentPosition): UiComment {
     position,
     links: [],
     status: 'draft',
+    isEditing: true,
+    saveState: 'idle',
+    saveError: null,
   };
 }
 
@@ -41,31 +48,40 @@ export function mergeSavedComments(
     if (current?.isDirty) {
       return current;
     }
-    return { ...comment, status: 'saved' } as UiComment;
+    return {
+      ...comment,
+      status: 'saved',
+      isEditing: current?.isEditing ?? false,
+      saveState: current?.saveState ?? 'idle',
+      saveError: current?.saveError ?? null,
+    } as UiComment;
   });
 
   return [...merged, ...drafts].sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export function toggleAddMode(current: CommentToolMode): CommentToolMode {
-  return current === 'add' ? 'off' : 'add';
+  return current === 'place' ? 'off' : 'place';
 }
 
-export function getCommentModeLabel(mode: CommentToolMode): string | null {
-  if (mode === 'add') {
-    return 'Add comment';
-  }
-  if (mode === 'link') {
-    return 'Link comment';
-  }
-  return null;
-}
-
-export function toggleCommentLink(comment: UiComment, link: CommentLink): UiComment {
+export function addCommentLink(comment: UiComment, link: CommentLink): UiComment {
   const exists = comment.links.some((entry) => entry.type === link.type && entry.id === link.id);
-  const nextLinks = exists
-    ? comment.links.filter((entry) => !(entry.type === link.type && entry.id === link.id))
-    : [...comment.links, link];
+  if (exists) {
+    return comment;
+  }
+  const nextLinks = [...comment.links, link];
+
+  return {
+    ...comment,
+    links: sortCommentLinks(nextLinks),
+    isDirty: true,
+  };
+}
+
+export function removeCommentLink(comment: UiComment, link: CommentLink): UiComment {
+  const nextLinks = comment.links.filter(
+    (entry) => !(entry.type === link.type && entry.id === link.id)
+  );
 
   return {
     ...comment,

@@ -23,9 +23,9 @@ export class CommentsApiError extends Error {
 
 export interface CommentUpsertPayload {
   id?: string;
-  content: string;
-  position: CommentPosition;
-  links: CommentLink[];
+  content?: string;
+  position?: CommentPosition;
+  links?: CommentLink[];
   tags?: string[];
   priority?: 'low' | 'medium' | 'high';
   author?: string;
@@ -70,6 +70,10 @@ export function useCommentsApi() {
       throw new CommentsApiError('forbidden', 'Invalid or missing token.', 403);
     }
 
+    if (response.status === 404) {
+      throw new CommentsApiError('network', 'Serve not running / API unavailable', 404);
+    }
+
     if (response.status === 400) {
       let message = 'Validation or permission error.';
       try {
@@ -98,5 +102,53 @@ export function useCommentsApi() {
     }
   }, []);
 
-  return { upsertComment };
+  const deleteComment = useCallback(async (id: string): Promise<void> => {
+    const token = readSessionToken();
+    if (!token) {
+      throw new CommentsApiError('token_missing', 'Invalid or missing token.');
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(`/api/comments/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-featuremap-token': token,
+        },
+      });
+    } catch {
+      throw new CommentsApiError('network', 'Serve not running / API unavailable');
+    }
+
+    if (response.status === 403) {
+      throw new CommentsApiError('forbidden', 'Invalid or missing token.', 403);
+    }
+
+    if (response.status === 404) {
+      throw new CommentsApiError('bad_request', 'Comment not found.', 404);
+    }
+
+    if (response.status === 400) {
+      let message = 'Validation or permission error.';
+      try {
+        const body = (await response.json()) as { error?: string } | null;
+        if (body?.error) {
+          message = body.error;
+        }
+      } catch {
+        // ignore parsing errors
+      }
+      throw new CommentsApiError('bad_request', message, 400);
+    }
+
+    if (!response.ok) {
+      throw new CommentsApiError(
+        'unknown',
+        `Request failed (${response.status}).`,
+        response.status
+      );
+    }
+  }, []);
+
+  return { upsertComment, deleteComment };
 }

@@ -1,52 +1,104 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
-import { Link2 } from 'lucide-react';
 import type { CommentNodeData } from '@/lib/commentTypes';
 
-const priorityStyles: Record<string, string> = {
-  low: 'bg-green-100 text-green-700',
-  medium: 'bg-amber-100 text-amber-700',
-  high: 'bg-red-100 text-red-700',
-};
-
 function CommentNodeComponent({ data }: NodeProps) {
-  const { content, tags, priority, linkCount = 0, isDraft } = data as CommentNodeData;
+  const {
+    content,
+    isDraft,
+    isEditing,
+    saveState,
+    saveError,
+    onStartEdit,
+    onCommitEdit,
+    onCancelEdit,
+  } = data as CommentNodeData;
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const skipCommitRef = useRef(false);
+  const [draftValue, setDraftValue] = useState(content);
+
+  const displayContent = isEditing ? draftValue : content;
+
+  useEffect(() => {
+    if (isEditing) {
+      setDraftValue(content);
+    }
+  }, [content, isEditing]);
+
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.select();
+    }
+  }, [isEditing]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Escape') {
+      skipCommitRef.current = true;
+      setDraftValue(content);
+      onCancelEdit?.();
+      return;
+    }
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      onCommitEdit?.(draftValue);
+    }
+  };
 
   return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50/80 shadow-sm px-3 py-2 min-w-[200px] max-w-[260px]">
-      <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-amber-400" />
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-[10px] uppercase tracking-wide text-amber-600">
-          {isDraft ? 'Draft' : 'Comment'}
-        </span>
-        {priority && (
-          <span className={`text-[10px] px-1.5 py-0.5 rounded ${priorityStyles[priority]}`}>
-            {priority}
+    <div
+      className={`rounded-lg border-2 bg-white shadow-sm px-4 py-3 min-w-[200px] max-w-[260px] ${
+        isDraft ? 'border-dashed border-gray-300' : 'border-gray-300'
+      }`}
+      onDoubleClick={() => onStartEdit?.()}
+    >
+      <div className="flex items-center justify-between">
+        <div className="text-[10px] uppercase tracking-wide text-gray-400 font-semibold">
+          COMMENT
+        </div>
+        {isDraft && (
+          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
+            Draft
           </span>
         )}
       </div>
-      <div className="mt-2 text-sm text-gray-700 whitespace-pre-wrap max-h-32 overflow-hidden">
-        {content}
+
+      <div className="mt-2 rounded-md border border-gray-200 bg-gray-50/80 px-2 py-1">
+        {isEditing ? (
+          <textarea
+            ref={textareaRef}
+            className="w-full min-h-[80px] max-h-[160px] resize-none bg-transparent text-sm text-gray-700 focus:outline-none"
+            value={draftValue}
+            onChange={(event) => setDraftValue(event.target.value)}
+            onBlur={() => {
+              if (skipCommitRef.current) {
+                skipCommitRef.current = false;
+                return;
+              }
+              onCommitEdit?.(draftValue);
+            }}
+            onKeyDown={handleKeyDown}
+            onMouseDown={(event) => event.stopPropagation()}
+          />
+        ) : (
+          <div
+            className={`text-sm whitespace-pre-wrap ${
+              displayContent.trim().length === 0 ? 'text-gray-400 italic' : 'text-gray-700'
+            }`}
+          >
+            {displayContent.trim().length === 0 ? 'Double-click to edit' : displayContent}
+          </div>
+        )}
       </div>
-      {tags && tags.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {tags.slice(0, 5).map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] px-1.5 py-0.5 rounded bg-white text-amber-700 border border-amber-200"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+
+      <div className="mt-2 flex items-center justify-end text-[10px] text-gray-400">
+        {saveState === 'saving' && <span>Saving...</span>}
+        {saveState === 'saved' && <span>Saved</span>}
+      </div>
+      {saveState === 'error' && saveError && (
+        <div className="mt-1 text-[10px] text-red-600">{saveError}</div>
       )}
-      {linkCount > 0 && (
-        <div className="mt-2 text-[10px] text-amber-700 flex items-center gap-1">
-          <Link2 size={12} />
-          {linkCount}
-        </div>
-      )}
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-amber-400" />
+
+      <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-gray-400" />
     </div>
   );
 }

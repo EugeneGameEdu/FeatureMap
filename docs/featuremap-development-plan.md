@@ -1499,14 +1499,14 @@ featuremap web
 
 ### Фаза 3: Project Context
 - [done] 3.1 Команда context init
-- [ ] 3.2 Ручное редактирование
+- [done] 3.2 Ручное редактирование
 - [done] 3.3 Conditional context loading
 
 ### Фаза 4: Слои и группы
 - [done] 4.1 Слои в данных
 - [done] 4.2 Фильтры по слоям (веб)
 - [done] 4.3 MCP create_group
-- [ ] 4.4 Автоматические группы
+- [done] 4.4 Автоматические группы
 - [done] 4.5 Фильтры по группам (веб)
 
 ### Фаза 5: Навигация
@@ -1528,7 +1528,7 @@ featuremap web
 - [done] 8.3 UI для комментариев
 
 ### Фаза 9: Обратная совместимость
-- [ ] 9.1 WebSocket live updates
+- [done] 9.1 WebSocket live updates
 - [ ] 9.2 Редактирование фич
 
 ### Фаза 10: Полировка

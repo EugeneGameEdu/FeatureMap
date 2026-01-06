@@ -17,7 +17,9 @@ export const CommentNodeSchema = z
   .object({
     version: z.number(),
     id: z.string().regex(KEBAB_CASE_REGEX, 'id must be kebab-case'),
-    content: z.string(),
+    content: z.string().refine((value) => value.trim().length > 0, {
+      message: 'content required',
+    }),
     position: CommentPositionSchema,
     links: z.array(CommentLinkSchema).min(1).max(MAX_COMMENT_LINKS),
     tags: z.array(z.string()).optional(),

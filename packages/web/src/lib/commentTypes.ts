@@ -35,10 +35,13 @@ export interface CommentIndex {
 export interface CommentNodeData {
   id: string;
   content: string;
-  tags?: string[];
-  priority?: CommentPriority;
-  linkCount?: number;
-  isDraft?: boolean;
+  isDraft: boolean;
+  isEditing: boolean;
+  saveState?: 'idle' | 'saving' | 'saved' | 'error';
+  saveError?: string | null;
+  onStartEdit?: () => void;
+  onCommitEdit?: (value: string) => void;
+  onCancelEdit?: () => void;
 }
 
 export function buildCommentNodeId(commentId: string): string {

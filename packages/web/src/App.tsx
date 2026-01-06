@@ -6,7 +6,6 @@ import { Sidebar } from '@/components/Sidebar';
 import { LeftToolbar } from '@/components/LeftToolbar';
 import { MapHeader } from '@/components/MapHeader';
 import { SearchPalette } from '@/components/SearchPalette';
-import { CommentEditor } from '@/components/CommentEditor';
 import { Button } from '@/components/ui/button';
 import { applyGroupFilter } from '@/lib/groupFilters';
 import { loadFeatureMap } from '@/lib/loadFeatureMap';
@@ -61,16 +60,14 @@ function App() {
   const {
     commentElements,
     commentToolMode,
-    activeComment,
-    commentSaveError,
-    isSavingComment,
+    placementActive,
     handleNodeClick: handleCommentNodeClick,
     handlePaneClick,
-    handleCommentChange,
-    handleCommentCancel,
-    handleCommentSave,
-    toggleAddMode,
-    toggleLinkMode,
+    handleConnect,
+    handleEdgeRemove,
+    handleNodeDragStop,
+    handleNodeRemove,
+    togglePlacementMode,
   } = useCommentsTool({
     data,
     visibleGraph,
@@ -148,12 +145,9 @@ function App() {
   }, [data, selectedGroupId]);
 
   const handleNodeClick = (nodeId: string) => {
-    const commentResult = handleCommentNodeClick(nodeId);
-    if (commentResult) {
-      if (commentResult === 'comment') {
-        setFocusedFilePath(null);
-        setSelectedNodeId(null);
-      }
+    if (handleCommentNodeClick(nodeId)) {
+      setFocusedFilePath(null);
+      setSelectedNodeId(null);
       return;
     }
     setFocusedFilePath(null);
@@ -245,7 +239,7 @@ function App() {
           <LeftToolbar
             onSearchClick={() => setSearchOpen(true)}
             commentMode={commentToolMode}
-            onToggleAddMode={toggleAddMode}
+            onToggleAddMode={togglePlacementMode}
           />
           <FeatureMap
             graph={visibleGraph}
@@ -254,23 +248,16 @@ function App() {
             commentEdges={commentElements.edges}
             onNodeClick={handleNodeClick}
             onPaneClick={handlePaneClick}
+            onConnect={handleConnect}
+            onEdgeRemove={handleEdgeRemove}
+            onNodeDragStop={handleNodeDragStop}
+            onNodeRemove={handleNodeRemove}
+            commentPlacementActive={placementActive}
             onInit={setReactFlowInstance}
             selectedNodeId={selectedNodeId}
             focusedNodeId={focusedNodeId}
             focusedUntil={focusedUntil}
           />
-          {activeComment && (
-            <CommentEditor
-              comment={activeComment}
-              isSaving={isSavingComment}
-              saveError={commentSaveError}
-              linkMode={commentToolMode === 'link'}
-              onChange={handleCommentChange}
-              onSave={handleCommentSave}
-              onCancel={handleCommentCancel}
-              onToggleLinkMode={toggleLinkMode}
-            />
-          )}
         </main>
 
         <Sidebar

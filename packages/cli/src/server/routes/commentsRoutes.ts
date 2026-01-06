@@ -2,14 +2,14 @@ import express from 'express';
 import { z } from 'zod';
 import type { WsHub } from '../wsHub.js';
 import { requireToken } from '../security.js';
-import { listComments, upsertComment } from '../commentsStore.js';
+import { deleteComment, listComments, upsertComment } from '../commentsStore.js';
 import { CommentNodeSchema } from '../../types/index.js';
 
 const CommentUpsertSchema = z.object({
   id: z.string().optional(),
-  content: z.string(),
-  position: CommentNodeSchema.shape.position,
-  links: CommentNodeSchema.shape.links,
+  content: z.string().optional(),
+  position: CommentNodeSchema.shape.position.optional(),
+  links: CommentNodeSchema.shape.links.optional(),
   tags: z.array(z.string()).optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   author: z.string().optional(),
@@ -48,6 +48,27 @@ export function createCommentsRouter(options: CommentsRouterOptions): express.Ro
       res.json(saved);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to save comment.';
+      res.status(400).json({ error: message });
+    }
+  });
+
+  router.delete('/:id', requireToken(options.sessionToken), (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({ error: 'Comment id is required.' });
+      return;
+    }
+
+    try {
+      deleteComment(options.projectRoot, id);
+      options.wsHub?.broadcast({
+        type: 'featuremap_changed',
+        reason: 'comments_updated',
+        file: `comments/${id}`,
+      });
+      res.json({ id });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete comment.';
       res.status(400).json({ error: message });
     }
   });

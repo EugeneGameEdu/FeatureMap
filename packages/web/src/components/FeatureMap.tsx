@@ -5,6 +5,9 @@ import {
   ConnectionMode,
   Controls,
   Edge,
+  type EdgeChange,
+  type Connection,
+  type NodeChange,
   Node,
   Panel,
   ReactFlow,
@@ -28,6 +31,11 @@ interface FeatureMapProps {
   commentEdges?: Edge[];
   onNodeClick?: (featureId: string) => void;
   onPaneClick?: (event: MouseEvent) => void;
+  onConnect?: (connection: Connection) => void;
+  onEdgeRemove?: (edgeId: string) => void;
+  onNodeDragStop?: (node: Node) => void;
+  onNodeRemove?: (nodeId: string) => void;
+  commentPlacementActive?: boolean;
   onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
   focusedNodeId?: string | null;
@@ -87,6 +95,11 @@ export function FeatureMap({
   commentEdges = [],
   onNodeClick,
   onPaneClick,
+  onConnect,
+  onEdgeRemove,
+  onNodeDragStop,
+  onNodeRemove,
+  commentPlacementActive = false,
   onInit,
   selectedNodeId,
   focusedNodeId,
@@ -129,6 +142,7 @@ export function FeatureMap({
         },
         position: { x: 0, y: 0 },
         selected: node.id === selectedNodeId,
+        deletable: false,
       };
     });
   }, [graph.nodes, entities, dependencyCountById, selectedNodeId, focusedNodeId, focusedUntil]);
@@ -140,6 +154,7 @@ export function FeatureMap({
       target: edge.target,
       type: 'bezier',
       animated: false,
+      deletable: false,
       style: { stroke: '#9ca3af', strokeWidth: 2 },
       markerEnd: {
         type: 'arrowclosed' as const,
@@ -176,6 +191,43 @@ export function FeatureMap({
     [onNodeClick]
   );
 
+  const handleEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      onEdgesChange(changes);
+      if (!onEdgeRemove) {
+        return;
+      }
+      for (const change of changes) {
+        if (change.type === 'remove') {
+          onEdgeRemove(change.id);
+        }
+      }
+    },
+    [onEdgeRemove, onEdgesChange]
+  );
+
+  const handleNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      onNodesChange(changes);
+      if (!onNodeRemove) {
+        return;
+      }
+      for (const change of changes) {
+        if (change.type === 'remove') {
+          onNodeRemove(change.id);
+        }
+      }
+    },
+    [onNodeRemove, onNodesChange]
+  );
+
+  const handleNodeDragStop = useCallback(
+    (_: React.MouseEvent, node: Node) => {
+      onNodeDragStop?.(node);
+    },
+    [onNodeDragStop]
+  );
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -183,16 +235,19 @@ export function FeatureMap({
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={handleEdgesChange}
         onNodeClick={handleNodeClick}
         onPaneClick={onPaneClick}
+        onConnect={onConnect}
+        onNodeDragStop={handleNodeDragStop}
         onInit={onInit}
         connectionMode={ConnectionMode.Loose}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.3}
         maxZoom={2}
+        className={commentPlacementActive ? 'cursor-crosshair' : ''}
         defaultEdgeOptions={{
           type: 'bezier',
         }}
