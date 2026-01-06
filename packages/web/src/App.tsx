@@ -4,6 +4,7 @@ import { FeatureMap } from '@/components/FeatureMap';
 import { ContextViewer } from '@/components/ContextViewer';
 import { Sidebar } from '@/components/Sidebar';
 import { Button } from '@/components/ui/button';
+import { applyGroupFilter } from '@/lib/groupFilters';
 import { formatDate, loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter, getLayerOrder } from '@/lib/layerFilters';
 import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
@@ -23,6 +24,7 @@ function App() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
   const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
 
   const activeGraph = data
     ? viewMode === 'clusters'
@@ -31,16 +33,24 @@ function App() {
     : null;
 
   const visibleGraph = useMemo(() => {
-    if (!activeGraph) {
+    if (!activeGraph || !data) {
       return null;
     }
-    const { nodes, edges } = applyLayerFilter(
+    const layerFiltered = applyLayerFilter(
       activeGraph.nodes,
       activeGraph.edges,
       selectedLayer
     );
-    return { ...activeGraph, nodes, edges };
-  }, [activeGraph, selectedLayer]);
+    const groupFiltered = applyGroupFilter(
+      layerFiltered.nodes,
+      layerFiltered.edges,
+      viewMode,
+      selectedGroupId,
+      data.groupsById,
+      data.entities
+    );
+    return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
+  }, [activeGraph, data, selectedGroupId, selectedLayer, viewMode]);
 
   const loadData = async () => {
     setLoading(true);
@@ -68,6 +78,15 @@ function App() {
       setSelectedNodeId(null);
     }
   }, [selectedNodeId, visibleGraph]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+    if (selectedGroupId !== 'all' && !data.groupsById[selectedGroupId]) {
+      setSelectedGroupId('all');
+    }
+  }, [data, selectedGroupId]);
 
   const handleNodeClick = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -117,6 +136,9 @@ function App() {
   const selectedNode = selectedNodeId ? data.entities[selectedNodeId] : null;
   const clusterCount = data.clusterGraph.nodes.length;
   const featureCount = data.featureGraph.nodes.length;
+  const selectedGroup = selectedGroupId === 'all' ? null : data.groupsById[selectedGroupId];
+  const missingGroupFeatures = selectedGroup?.missingFeatureIds ?? [];
+  const hasGroups = data.groups.length > 0;
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       <header className="bg-white border-b px-4 py-3 flex items-center justify-between shrink-0">
@@ -162,6 +184,27 @@ function App() {
                 ))}
               </div>
             </div>
+            <div className="flex items-center gap-2">
+              <span>Group:</span>
+              <select
+                className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700"
+                value={selectedGroupId}
+                onChange={(event) => setSelectedGroupId(event.target.value)}
+                disabled={!hasGroups}
+              >
+                <option value="all">All groups</option>
+                {data.groups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name} ({group.featureIds.length})
+                  </option>
+                ))}
+              </select>
+            </div>
+            {missingGroupFeatures.length > 0 && (
+              <div className="text-xs text-amber-600">
+                Missing features in group: {missingGroupFeatures.join(', ')}
+              </div>
+            )}
           </div>
           <ContextViewer context={data.context} />
           <Button variant="outline" size="sm" onClick={loadData}>
@@ -185,6 +228,7 @@ function App() {
           node={selectedNode}
           onClose={handleCloseSidebar}
           onDependencyClick={handleDependencyClick}
+          groups={data.groups}
         />
       </div>
     </div>

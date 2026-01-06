@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { stringify } from 'yaml';
 
 export function createWebCommand(): Command {
   const command = new Command('web');
@@ -138,6 +139,30 @@ async function copyFeatureMapData(sourceDir: string, targetDir: string): Promise
         fs.copyFileSync(path.join(clustersSource, file), path.join(clustersTarget, file));
       }
     }
+  }
+
+  const groupsSource = path.join(sourceDir, 'groups');
+  const groupsTarget = path.join(targetDir, 'groups');
+
+  if (fs.existsSync(groupsSource)) {
+    if (fs.existsSync(groupsTarget)) {
+      fs.rmSync(groupsTarget, { recursive: true });
+    }
+    fs.mkdirSync(groupsTarget, { recursive: true });
+
+    const files = fs.readdirSync(groupsSource).filter((file) => file.endsWith('.yaml'));
+    const groupIds = files
+      .map((file) => path.basename(file, '.yaml'))
+      .sort((a, b) => a.localeCompare(b));
+
+    for (const file of files) {
+      fs.copyFileSync(path.join(groupsSource, file), path.join(groupsTarget, file));
+    }
+
+    const indexContent = stringify({ version: 1, groups: groupIds }, { lineWidth: 0 });
+    fs.writeFileSync(path.join(groupsTarget, 'index.yaml'), indexContent, 'utf-8');
+  } else if (fs.existsSync(groupsTarget)) {
+    fs.rmSync(groupsTarget, { recursive: true });
   }
 }
 

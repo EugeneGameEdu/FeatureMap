@@ -1,0 +1,12 @@
+version: 1
+id: web-viewer
+name: Web Viewer
+description: React-based FeatureMap viewer.
+featureIds:
+  - web-featuremap-viewer
+source: ai
+metadata:
+  createdAt: 2026-01-06T10:33:17.291Z
+  updatedAt: 2026-01-06T10:33:17.291Z
+  lastModifiedBy: ai
+  version: 1

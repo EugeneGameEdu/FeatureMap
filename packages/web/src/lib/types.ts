@@ -11,6 +11,42 @@ const LayerSchema = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
 export type Layer = z.infer<typeof LayerSchema>;
 export type LayerFilter = Layer | 'all';
 
+const GroupSourceSchema = z.enum(['ai', 'user']);
+
+const GroupLocksSchema = z.object({
+  name: z.boolean().optional(),
+  description: z.boolean().optional(),
+  featureIds: z.boolean().optional(),
+});
+
+const GroupMetadataSchema = z.object({
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  lastModifiedBy: GroupSourceSchema,
+  version: z.number(),
+});
+
+export const GroupSchema = z
+  .object({
+    version: z.number(),
+    id: z.string(),
+    name: z.string(),
+    description: z.string().optional(),
+    featureIds: z.array(z.string()),
+    source: GroupSourceSchema,
+    locks: GroupLocksSchema.optional(),
+    metadata: GroupMetadataSchema,
+  })
+  .passthrough();
+
+export type Group = z.infer<typeof GroupSchema>;
+export type GroupSource = z.infer<typeof GroupSourceSchema>;
+
+export const GroupIndexSchema = z.object({
+  version: z.number().optional(),
+  groups: z.array(z.string()),
+});
+
 export const GraphNodeSchema = z
   .object({
     id: z.string(),
@@ -148,12 +184,23 @@ export type MapEntity =
   | { kind: 'cluster'; label: string; data: Cluster }
   | { kind: 'feature'; label: string; data: FeatureDetails };
 
+export interface GroupSummary {
+  id: string;
+  name: string;
+  description?: string;
+  featureIds: string[];
+  source?: GroupSource;
+  missingFeatureIds?: string[];
+}
+
 export interface FeatureMapData {
   graph: GraphData;
   clusterGraph: GraphData;
   featureGraph: GraphData;
   entities: Record<string, MapEntity>;
   context: ContextData;
+  groups: GroupSummary[];
+  groupsById: Record<string, GroupSummary>;
 }
 
 export * from './contextTypes';

@@ -2,16 +2,18 @@ import { AlertTriangle, ArrowRight, Clock, FileCode, Layers, Tag, X } from 'luci
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import type { FeatureDetails, MapEntity } from '@/lib/types';
+import type { FeatureDetails, GroupSummary, MapEntity } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
+import { getGroupsForFeature } from '@/lib/groupFilters';
 
 interface SidebarProps {
   node: MapEntity | null;
   onClose: () => void;
   onDependencyClick?: (featureId: string) => void;
+  groups?: GroupSummary[];
 }
 
-export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
+export function Sidebar({ node, onClose, onDependencyClick, groups = [] }: SidebarProps) {
   const sourceColors = {
     auto: 'bg-gray-100 text-gray-700',
     ai: 'bg-green-100 text-green-700',
@@ -50,6 +52,7 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
   const title = isFeature ? node.data.name : node.label;
   const description = isFeature ? node.data.description ?? node.data.purpose : node.data.purpose_hint;
   const featureSource = isFeature ? resolveFeatureSource(node.data) : 'auto';
+  const featureGroups = isFeature ? getGroupsForFeature(groups, node.data.id) : [];
 
   return (
     <div className="w-[350px] border-l bg-white flex flex-col">
@@ -154,6 +157,22 @@ export function Sidebar({ node, onClose, onDependencyClick }: SidebarProps) {
                   >
                     {file.split('/').slice(-2).join('/')}
                   </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {isFeature && featureGroups.length > 0 && (
+            <section>
+              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+                <Layers size={16} />
+                Groups ({featureGroups.length})
+              </h3>
+              <div className="flex flex-wrap gap-1">
+                {featureGroups.map((group) => (
+                  <Badge key={group.id} variant="secondary" className="text-xs">
+                    {group.name}
+                  </Badge>
                 ))}
               </div>
             </section>
