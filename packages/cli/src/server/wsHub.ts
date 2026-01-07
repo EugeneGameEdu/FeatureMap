@@ -4,7 +4,7 @@ import { isLocalhostRequest } from './security.js';
 
 export type FeaturemapWsMessage = {
   type: 'featuremap_changed';
-  reason: 'context_updated' | 'comments_updated';
+  reason: 'context_updated' | 'comments_updated' | 'groups_updated' | 'layout_updated';
   file: string;
 };
 

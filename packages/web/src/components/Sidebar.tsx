@@ -15,6 +15,7 @@ interface SidebarProps {
   groupMembers?: GroupMember[];
   viewMode?: ViewMode;
   onClose: () => void;
+  onGroupUpdated?: () => void;
   onDependencyClick?: (featureId: string) => void;
   groups?: GroupSummary[];
   focusedFilePath?: string | null;
@@ -26,6 +27,7 @@ export function Sidebar({
   groupMembers = [],
   viewMode = 'clusters',
   onClose,
+  onGroupUpdated,
   onDependencyClick,
   groups = [],
   focusedFilePath,
@@ -35,13 +37,11 @@ export function Sidebar({
     ai: 'bg-green-100 text-green-700',
     user: 'bg-purple-100 text-purple-700',
   };
-
   const statusColors = {
     active: 'bg-blue-100 text-blue-700',
     deprecated: 'bg-amber-100 text-amber-700',
     ignored: 'bg-gray-100 text-gray-500',
   };
-
   const layerColors = {
     frontend: 'bg-blue-100 text-blue-700',
     backend: 'bg-amber-100 text-amber-700',
@@ -75,7 +75,6 @@ export function Sidebar({
       </div>
     );
   }
-
   if (group) {
     return (
       <GroupDetailsPanel
@@ -83,10 +82,10 @@ export function Sidebar({
         groupMembers={groupMembers}
         viewMode={viewMode}
         onClose={onClose}
+        onGroupUpdated={onGroupUpdated}
       />
     );
   }
-
   const isFeature = node.kind === 'feature';
   const title = isFeature ? node.data.name : node.label;
   const description = isFeature ? node.data.description ?? node.data.purpose : node.data.purpose_hint;

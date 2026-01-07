@@ -3,6 +3,8 @@ import { formatDate } from '@/lib/loadFeatureMap';
 import type { ContextData } from '@/lib/contextTypes';
 import type { GroupSummary, LayerFilter, ViewMode } from '@/lib/types';
 
+type LayoutMessage = { type: 'error' | 'warning' | 'success'; text: string } | null;
+
 interface MapHeaderProps {
   clusterCount: number;
   featureCount: number;
@@ -16,6 +18,8 @@ interface MapHeaderProps {
   hasGroups: boolean;
   context: ContextData;
   showComments: boolean;
+  layoutMessage: LayoutMessage;
+  onPackGroups: () => void;
   onViewModeChange: (mode: ViewMode) => void;
   onLayerChange: (layer: LayerFilter) => void;
   onGroupChange: (groupId: string) => void;
@@ -36,6 +40,8 @@ export function MapHeader({
   hasGroups,
   context,
   showComments,
+  layoutMessage,
+  onPackGroups,
   onViewModeChange,
   onLayerChange,
   onGroupChange,
@@ -62,6 +68,8 @@ export function MapHeader({
         hasGroups={hasGroups}
         context={context}
         showComments={showComments}
+        layoutMessage={layoutMessage}
+        onPackGroups={onPackGroups}
         onViewModeChange={onViewModeChange}
         onLayerChange={onLayerChange}
         onGroupChange={onGroupChange}

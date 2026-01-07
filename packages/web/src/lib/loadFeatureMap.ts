@@ -1,31 +1,34 @@
 import { loadContextFiles } from './contextLoader';
-import {
-  ClusterSchema,
+import type {
+  Cluster,
+  Feature,
+  FeatureClusterDetail,
   FeatureDetails,
-  FeatureSchema,
-  GraphSchema,
-  type Cluster,
-  type Feature,
-  type FeatureClusterDetail,
-  type FeatureMapData,
-  type GraphData,
-  type GraphEdge,
-  type GraphNode,
-  type MapEntity,
-  type NodeType,
+  FeatureMapData,
+  GraphData,
+  GraphEdge,
+  GraphNode,
+  MapEntity,
+  NodeType,
 } from './types';
 import { deriveFeatureLayers } from './layerFilters';
 import { loadGroups } from './groupLoader';
 import { loadComments } from './commentLoader';
-import { parseYamlWithSchema } from './yamlParsing';
-
-const DATA_BASE_URL = '/featuremap-data';
+import {
+  loadClusterYamlSafe,
+  loadClustersById,
+  loadFeatureYamlSafe,
+  loadFeaturesById,
+  loadGraphYaml,
+  loadLayoutYaml,
+} from './featureMapLoaders';
 const FEATURE_DEP_EDGE_TYPE = 'feature_dep';
 const FEATURE_CONTAINS_EDGE_TYPE = 'contains';
 
 export async function loadFeatureMap(): Promise<FeatureMapData> {
   const context = await loadContextFiles();
   const graph = await loadGraphYaml();
+  const layout = await loadLayoutYaml();
   const clusterGraph = buildClusterGraph(graph);
   const featureGraph = buildFeatureGraph(graph);
 
@@ -84,89 +87,13 @@ export async function loadFeatureMap(): Promise<FeatureMapData> {
     graph,
     clusterGraph: clusterGraphWithLayers,
     featureGraph: featureGraphWithLayers,
+    layout,
     entities,
     context,
     groups,
     groupsById,
     comments,
   };
-}
-
-async function loadGraphYaml(): Promise<GraphData> {
-  const response = await fetch(`${DATA_BASE_URL}/graph.yaml`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load graph.yaml: ${response.statusText}`);
-  }
-
-  const text = await response.text();
-  return parseYamlWithSchema(text, GraphSchema, 'graph.yaml');
-}
-
-async function loadClusterYaml(clusterId: string): Promise<Cluster> {
-  const response = await fetch(`${DATA_BASE_URL}/clusters/${clusterId}.yaml`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load cluster ${clusterId}: ${response.statusText}`);
-  }
-
-  const text = await response.text();
-  return parseYamlWithSchema(text, ClusterSchema, `clusters/${clusterId}.yaml`);
-}
-
-async function loadFeatureYaml(featureId: string): Promise<Feature> {
-  const response = await fetch(`${DATA_BASE_URL}/features/${featureId}.yaml`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load feature ${featureId}: ${response.statusText}`);
-  }
-
-  const text = await response.text();
-  return parseYamlWithSchema(text, FeatureSchema, `features/${featureId}.yaml`);
-}
-
-async function loadClustersById(ids: Set<string>): Promise<Map<string, Cluster>> {
-  const clusters = new Map<string, Cluster>();
-  await Promise.all(
-    [...ids].map(async (clusterId) => {
-      const cluster = await loadClusterYamlSafe(clusterId);
-      if (cluster) {
-        clusters.set(clusterId, cluster);
-      }
-    })
-  );
-  return clusters;
-}
-
-async function loadFeaturesById(ids: Set<string>): Promise<Map<string, Feature>> {
-  const features = new Map<string, Feature>();
-  await Promise.all(
-    [...ids].map(async (featureId) => {
-      const feature = await loadFeatureYamlSafe(featureId);
-      if (feature) {
-        features.set(featureId, feature);
-      }
-    })
-  );
-  return features;
-}
-
-async function loadClusterYamlSafe(clusterId: string): Promise<Cluster | null> {
-  try {
-    return await loadClusterYaml(clusterId);
-  } catch (error) {
-    console.warn(`Failed to load cluster ${clusterId}:`, error);
-    return null;
-  }
-}
-
-async function loadFeatureYamlSafe(featureId: string): Promise<Feature | null> {
-  try {
-    return await loadFeatureYaml(featureId);
-  } catch (error) {
-    console.warn(`Failed to load feature ${featureId}:`, error);
-    return null;
-  }
 }
 
 function buildClusterGraph(graph: GraphData): GraphData {

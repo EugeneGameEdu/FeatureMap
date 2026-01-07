@@ -36,3 +36,23 @@ export function getLayoutedElements(
 
   return { nodes: layoutedNodes, edges };
 }
+
+export function applyLayoutPositions(
+  nodes: Node[],
+  positions: Record<string, { x: number; y: number }>
+): Node[] {
+  if (!positions || Object.keys(positions).length === 0) {
+    return nodes;
+  }
+
+  return nodes.map((node) => {
+    const position = positions[node.id];
+    if (!position) {
+      return node;
+    }
+    return {
+      ...node,
+      position: { x: position.x, y: position.y },
+    };
+  });
+}

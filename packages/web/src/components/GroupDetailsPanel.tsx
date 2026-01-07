@@ -1,15 +1,18 @@
+import { useEffect, useState } from 'react';
 import { AlertTriangle, Layers, Tag, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import type { GroupSummary, ViewMode } from '@/lib/types';
 import type { GroupMember } from '@/lib/groupMembership';
+import { GroupApiError, useGroupApi } from '@/lib/useGroupApi';
 
 interface GroupDetailsPanelProps {
   group: GroupSummary;
   groupMembers: GroupMember[];
   viewMode: ViewMode;
   onClose: () => void;
+  onGroupUpdated?: () => void;
 }
 
 export function GroupDetailsPanel({
@@ -17,8 +20,47 @@ export function GroupDetailsPanel({
   groupMembers,
   viewMode,
   onClose,
+  onGroupUpdated,
 }: GroupDetailsPanelProps) {
   const memberLabel = viewMode === 'features' ? 'Features' : 'Clusters';
+  const { updateGroupNote } = useGroupApi();
+  const [isEditing, setIsEditing] = useState(false);
+  const [noteDraft, setNoteDraft] = useState(group.note ?? '');
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setIsEditing(false);
+    setNoteDraft(group.note ?? '');
+    setSaveError(null);
+  }, [group.id]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setNoteDraft(group.note ?? '');
+    }
+  }, [group.note, isEditing]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const trimmed = noteDraft.trimEnd();
+      await updateGroupNote(group.id, trimmed.length > 0 ? trimmed : null);
+      setIsEditing(false);
+      onGroupUpdated?.();
+    } catch (error) {
+      setSaveError(formatGroupError(error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setNoteDraft(group.note ?? '');
+    setIsEditing(false);
+    setSaveError(null);
+  };
 
   return (
     <div className="w-[350px] border-l bg-white flex flex-col">
@@ -57,10 +99,34 @@ export function GroupDetailsPanel({
               <Tag size={16} />
               Note
             </h3>
-            {group.note ? (
-              <p className="text-sm text-gray-600 whitespace-pre-wrap">{group.note}</p>
+            {!isEditing ? (
+              <div className="space-y-2">
+                {group.note ? (
+                  <p className="text-sm text-gray-600 whitespace-pre-wrap">{group.note}</p>
+                ) : (
+                  <p className="text-sm text-gray-400 italic">No note yet.</p>
+                )}
+                <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+                  Edit note
+                </Button>
+              </div>
             ) : (
-              <p className="text-sm text-gray-400 italic">No note yet.</p>
+              <div className="space-y-2">
+                <textarea
+                  className="w-full min-h-[120px] rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={noteDraft}
+                  onChange={(event) => setNoteDraft(event.target.value)}
+                />
+                {saveError && <div className="text-xs text-red-600">{saveError}</div>}
+                <div className="flex items-center gap-2">
+                  <Button size="sm" onClick={handleSave} disabled={saving}>
+                    {saving ? 'Saving...' : 'Save'}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleCancel} disabled={saving}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
             )}
           </section>
 
@@ -99,4 +165,17 @@ export function GroupDetailsPanel({
       </ScrollArea>
     </div>
   );
+}
+
+function formatGroupError(error: unknown): string {
+  if (error instanceof GroupApiError) {
+    if (error.type === 'token_missing' || error.type === 'forbidden') {
+      return 'Token required to save group notes (run featuremap serve and paste token).';
+    }
+    if (error.type === 'network') {
+      return 'Serve not running / API unavailable.';
+    }
+    return error.message;
+  }
+  return 'Failed to save group note.';
 }

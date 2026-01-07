@@ -25,12 +25,14 @@ import {
   buildGroupContainerNodes,
   GROUP_CONTAINER_NODE_TYPE,
 } from '@/lib/groupContainers';
-import { getLayoutedElements } from '@/lib/graphLayout';
+import { applyGroupDragChanges, collectMemberPositions, getGroupIdFromContainer } from '@/lib/groupDrag';
+import { applyLayoutPositions, getLayoutedElements } from '@/lib/graphLayout';
 import type { GraphData, GroupSummary, MapEntity, NodeType } from '@/lib/types';
 
 interface FeatureMapProps {
   graph: GraphData;
   entities: Record<string, MapEntity>;
+  layoutPositions?: Record<string, { x: number; y: number }>;
   groups?: GroupSummary[];
   groupMembership?: Map<string, string[]>;
   selectedGroupId?: string;
@@ -49,6 +51,7 @@ interface FeatureMapProps {
   selectedNodeId?: string | null;
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
+  onGroupDragStop?: (positions: Record<string, { x: number; y: number }>) => void;
 }
 
 const nodeTypes: NodeTypes = {
@@ -65,6 +68,7 @@ const edgeTypes: EdgeTypes = {
 export function FeatureMap({
   graph,
   entities,
+  layoutPositions = {},
   groups = [],
   groupMembership,
   selectedGroupId = 'all',
@@ -83,6 +87,7 @@ export function FeatureMap({
   selectedNodeId,
   focusedNodeId,
   focusedUntil,
+  onGroupDragStop,
 }: FeatureMapProps) {
   const dependencyCountById = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -144,8 +149,12 @@ export function FeatureMap({
   }, [graph.edges]);
 
   const { nodes: layoutedGraphNodes, edges: layoutedGraphEdges } = useMemo(() => {
-    return getLayoutedElements(graphNodes, graphEdges, 'TB');
-  }, [graphEdges, graphNodes]);
+    const layouted = getLayoutedElements(graphNodes, graphEdges, 'TB');
+    return {
+      nodes: applyLayoutPositions(layouted.nodes, layoutPositions),
+      edges: layouted.edges,
+    };
+  }, [graphEdges, graphNodes, layoutPositions]);
 
   const groupContainerNodes = useMemo(() => {
     if (groups.length === 0) {
@@ -179,7 +188,7 @@ export function FeatureMap({
     [commentEdges, layoutedGraphEdges]
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
+  const [nodes, setNodes] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
   useEffect(() => {
@@ -214,7 +223,7 @@ export function FeatureMap({
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
-      onNodesChange(changes);
+      setNodes((currentNodes) => applyGroupDragChanges(changes, currentNodes, groupMembership ?? new Map()));
       if (!onNodeRemove) {
         return;
       }
@@ -224,14 +233,24 @@ export function FeatureMap({
         }
       }
     },
-    [onNodeRemove, onNodesChange]
+    [groupMembership, onNodeRemove, setNodes]
   );
 
   const handleNodeDragStop = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
+        const groupId = getGroupIdFromContainer(node.id);
+        if (!groupId || !onGroupDragStop) {
+          return;
+        }
+        const memberIds = groupMembership?.get(groupId) ?? [];
+        const positions = collectMemberPositions(nodes, memberIds);
+        onGroupDragStop(positions);
+        return;
+      }
       onNodeDragStop?.(node);
     },
-    [onNodeDragStop]
+    [groupMembership, nodes, onGroupDragStop, onNodeDragStop]
   );
 
   return (

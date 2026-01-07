@@ -1,4 +1,5 @@
 import { applyGroupFilter } from './groupFilters';
+import { buildPrimaryGroupMembership } from './groupMembership';
 import { applyLayerFilter } from './layerFilters';
 import type { FeatureMapData, LayerFilter, ViewMode } from './types';
 
@@ -131,13 +132,15 @@ function isNodeVisible({
 }): boolean {
   const graph = viewMode === 'clusters' ? data.clusterGraph : data.featureGraph;
   const layerFiltered = applyLayerFilter(graph.nodes, graph.edges, selectedLayer);
+  const groupMembership = buildPrimaryGroupMembership(data.groups, data.entities, viewMode).membership;
   const groupFiltered = applyGroupFilter(
     layerFiltered.nodes,
     layerFiltered.edges,
     viewMode,
     selectedGroupId,
     data.groupsById,
-    data.entities
+    data.entities,
+    groupMembership
   );
   return groupFiltered.nodes.some((node) => node.id === nodeId);
 }

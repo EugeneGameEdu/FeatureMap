@@ -31,6 +31,29 @@ export function useFeatureMapData() {
     }
   }, []);
 
+  const updateLayoutPositions = useCallback(
+    (positions: Record<string, { x: number; y: number }>) => {
+      setData((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        const nextPositions = { ...prev.layout.positions, ...positions };
+        return {
+          ...prev,
+          layout: {
+            ...prev.layout,
+            positions: nextPositions,
+            metadata: {
+              ...prev.layout.metadata,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+        };
+      });
+    },
+    []
+  );
+
   const refreshComments = useCallback(async () => {
     try {
       const comments = await loadComments();
@@ -62,5 +85,6 @@ export function useFeatureMapData() {
     error,
     loading,
     loadData,
+    updateLayoutPositions,
   };
 }

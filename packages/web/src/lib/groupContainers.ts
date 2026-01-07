@@ -1,12 +1,9 @@
 import type { Node } from '@xyflow/react';
 import type { GroupSummary } from './types';
+import { buildGroupRectangles, GROUP_HEADER_HEIGHT } from './groupPacking';
 
 export const GROUP_CONTAINER_NODE_TYPE = 'group_container';
-
-const DEFAULT_NODE_WIDTH = 180;
-const DEFAULT_NODE_HEIGHT = 70;
-const HEADER_HEIGHT = 36;
-const NOTE_HEIGHT = 44;
+export const GROUP_CONTAINER_ID_PREFIX = 'group-container:';
 
 export interface GroupContainerData {
   groupId: string;
@@ -37,91 +34,41 @@ export function buildGroupContainerNodes({
   onSelectGroup,
 }: BuildGroupContainerNodesInput): Array<Node<GroupContainerData>> {
   const nodesById = new Map(visibleNodes.map((node) => [node.id, node]));
+  const rectangles = buildGroupRectangles({ nodesById, groups, membership, padding });
   const containerNodes: Array<Node<GroupContainerData>> = [];
 
-  for (const group of groups) {
-    const memberIds = membership.get(group.id) ?? [];
-    const memberNodes = memberIds.map((id) => nodesById.get(id)).filter(isDefined);
-
-    if (memberNodes.length === 0) {
+  for (const rect of rectangles) {
+    const group = groups.find((entry) => entry.id === rect.id);
+    if (!group) {
       continue;
     }
 
-    const bounds = resolveBounds(memberNodes);
-    const noteHeight = group.note ? NOTE_HEIGHT : 0;
-    const position = {
-      x: bounds.minX - padding,
-      y: bounds.minY - padding - HEADER_HEIGHT,
-    };
-    const size = {
-      width: bounds.maxX - bounds.minX + padding * 2,
-      height: bounds.maxY - bounds.minY + padding * 2 + HEADER_HEIGHT + noteHeight,
-    };
-
     containerNodes.push({
-      id: `group-container:${group.id}`,
+      id: `${GROUP_CONTAINER_ID_PREFIX}${rect.id}`,
       type: GROUP_CONTAINER_NODE_TYPE,
-      position,
+      position: { x: rect.x, y: rect.y },
       data: {
-        groupId: group.id,
+        groupId: rect.id,
         name: group.name,
         description: group.description,
         note: group.note,
-        headerHeight: HEADER_HEIGHT,
-        noteHeight,
-        isSelected: group.id === selectedGroupId,
+        headerHeight: GROUP_HEADER_HEIGHT,
+        noteHeight: rect.noteHeight,
+        isSelected: rect.id === selectedGroupId,
         onSelectGroup,
       },
       selectable: false,
-      draggable: false,
+      draggable: true,
       deletable: false,
       connectable: false,
       focusable: false,
       style: {
-        width: size.width,
-        height: size.height,
+        width: rect.width,
+        height: rect.height,
         zIndex: 0,
       },
     });
   }
 
   return containerNodes;
-}
-
-function resolveBounds(nodes: Node[]): { minX: number; minY: number; maxX: number; maxY: number } {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-
-  for (const node of nodes) {
-    const width = resolveNodeWidth(node);
-    const height = resolveNodeHeight(node);
-    const position = node.positionAbsolute ?? node.position;
-    const left = position.x;
-    const top = position.y;
-    const right = left + width;
-    const bottom = top + height;
-
-    minX = Math.min(minX, left);
-    minY = Math.min(minY, top);
-    maxX = Math.max(maxX, right);
-    maxY = Math.max(maxY, bottom);
-  }
-
-  return { minX, minY, maxX, maxY };
-}
-
-function resolveNodeWidth(node: Node): number {
-  const measured = (node as Node & { measured?: { width?: number } }).measured;
-  return node.width ?? measured?.width ?? DEFAULT_NODE_WIDTH;
-}
-
-function resolveNodeHeight(node: Node): number {
-  const measured = (node as Node & { measured?: { height?: number } }).measured;
-  return node.height ?? measured?.height ?? DEFAULT_NODE_HEIGHT;
-}
-
-function isDefined<T>(value: T | undefined): value is T {
-  return value !== undefined;
 }

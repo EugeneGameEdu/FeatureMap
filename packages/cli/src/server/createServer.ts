@@ -3,6 +3,8 @@ import type { Server } from 'http';
 import express from 'express';
 import { createContextUpdateHandler } from './routes/contextUpdate.js';
 import { createCommentsRouter } from './routes/commentsRoutes.js';
+import { createGroupRouter } from './routes/groupRoutes.js';
+import { createLayoutRouter } from './routes/layoutRoutes.js';
 import { enforceLocalhost, requireToken } from './security.js';
 import { createWsHub } from './wsHub.js';
 import type { WsHub } from './wsHub.js';
@@ -45,6 +47,22 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
   apiRouter.use(
     '/comments',
     createCommentsRouter({
+      projectRoot: options.projectRoot,
+      sessionToken: options.sessionToken,
+      wsHub,
+    })
+  );
+  apiRouter.use(
+    '/layout',
+    createLayoutRouter({
+      projectRoot: options.projectRoot,
+      sessionToken: options.sessionToken,
+      wsHub,
+    })
+  );
+  apiRouter.use(
+    '/groups',
+    createGroupRouter({
       projectRoot: options.projectRoot,
       sessionToken: options.sessionToken,
       wsHub,

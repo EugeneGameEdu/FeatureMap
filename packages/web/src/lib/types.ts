@@ -80,6 +80,30 @@ export type GraphNode = z.infer<typeof GraphNodeSchema>;
 export type GraphEdge = z.infer<typeof GraphEdgeSchema>;
 export type GraphData = z.infer<typeof GraphSchema>;
 
+const LayoutPositionSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+});
+
+const LayoutViewportSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  zoom: z.number(),
+});
+
+const LayoutMetadataSchema = z.object({
+  updatedAt: z.string(),
+});
+
+export const LayoutSchema = z.object({
+  version: z.number(),
+  positions: z.record(z.string(), LayoutPositionSchema),
+  viewport: LayoutViewportSchema.optional(),
+  metadata: LayoutMetadataSchema,
+});
+
+export type Layout = z.infer<typeof LayoutSchema>;
+
 const ClusterExportSchema = z.object({
   name: z.string(),
   type: z.string(),
@@ -200,6 +224,7 @@ export interface FeatureMapData {
   graph: GraphData;
   clusterGraph: GraphData;
   featureGraph: GraphData;
+  layout: Layout;
   entities: Record<string, MapEntity>;
   context: ContextData;
   groups: GroupSummary[];

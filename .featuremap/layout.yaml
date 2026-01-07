@@ -1,4 +1,73 @@
 version: 1
-positions: {}
+positions:
+  cli-analyzer:
+    x: 815
+    y: 586
+  cli-command-interface:
+    x: -78.2705087794659
+    y: -13.04508479657764
+  cli-commands:
+    x: 375
+    y: 246
+  cli-constants:
+    x: 795
+    y: 926
+  cli-core:
+    x: 375
+    y: 76
+  cli-demo-scripts:
+    x: 161.7294912205341
+    y: -13.04508479657764
+  cli-scripts:
+    x: 40
+    y: 586
+  cli-server:
+    x: 450
+    y: 416
+  cli-server-routes:
+    x: 450
+    y: 586
+  cli-types:
+    x: 450
+    y: 926
+  cli-utils:
+    x: 320
+    y: 756
+  code-analysis-engine:
+    x: 41.7294912205341
+    y: 156.95491520342236
+  featuremap-serve-server:
+    x: 401.72949122053404
+    y: -13.04508479657764
+  mcp-server:
+    x: 786.529932462546
+    y: -215.24389914353117
+  mcp-server-core:
+    x: 105
+    y: 1188
+  mcp-server-tools:
+    x: 105
+    y: 1358
+  mcp-server-types:
+    x: 105
+    y: 1698
+  mcp-server-utils:
+    x: 40
+    y: 1528
+  web-components:
+    x: 962.1840342184391
+    y: -219.15742458250452
+  web-components-ui:
+    x: 1202.1840342184391
+    y: -219.15742458250452
+  web-core:
+    x: 1442.1840342184391
+    y: -219.15742458250452
+  web-featuremap-viewer:
+    x: 401
+    y: 508
+  web-lib:
+    x: 1682.1840342184391
+    y: -219.15742458250452
 metadata:
-  updatedAt: 2026-01-05T16:16:04.836Z
+  updatedAt: 2026-01-07T14:42:30.912Z

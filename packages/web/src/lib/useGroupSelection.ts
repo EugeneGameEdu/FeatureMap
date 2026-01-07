@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FeatureMapData, ViewMode } from './types';
-import { buildGroupMembers, buildGroupMembership } from './groupMembership';
+import { buildGroupMembers, buildPrimaryGroupMembership } from './groupMembership';
 
 interface UseGroupSelectionInput {
   data: FeatureMapData | null;
   viewMode: ViewMode;
   selectedGroupId: string;
   visibleNodeIds: Set<string>;
+  groupMembership?: Map<string, string[]>;
+  multiGroupNodeIds?: string[];
 }
 
 export function useGroupSelection({
@@ -14,14 +16,18 @@ export function useGroupSelection({
   viewMode,
   selectedGroupId,
   visibleNodeIds,
+  groupMembership: groupMembershipOverride,
+  multiGroupNodeIds: multiGroupNodeIdsOverride,
 }: UseGroupSelectionInput) {
   const [selectedGroupDetailsId, setSelectedGroupDetailsId] = useState<string | null>(null);
-  const groupMembership = useMemo(() => {
+  const computedMembership = useMemo(() => {
     if (!data) {
-      return new Map<string, string[]>();
+      return { membership: new Map<string, string[]>(), multiGroupNodeIds: [] };
     }
-    return buildGroupMembership(data.groups, data.entities, viewMode);
+    return buildPrimaryGroupMembership(data.groups, data.entities, viewMode);
   }, [data, viewMode]);
+  const groupMembership = groupMembershipOverride ?? computedMembership.membership;
+  const multiGroupNodeIds = multiGroupNodeIdsOverride ?? computedMembership.multiGroupNodeIds;
   const selectedGroupDetails = useMemo(() => {
     if (!selectedGroupDetailsId || !data) {
       return null;
@@ -67,5 +73,6 @@ export function useGroupSelection({
     selectedGroupDetailsId,
     selectedGroupMembers,
     groupMembership,
+    multiGroupNodeIds,
   };
 }

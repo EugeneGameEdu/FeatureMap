@@ -8,15 +8,16 @@ import { SearchPalette } from '@/components/SearchPalette';
 import { ErrorScreen, LoadingScreen } from '@/components/StatusScreens';
 import { COMMENT_NODE_PREFIX } from '@/lib/commentTypes';
 import { applyGroupFilter } from '@/lib/groupFilters';
+import { buildPrimaryGroupMembership } from '@/lib/groupMembership';
 import { applyLayerFilter } from '@/lib/layerFilters';
 import { useCommentsTool } from '@/lib/useCommentsTool';
 import { useFeatureMapData } from '@/lib/useFeatureMapData';
+import { useGroupLayoutActions } from '@/lib/useGroupLayoutActions';
 import { useGroupSelection } from '@/lib/useGroupSelection';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
 import type { LayerFilter, ViewMode } from '@/lib/types';
-
 function App() {
-  const { data, loading, error, loadData } = useFeatureMapData();
+  const { data, loading, error, loadData, updateLayoutPositions } = useFeatureMapData();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
@@ -25,11 +26,14 @@ function App() {
   const [showComments, setShowComments] = useState(true);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
-  const activeGraph = data
-    ? viewMode === 'clusters'
-      ? data.clusterGraph
-      : data.featureGraph
-    : null;
+  const activeGraph = data ? (viewMode === 'clusters' ? data.clusterGraph : data.featureGraph) : null;
+  const layoutPositions = data?.layout?.positions ?? {};
+  const primaryGroupMembership = useMemo(() => {
+    if (!data) {
+      return { membership: new Map<string, string[]>(), multiGroupNodeIds: [] };
+    }
+    return buildPrimaryGroupMembership(data.groups, data.entities, viewMode);
+  }, [data, viewMode]);
   const visibleGraph = useMemo(() => {
     if (!activeGraph || !data) {
       return null;
@@ -45,10 +49,19 @@ function App() {
       viewMode,
       selectedGroupId,
       data.groupsById,
-      data.entities
+      data.entities,
+      primaryGroupMembership.membership
     );
     return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
-  }, [activeGraph, data?.entities, data?.groupsById, selectedGroupId, selectedLayer, viewMode]);
+  }, [
+    activeGraph,
+    data?.entities,
+    data?.groupsById,
+    primaryGroupMembership.membership,
+    selectedGroupId,
+    selectedLayer,
+    viewMode,
+  ]);
   const visibleNodeIds = useMemo(() => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []), [visibleGraph]);
   const {
     clearGroupSelection,
@@ -57,11 +70,22 @@ function App() {
     selectedGroupDetailsId,
     selectedGroupMembers,
     groupMembership,
+    multiGroupNodeIds,
   } = useGroupSelection({
     data,
     viewMode,
     selectedGroupId,
     visibleNodeIds,
+    groupMembership: primaryGroupMembership.membership,
+    multiGroupNodeIds: primaryGroupMembership.multiGroupNodeIds,
+  });
+  const { layoutMessage, packGroups, handleGroupDragStop } = useGroupLayoutActions({
+    reactFlowInstance,
+    groups: data?.groups ?? [],
+    groupMembership,
+    selectedGroupId,
+    multiGroupNodeIds,
+    onLayoutPositionsChange: updateLayoutPositions,
   });
   const handleSelectedNodeChange = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
@@ -174,17 +198,13 @@ function App() {
     setSelectedNodeId(null);
     clearGroupSelection();
   };
-
   if (loading) {
     return <LoadingScreen />;
   }
-
   if (error) {
     return <ErrorScreen message={error} onRetry={loadData} />;
   }
-
   if (!data || !activeGraph || !visibleGraph) return null;
-
   const selectedNode = selectedGroupDetailsId ? null : selectedNodeId ? data.entities[selectedNodeId] : null;
   const clusterCount = data.clusterGraph.nodes.length;
   const featureCount = data.featureGraph.nodes.length;
@@ -206,11 +226,11 @@ function App() {
         onQueryChange={setSearchQuery}
         onSelectResult={onSearchSelect}
       />
-        <MapHeader
-          clusterCount={clusterCount}
-          featureCount={featureCount}
-          fileCount={fileCount}
-          generatedAt={data.graph.generatedAt}
+      <MapHeader
+        clusterCount={clusterCount}
+        featureCount={featureCount}
+        fileCount={fileCount}
+        generatedAt={data.graph.generatedAt}
         viewMode={viewMode}
         selectedLayer={selectedLayer}
         selectedGroupId={selectedGroupId}
@@ -219,6 +239,8 @@ function App() {
         hasGroups={hasGroups}
         context={data.context}
         showComments={showComments}
+        layoutMessage={layoutMessage}
+        onPackGroups={packGroups}
         onViewModeChange={setViewMode}
         onLayerChange={setSelectedLayer}
         onGroupChange={setSelectedGroupId}
@@ -235,6 +257,7 @@ function App() {
           <FeatureMap
             graph={visibleGraph}
             entities={data.entities}
+            layoutPositions={layoutPositions}
             groups={data.groups}
             groupMembership={groupMembership}
             selectedGroupId={selectedGroupId}
@@ -248,6 +271,7 @@ function App() {
             onEdgeRemove={handleEdgeRemove}
             onNodeDragStop={handleNodeDragStop}
             onNodeRemove={handleNodeRemove}
+            onGroupDragStop={handleGroupDragStop}
             commentPlacementActive={placementActive}
             onInit={setReactFlowInstance}
             selectedNodeId={selectedNodeId}
@@ -255,13 +279,13 @@ function App() {
             focusedUntil={focusedUntil}
           />
         </main>
-
         <Sidebar
           node={selectedNode}
           group={selectedGroupDetails}
           groupMembers={selectedGroupMembers}
           viewMode={viewMode}
           onClose={handleCloseSidebar}
+          onGroupUpdated={loadData}
           onDependencyClick={handleDependencyClick}
           groups={data.groups}
           focusedFilePath={focusedFilePath}

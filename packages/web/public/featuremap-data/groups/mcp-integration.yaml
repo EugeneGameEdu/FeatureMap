@@ -1,0 +1,12 @@
+version: 1
+id: mcp-integration
+name: MCP Integration
+description: MCP server surface for FeatureMap.
+featureIds:
+  - mcp-server
+source: ai
+metadata:
+  createdAt: 2026-01-06T10:33:17.283Z
+  updatedAt: 2026-01-06T10:33:17.283Z
+  lastModifiedBy: ai
+  version: 1

@@ -7,6 +7,11 @@ export interface GroupMember {
   missing?: boolean;
 }
 
+export interface PrimaryGroupMembership {
+  membership: Map<string, string[]>;
+  multiGroupNodeIds: string[];
+}
+
 export function buildGroupMembership(
   groups: GroupSummary[],
   entities: Record<string, MapEntity>,
@@ -23,6 +28,46 @@ export function buildGroupMembership(
   }
 
   return membership;
+}
+
+export function buildPrimaryGroupMembership(
+  groups: GroupSummary[],
+  entities: Record<string, MapEntity>,
+  viewMode: ViewMode
+): PrimaryGroupMembership {
+  const membership = new Map<string, string[]>();
+  const groupIdsByNodeId = new Map<string, string[]>();
+
+  for (const group of groups) {
+    const memberIds =
+      viewMode === 'features'
+        ? normalizeStringList(group.featureIds)
+        : normalizeStringList(getClusterIdsForGroup(group, entities));
+    for (const memberId of memberIds) {
+      const groupIds = groupIdsByNodeId.get(memberId) ?? [];
+      groupIds.push(group.id);
+      groupIdsByNodeId.set(memberId, groupIds);
+    }
+  }
+
+  const multiGroupNodeIds: string[] = [];
+
+  for (const [nodeId, groupIds] of groupIdsByNodeId.entries()) {
+    const sortedGroupIds = normalizeStringList(groupIds);
+    if (sortedGroupIds.length > 1) {
+      multiGroupNodeIds.push(nodeId);
+    }
+    const primaryGroupId = sortedGroupIds[0];
+    const members = membership.get(primaryGroupId) ?? [];
+    members.push(nodeId);
+    membership.set(primaryGroupId, members);
+  }
+
+  for (const [groupId, memberIds] of membership.entries()) {
+    membership.set(groupId, normalizeStringList(memberIds));
+  }
+
+  return { membership, multiGroupNodeIds };
 }
 
 export function buildGroupMembers(

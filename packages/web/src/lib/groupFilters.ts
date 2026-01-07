@@ -6,7 +6,8 @@ export function applyGroupFilter(
   viewMode: ViewMode,
   selectedGroupId: string,
   groupsById: Record<string, GroupSummary>,
-  entities: Record<string, MapEntity>
+  entities: Record<string, MapEntity>,
+  groupMembership?: Map<string, string[]>
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
   if (selectedGroupId === 'all') {
     return { nodes, edges };
@@ -19,7 +20,9 @@ export function applyGroupFilter(
 
   const visibleIds =
     viewMode === 'features'
-      ? new Set(group.featureIds)
+      ? new Set(groupMembership?.get(group.id) ?? group.featureIds)
+      : groupMembership
+      ? new Set(groupMembership.get(group.id) ?? [])
       : getClusterIdsForGroup(group, entities);
 
   const visibleNodes = nodes.filter((node) => visibleIds.has(node.id));

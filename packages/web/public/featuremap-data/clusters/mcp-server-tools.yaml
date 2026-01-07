@@ -1,0 +1,107 @@
+version: 1
+id: mcp-server-tools
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /mcp-server/
+files:
+  - packages/mcp-server/src/tools/createGroup.ts
+  - packages/mcp-server/src/tools/findRelevantFeatures.ts
+  - packages/mcp-server/src/tools/getArchitectureOverview.ts
+  - packages/mcp-server/src/tools/getClusterFiles.ts
+  - packages/mcp-server/src/tools/getCurrentFeatures.ts
+  - packages/mcp-server/src/tools/getFeatureDetails.ts
+  - packages/mcp-server/src/tools/getGroupingInput.ts
+  - packages/mcp-server/src/tools/getGroupingInputUtils.ts
+  - packages/mcp-server/src/tools/getNodeComments.ts
+  - packages/mcp-server/src/tools/getProjectContext.ts
+  - packages/mcp-server/src/tools/saveFeaturesFromGrouping.ts
+  - packages/mcp-server/src/tools/updateFeature.ts
+exports:
+  - isDefault: false
+    name: applyLimits
+    type: function
+  - isDefault: false
+    name: createGroupTool
+    type: variable
+  - isDefault: false
+    name: CurrentFeaturesResult
+    type: interface
+  - isDefault: false
+    name: DEFAULT_LIMITS
+    type: variable
+  - isDefault: false
+    name: Feature
+    type: interface
+  - isDefault: false
+    name: findRelevantFeaturesTool
+    type: variable
+  - isDefault: false
+    name: getArchitectureOverviewTool
+    type: variable
+  - isDefault: false
+    name: getClusterFilesTool
+    type: variable
+  - isDefault: false
+    name: getCurrentFeatures
+    type: function
+  - isDefault: false
+    name: getFeatureDetailsTool
+    type: variable
+  - isDefault: false
+    name: getGroupingInputTool
+    type: variable
+  - isDefault: false
+    name: getNodeCommentsTool
+    type: variable
+  - isDefault: false
+    name: getProjectContextTool
+    type: variable
+  - isDefault: false
+    name: Limits
+    type: type
+  - isDefault: false
+    name: loadDependencies
+    type: function
+  - isDefault: false
+    name: saveFeaturesFromGroupingTool
+    type: variable
+  - isDefault: false
+    name: summarizeCluster
+    type: function
+  - isDefault: false
+    name: updateFeature
+    type: function
+  - isDefault: false
+    name: UpdateFeatureParams
+    type: interface
+  - isDefault: false
+    name: UpdateFeatureResult
+    type: interface
+imports:
+  external:
+    - fs
+    - path
+    - yaml
+    - zod
+  internal:
+    - ../types/feature.js
+    - ../types/group.js
+    - ../utils/commentLoader.js
+    - ../utils/contextLoader.js
+    - ../utils/featureLoader.js
+    - ../utils/featureMerge.js
+    - ../utils/featureYaml.js
+    - ../utils/findFeaturemapDir.js
+    - ../utils/graphBuilder.js
+    - ../utils/groupYaml.js
+    - ../utils/listUtils.js
+    - ../utils/navigationLoaders.js
+    - ../utils/searchScoring.js
+    - ../utils/slugify.js
+    - ./getGroupingInputUtils.js
+compositionHash: 9c1d41bfc27eedde
+metadata:
+  createdAt: 2026-01-06T09:31:36.350Z
+  updatedAt: 2026-01-06T22:04:33.538Z

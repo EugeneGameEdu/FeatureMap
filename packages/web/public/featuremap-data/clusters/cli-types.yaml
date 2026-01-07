@@ -1,0 +1,164 @@
+version: 1
+id: cli-types
+layer: shared
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /types/
+files:
+  - packages/cli/src/types/cluster.ts
+  - packages/cli/src/types/comment.ts
+  - packages/cli/src/types/common.ts
+  - packages/cli/src/types/config.ts
+  - packages/cli/src/types/context.ts
+  - packages/cli/src/types/feature.ts
+  - packages/cli/src/types/graph.ts
+  - packages/cli/src/types/group.ts
+  - packages/cli/src/types/index.ts
+  - packages/cli/src/types/layout.ts
+  - packages/cli/src/types/raw-graph.ts
+exports:
+  - isDefault: false
+    name: Cluster
+    type: type
+  - isDefault: false
+    name: ClusterSchema
+    type: variable
+  - isDefault: false
+    name: CommentHomeView
+    type: type
+  - isDefault: false
+    name: CommentLink
+    type: type
+  - isDefault: false
+    name: CommentNode
+    type: type
+  - isDefault: false
+    name: CommentNodeSchema
+    type: variable
+  - isDefault: false
+    name: Config
+    type: type
+  - isDefault: false
+    name: ConfigSchema
+    type: variable
+  - isDefault: false
+    name: Constraints
+    type: type
+  - isDefault: false
+    name: ConstraintsSchema
+    type: variable
+  - isDefault: false
+    name: Conventions
+    type: type
+  - isDefault: false
+    name: ConventionsSchema
+    type: variable
+  - isDefault: false
+    name: Decisions
+    type: type
+  - isDefault: false
+    name: DecisionsSchema
+    type: variable
+  - isDefault: false
+    name: DesignSystem
+    type: type
+  - isDefault: false
+    name: DesignSystemSchema
+    type: variable
+  - isDefault: false
+    name: ExportSchema
+    type: variable
+  - isDefault: false
+    name: ExportSymbol
+    type: type
+  - isDefault: false
+    name: Feature
+    type: type
+  - isDefault: false
+    name: FeatureHintSchema
+    type: variable
+  - isDefault: false
+    name: FeatureSchema
+    type: variable
+  - isDefault: false
+    name: FileReference
+    type: type
+  - isDefault: false
+    name: FileReferenceSchema
+    type: variable
+  - isDefault: false
+    name: Graph
+    type: type
+  - isDefault: false
+    name: GraphSchema
+    type: variable
+  - isDefault: false
+    name: Group
+    type: type
+  - isDefault: false
+    name: GroupSchema
+    type: variable
+  - isDefault: false
+    name: ImportList
+    type: type
+  - isDefault: false
+    name: ImportListSchema
+    type: variable
+  - isDefault: false
+    name: Layer
+    type: type
+  - isDefault: false
+    name: LayerSchema
+    type: variable
+  - isDefault: false
+    name: Layout
+    type: type
+  - isDefault: false
+    name: LayoutSchema
+    type: variable
+  - isDefault: false
+    name: Metadata
+    type: type
+  - isDefault: false
+    name: MetadataSchema
+    type: variable
+  - isDefault: false
+    name: Overview
+    type: type
+  - isDefault: false
+    name: OverviewSchema
+    type: variable
+  - isDefault: false
+    name: Position
+    type: type
+  - isDefault: false
+    name: PositionSchema
+    type: variable
+  - isDefault: false
+    name: RawGraph
+    type: type
+  - isDefault: false
+    name: RawGraphSchema
+    type: variable
+  - isDefault: false
+    name: Source
+    type: type
+  - isDefault: false
+    name: SourceSchema
+    type: variable
+  - isDefault: false
+    name: TechStack
+    type: type
+  - isDefault: false
+    name: TechStackSchema
+    type: variable
+imports:
+  external:
+    - zod
+  internal:
+    - ./common.js
+compositionHash: 26a6168d39f3d617
+metadata:
+  createdAt: 2026-01-06T09:31:36.342Z
+  updatedAt: 2026-01-06T22:04:33.524Z

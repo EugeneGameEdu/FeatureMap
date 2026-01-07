@@ -22,6 +22,8 @@ interface MapControlsRowProps {
   hasGroups: boolean;
   context: ContextData;
   showComments: boolean;
+  layoutMessage: { type: 'error' | 'warning' | 'success'; text: string } | null;
+  onPackGroups: () => void;
   onViewModeChange: (mode: ViewMode) => void;
   onLayerChange: (layer: LayerFilter) => void;
   onGroupChange: (groupId: string) => void;
@@ -38,6 +40,8 @@ export function MapControlsRow({
   hasGroups,
   context,
   showComments,
+  layoutMessage,
+  onPackGroups,
   onViewModeChange,
   onLayerChange,
   onGroupChange,
@@ -96,6 +100,9 @@ export function MapControlsRow({
               </option>
             ))}
           </select>
+          <Button variant="outline" size="sm" onClick={onPackGroups} disabled={!hasGroups}>
+            Pack groups
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           <span>Comments:</span>
@@ -116,6 +123,19 @@ export function MapControlsRow({
       {missingGroupFeatures.length > 0 && (
         <div className="text-xs text-amber-600 text-left">
           Missing features in group: {missingGroupFeatures.join(', ')}
+        </div>
+      )}
+      {layoutMessage && (
+        <div
+          className={`text-xs text-left ${
+            layoutMessage.type === 'success'
+              ? 'text-emerald-600'
+              : layoutMessage.type === 'error'
+              ? 'text-red-600'
+              : 'text-amber-600'
+          }`}
+        >
+          {layoutMessage.text}
         </div>
       )}
     </div>

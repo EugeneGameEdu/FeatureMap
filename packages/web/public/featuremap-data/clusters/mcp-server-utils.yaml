@@ -1,0 +1,172 @@
+version: 1
+id: mcp-server-utils
+layer: shared
+layerDetection:
+  confidence: low
+  signals:
+    - path contains /mcp-server/
+    - path contains /utils/
+files:
+  - packages/mcp-server/src/utils/commentLoader.ts
+  - packages/mcp-server/src/utils/contextLoader.ts
+  - packages/mcp-server/src/utils/featureLoader.ts
+  - packages/mcp-server/src/utils/featureMerge.ts
+  - packages/mcp-server/src/utils/featureYaml.ts
+  - packages/mcp-server/src/utils/findFeaturemapDir.ts
+  - packages/mcp-server/src/utils/graphBuilder.ts
+  - packages/mcp-server/src/utils/groupYaml.ts
+  - packages/mcp-server/src/utils/listUtils.ts
+  - packages/mcp-server/src/utils/navigationLoaders.ts
+  - packages/mcp-server/src/utils/searchScoring.ts
+  - packages/mcp-server/src/utils/slugify.ts
+exports:
+  - isDefault: false
+    name: buildFeatureOverlay
+    type: function
+  - isDefault: false
+    name: buildGroupYaml
+    type: function
+  - isDefault: false
+    name: buildIndices
+    type: function
+  - isDefault: false
+    name: CommentHomeView
+    type: type
+  - isDefault: false
+    name: CommentLink
+    type: type
+  - isDefault: false
+    name: CommentNode
+    type: type
+  - isDefault: false
+    name: CommentNodeSchema
+    type: variable
+  - isDefault: false
+    name: CommentNodeType
+    type: type
+  - isDefault: false
+    name: CommentNodeWithHomeView
+    type: type
+  - isDefault: false
+    name: computeFeatureCompositionHash
+    type: function
+  - isDefault: false
+    name: DerivedLayer
+    type: type
+  - isDefault: false
+    name: deriveFeatureLayers
+    type: function
+  - isDefault: false
+    name: filterCommentsForNode
+    type: function
+  - isDefault: false
+    name: findDuplicateIds
+    type: function
+  - isDefault: false
+    name: findFeaturemapDir
+    type: function
+  - isDefault: false
+    name: getGroupPath
+    type: function
+  - isDefault: false
+    name: getGroupsDir
+    type: function
+  - isDefault: false
+    name: groupExists
+    type: function
+  - isDefault: false
+    name: isKebabCase
+    type: function
+  - isDefault: false
+    name: loadClusters
+    type: function
+  - isDefault: false
+    name: loadComments
+    type: function
+  - isDefault: false
+    name: loadContextFile
+    type: function
+  - isDefault: false
+    name: loadFeatures
+    type: function
+  - isDefault: false
+    name: loadGroups
+    type: function
+  - isDefault: false
+    name: loadProjectContext
+    type: function
+  - isDefault: false
+    name: markFeatureIgnored
+    type: function
+  - isDefault: false
+    name: mergeFeatureWithLocks
+    type: function
+  - isDefault: false
+    name: mergeGraphs
+    type: function
+  - isDefault: false
+    name: NavigationIndices
+    type: interface
+  - isDefault: false
+    name: normalizeStringList
+    type: function
+  - isDefault: false
+    name: ProjectContext
+    type: interface
+  - isDefault: false
+    name: RankedFeature
+    type: interface
+  - isDefault: false
+    name: rankFeatures
+    type: function
+  - isDefault: false
+    name: RankOptions
+    type: interface
+  - isDefault: false
+    name: RankResult
+    type: interface
+  - isDefault: false
+    name: RawCluster
+    type: interface
+  - isDefault: false
+    name: readExistingGraphYaml
+    type: function
+  - isDefault: false
+    name: readGroupYaml
+    type: function
+  - isDefault: false
+    name: SearchCluster
+    type: interface
+  - isDefault: false
+    name: SearchFeature
+    type: interface
+  - isDefault: false
+    name: slugifyToKebab
+    type: function
+  - isDefault: false
+    name: writeFeatureYaml
+    type: function
+  - isDefault: false
+    name: writeGraphYaml
+    type: function
+  - isDefault: false
+    name: writeGroupYaml
+    type: function
+imports:
+  external:
+    - crypto
+    - fs
+    - path
+    - yaml
+    - zod
+  internal:
+    - ../types/context.js
+    - ../types/feature.js
+    - ../types/group.js
+    - ./featureLoader.js
+    - ./groupYaml.js
+    - ./listUtils.js
+compositionHash: 8c5e14ea69e780f6
+metadata:
+  createdAt: 2026-01-06T09:31:36.354Z
+  updatedAt: 2026-01-06T22:04:33.548Z
