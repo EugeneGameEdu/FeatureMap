@@ -46,7 +46,7 @@ export function MapControlsRow({
 }: MapControlsRowProps) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center justify-end gap-3 text-sm text-gray-500">
+      <div className="flex flex-wrap items-center justify-start gap-3 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           <span>View:</span>
           <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
@@ -114,7 +114,7 @@ export function MapControlsRow({
         </Button>
       </div>
       {missingGroupFeatures.length > 0 && (
-        <div className="text-xs text-amber-600 text-right">
+        <div className="text-xs text-amber-600 text-left">
           Missing features in group: {missingGroupFeatures.join(', ')}
         </div>
       )}
