@@ -1,31 +1,63 @@
 import { applyNodeChanges, type Node, type NodeChange } from '@xyflow/react';
 import { GROUP_CONTAINER_ID_PREFIX } from './groupContainers';
 
+export interface GroupDragStateEntry {
+  containerStart: { x: number; y: number };
+  memberPositions: Record<string, { x: number; y: number }>;
+}
+
 export function applyGroupDragChanges(
   changes: NodeChange[],
   nodes: Node[],
-  groupMembership: Map<string, string[]>
+  groupMembership: Map<string, string[]>,
+  dragState: Map<string, GroupDragStateEntry>
 ): Node[] {
-  const groupDeltas = collectGroupDeltas(changes, nodes);
-  if (groupDeltas.length === 0) {
-    return applyNodeChanges(changes, nodes);
-  }
-
+  const nodesById = new Map(nodes.map((node) => [node.id, node]));
   const nextNodes = applyNodeChanges(changes, nodes);
-  const deltaByNodeId = new Map<string, { x: number; y: number }>();
+  const memberUpdates = new Map<string, { x: number; y: number }>();
+  let hasGroupDrag = false;
 
-  for (const { groupId, deltaX, deltaY } of groupDeltas) {
-    const memberIds = groupMembership.get(groupId) ?? [];
-    for (const memberId of memberIds) {
-      if (!deltaByNodeId.has(memberId)) {
-        deltaByNodeId.set(memberId, { x: deltaX, y: deltaY });
+  for (const change of changes) {
+    if (change.type !== 'position' || !change.position) {
+      continue;
+    }
+    const groupId = getGroupIdFromContainer(change.id);
+    if (!groupId) {
+      continue;
+    }
+    hasGroupDrag = true;
+    let dragStart = dragState.get(groupId);
+    if (!dragStart) {
+      const containerNode = nodesById.get(change.id);
+      if (!containerNode) {
+        continue;
       }
+      const memberIds = groupMembership.get(groupId) ?? [];
+      dragStart = {
+        containerStart: { ...containerNode.position },
+        memberPositions: collectMemberPositions(nodes, memberIds),
+      };
+      dragState.set(groupId, dragStart);
+    }
+
+    const deltaX = change.position.x - dragStart.containerStart.x;
+    const deltaY = change.position.y - dragStart.containerStart.y;
+    for (const [memberId, position] of Object.entries(dragStart.memberPositions)) {
+      memberUpdates.set(memberId, { x: position.x + deltaX, y: position.y + deltaY });
+    }
+
+    if (change.dragging === false) {
+      dragState.delete(groupId);
     }
   }
 
+  if (!hasGroupDrag) {
+    return nextNodes;
+  }
+
   return nextNodes.map((node) => {
-    const delta = deltaByNodeId.get(node.id);
-    if (!delta) {
+    const nextPosition = memberUpdates.get(node.id);
+    if (!nextPosition) {
       return node;
     }
     if (node.type !== 'feature' && node.type !== 'cluster') {
@@ -33,10 +65,8 @@ export function applyGroupDragChanges(
     }
     return {
       ...node,
-      position: {
-        x: node.position.x + delta.x,
-        y: node.position.y + delta.y,
-      },
+      position: nextPosition,
+      ...(node.positionAbsolute ? { positionAbsolute: nextPosition } : {}),
     };
   });
 }
@@ -55,7 +85,8 @@ export function collectMemberPositions(
     if (node.type !== 'feature' && node.type !== 'cluster') {
       continue;
     }
-    positions[node.id] = { x: node.position.x, y: node.position.y };
+    const position = node.positionAbsolute ?? node.position;
+    positions[node.id] = { x: position.x, y: position.y };
   }
 
   return positions;
@@ -65,36 +96,4 @@ export function getGroupIdFromContainer(nodeId: string): string | null {
   return nodeId.startsWith(GROUP_CONTAINER_ID_PREFIX)
     ? nodeId.slice(GROUP_CONTAINER_ID_PREFIX.length)
     : null;
-}
-
-function collectGroupDeltas(
-  changes: NodeChange[],
-  nodes: Node[]
-): Array<{ groupId: string; deltaX: number; deltaY: number }> {
-  const nodesById = new Map(nodes.map((node) => [node.id, node]));
-  const deltas = new Map<string, { deltaX: number; deltaY: number }>();
-
-  for (const change of changes) {
-    if (change.type !== 'position' || !change.position) {
-      continue;
-    }
-    const groupId = getGroupIdFromContainer(change.id);
-    if (!groupId) {
-      continue;
-    }
-    const previous = nodesById.get(change.id);
-    if (!previous) {
-      continue;
-    }
-    deltas.set(groupId, {
-      deltaX: change.position.x - previous.position.x,
-      deltaY: change.position.y - previous.position.y,
-    });
-  }
-
-  return [...deltas.entries()].map(([groupId, delta]) => ({
-    groupId,
-    deltaX: delta.deltaX,
-    deltaY: delta.deltaY,
-  }));
 }

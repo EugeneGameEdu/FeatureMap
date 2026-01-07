@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { WsHub } from '../wsHub.js';
 import { requireToken } from '../security.js';
 import { updateGroupNote } from '../groupStore.js';
+import { syncFeaturemapDataFile } from '../featuremapDataMirror.js';
 
 const NoteUpdateSchema = z.object({
   note: z.string().nullable().optional(),
@@ -32,6 +33,7 @@ export function createGroupRouter(options: GroupRouterOptions): express.Router {
 
     try {
       updateGroupNote(options.projectRoot, groupId, parsed.data.note);
+      syncFeaturemapDataFile(options.projectRoot, `groups/${groupId}.yaml`);
       options.wsHub?.broadcast({
         type: 'featuremap_changed',
         reason: 'groups_updated',

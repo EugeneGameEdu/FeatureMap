@@ -54,6 +54,30 @@ export function useFeatureMapData() {
     []
   );
 
+  const updateGroupNote = useCallback((groupId: string, note: string | null) => {
+    setData((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const existing = prev.groupsById[groupId];
+      if (!existing) {
+        return prev;
+      }
+      const updatedGroup = buildGroupWithNote(existing, note);
+      const updatedGroups = prev.groups.map((group) =>
+        group.id === groupId ? updatedGroup : group
+      );
+      return {
+        ...prev,
+        groups: updatedGroups,
+        groupsById: {
+          ...prev.groupsById,
+          [groupId]: updatedGroup,
+        },
+      };
+    });
+  }, []);
+
   const refreshComments = useCallback(async () => {
     try {
       const comments = await loadComments();
@@ -86,5 +110,14 @@ export function useFeatureMapData() {
     loading,
     loadData,
     updateLayoutPositions,
+    updateGroupNote,
   };
+}
+
+function buildGroupWithNote(group: FeatureMapData['groups'][number], note: string | null) {
+  if (note && note.length > 0) {
+    return { ...group, note };
+  }
+  const { note: _note, ...rest } = group;
+  return rest;
 }

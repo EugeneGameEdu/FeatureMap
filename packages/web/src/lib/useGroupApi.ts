@@ -60,6 +60,7 @@ export function useGroupApi() {
       }
 
       if (response.status === 403) {
+        logApiError(`/api/groups/${groupId}/note`, response.status, 'Forbidden');
         throw new GroupApiError('forbidden', 'Invalid or missing token.', 403);
       }
 
@@ -73,10 +74,12 @@ export function useGroupApi() {
         } catch {
           // ignore parsing errors
         }
+        logApiError(`/api/groups/${groupId}/note`, response.status, message);
         throw new GroupApiError('bad_request', message, 400);
       }
 
       if (!response.ok) {
+        logApiError(`/api/groups/${groupId}/note`, response.status, response.statusText);
         throw new GroupApiError(
           'unknown',
           `Request failed (${response.status}).`,
@@ -94,4 +97,8 @@ export function useGroupApi() {
   );
 
   return { updateGroupNote };
+}
+
+function logApiError(endpoint: string, status: number, message: string): void {
+  console.error('API request failed', { endpoint, status, message });
 }

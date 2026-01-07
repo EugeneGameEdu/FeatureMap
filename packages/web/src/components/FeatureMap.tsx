@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, type MouseEvent } from 'react';
 import {
   Background,
   BezierEdge,
@@ -25,7 +25,12 @@ import {
   buildGroupContainerNodes,
   GROUP_CONTAINER_NODE_TYPE,
 } from '@/lib/groupContainers';
-import { applyGroupDragChanges, collectMemberPositions, getGroupIdFromContainer } from '@/lib/groupDrag';
+import {
+  applyGroupDragChanges,
+  collectMemberPositions,
+  getGroupIdFromContainer,
+  type GroupDragStateEntry,
+} from '@/lib/groupDrag';
 import { applyLayoutPositions, getLayoutedElements } from '@/lib/graphLayout';
 import type { GraphData, GroupSummary, MapEntity, NodeType } from '@/lib/types';
 
@@ -190,10 +195,13 @@ export function FeatureMap({
 
   const [nodes, setNodes] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+  const nodesRef = useRef<Node[]>(layoutedNodes);
+  const groupDragStateRef = useRef<Map<string, GroupDragStateEntry>>(new Map());
 
   useEffect(() => {
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
+    nodesRef.current = layoutedNodes;
   }, [layoutedNodes, layoutedEdges, setNodes, setEdges]);
 
   const handleNodeClick = useCallback(
@@ -223,7 +231,16 @@ export function FeatureMap({
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
-      setNodes((currentNodes) => applyGroupDragChanges(changes, currentNodes, groupMembership ?? new Map()));
+      setNodes((currentNodes) => {
+        const nextNodes = applyGroupDragChanges(
+          changes,
+          currentNodes,
+          groupMembership ?? new Map(),
+          groupDragStateRef.current
+        );
+        nodesRef.current = nextNodes;
+        return nextNodes;
+      });
       if (!onNodeRemove) {
         return;
       }
@@ -244,13 +261,14 @@ export function FeatureMap({
           return;
         }
         const memberIds = groupMembership?.get(groupId) ?? [];
-        const positions = collectMemberPositions(nodes, memberIds);
+        const positions = collectMemberPositions(nodesRef.current, memberIds);
+        groupDragStateRef.current.delete(groupId);
         onGroupDragStop(positions);
         return;
       }
       onNodeDragStop?.(node);
     },
-    [groupMembership, nodes, onGroupDragStop, onNodeDragStop]
+    [groupMembership, onGroupDragStop, onNodeDragStop]
   );
 
   return (

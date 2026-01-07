@@ -17,7 +17,8 @@ import { useGroupSelection } from '@/lib/useGroupSelection';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
 import type { LayerFilter, ViewMode } from '@/lib/types';
 function App() {
-  const { data, loading, error, loadData, updateLayoutPositions } = useFeatureMapData();
+  const { data, loading, error, loadData, updateLayoutPositions, updateGroupNote } =
+    useFeatureMapData();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
@@ -180,6 +181,12 @@ function App() {
     setSelectedNodeId(null);
     selectGroup(groupId);
   };
+  const handleGroupUpdated = useCallback(
+    (groupId: string, note: string | null) => {
+      updateGroupNote(groupId, note);
+    },
+    [updateGroupNote]
+  );
   const handleDependencyClick = (nodeId: string) => {
     if (!data?.entities[nodeId]) {
       return;
@@ -285,7 +292,7 @@ function App() {
           groupMembers={selectedGroupMembers}
           viewMode={viewMode}
           onClose={handleCloseSidebar}
-          onGroupUpdated={loadData}
+          onGroupUpdated={handleGroupUpdated}
           onDependencyClick={handleDependencyClick}
           groups={data.groups}
           focusedFilePath={focusedFilePath}

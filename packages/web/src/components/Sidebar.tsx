@@ -15,7 +15,7 @@ interface SidebarProps {
   groupMembers?: GroupMember[];
   viewMode?: ViewMode;
   onClose: () => void;
-  onGroupUpdated?: () => void;
+  onGroupUpdated?: (groupId: string, note: string | null) => void;
   onDependencyClick?: (featureId: string) => void;
   groups?: GroupSummary[];
   focusedFilePath?: string | null;

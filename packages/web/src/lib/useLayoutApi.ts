@@ -60,6 +60,7 @@ export function useLayoutApi() {
       }
 
       if (response.status === 403) {
+        logApiError('/api/layout/positions', response.status, 'Forbidden');
         throw new LayoutApiError('forbidden', 'Invalid or missing token.', 403);
       }
 
@@ -73,10 +74,12 @@ export function useLayoutApi() {
         } catch {
           // ignore parsing errors
         }
+        logApiError('/api/layout/positions', response.status, message);
         throw new LayoutApiError('bad_request', message, 400);
       }
 
       if (!response.ok) {
+        logApiError('/api/layout/positions', response.status, response.statusText);
         throw new LayoutApiError(
           'unknown',
           `Request failed (${response.status}).`,
@@ -94,4 +97,8 @@ export function useLayoutApi() {
   );
 
   return { updateLayoutPositions };
+}
+
+function logApiError(endpoint: string, status: number, message: string): void {
+  console.error('API request failed', { endpoint, status, message });
 }

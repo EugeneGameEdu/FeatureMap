@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type { WsHub } from '../wsHub.js';
 import { requireToken } from '../security.js';
 import { updateLayoutPositions } from '../layoutStore.js';
+import { syncFeaturemapDataFile } from '../featuremapDataMirror.js';
 
 const PositionSchema = z.object({
   x: z.number(),
@@ -34,6 +35,7 @@ export function createLayoutRouter(options: LayoutRouterOptions): express.Router
 
     try {
       const layout = updateLayoutPositions(options.projectRoot, parsed.data);
+      syncFeaturemapDataFile(options.projectRoot, 'layout.yaml');
       options.wsHub?.broadcast({
         type: 'featuremap_changed',
         reason: 'layout_updated',

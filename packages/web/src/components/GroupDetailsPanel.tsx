@@ -12,7 +12,7 @@ interface GroupDetailsPanelProps {
   groupMembers: GroupMember[];
   viewMode: ViewMode;
   onClose: () => void;
-  onGroupUpdated?: () => void;
+  onGroupUpdated?: (groupId: string, note: string | null) => void;
 }
 
 export function GroupDetailsPanel({
@@ -47,8 +47,8 @@ export function GroupDetailsPanel({
     try {
       const trimmed = noteDraft.trimEnd();
       await updateGroupNote(group.id, trimmed.length > 0 ? trimmed : null);
+      onGroupUpdated?.(group.id, trimmed.length > 0 ? trimmed : null);
       setIsEditing(false);
-      onGroupUpdated?.();
     } catch (error) {
       setSaveError(formatGroupError(error));
     } finally {

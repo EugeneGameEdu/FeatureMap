@@ -6,8 +6,8 @@ content: |-
 
   I am trying to fix it
 position:
-  x: -357.3151595744681
-  y: 57.216888792971346
+  x: 1087.4337038599945
+  y: 325.5756058613304
 links:
   - id: mcp-server-core
     type: cluster
@@ -15,4 +15,4 @@ links:
     type: cluster
 pinned: true
 createdAt: 2026-01-06T21:51:44.435Z
-updatedAt: 2026-01-06T21:52:57.922Z
+updatedAt: 2026-01-07T15:06:18.518Z
