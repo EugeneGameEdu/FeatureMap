@@ -1,0 +1,13 @@
+version: 1
+id: adventure-creation
+name: Создание приключений
+description: Редактор и медиатека для подготовки приключений.
+featureIds:
+  - frontend-editor
+  - frontend-media
+source: ai
+metadata:
+  createdAt: 2026-01-07T16:20:19.045Z
+  updatedAt: 2026-01-07T16:20:19.045Z
+  lastModifiedBy: ai
+  version: 1

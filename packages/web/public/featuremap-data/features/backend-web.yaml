@@ -1,0 +1,18 @@
+version: 1
+id: backend-web
+name: Страницы с сервера
+description: Собирает страницы на сервере и отправляет готовый HTML.
+source: ai
+status: active
+scope: backend
+clusters:
+  - backend-controllers-web
+dependsOn:
+  - backend-data-models
+composition:
+  hash: dc87e3c5a3108551
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T16:19:59.175Z
+  lastModifiedBy: ai
+  version: 2

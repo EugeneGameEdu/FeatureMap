@@ -1,0 +1,28 @@
+version: 1
+id: backend-helpers-uniuri
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+files:
+  - backend/helpers/uniuri/uniuri.go
+exports:
+  - name: New
+    type: function
+  - name: NewLen
+    type: function
+  - name: NewLenChars
+    type: function
+  - name: StdChars
+    type: var
+  - name: StdLen
+    type: const
+imports:
+  external:
+    - crypto/rand
+  internal: []
+compositionHash: fae71f98b63ca8f8
+metadata:
+  createdAt: 2026-01-07T11:21:49.966Z
+  updatedAt: 2026-01-07T16:12:38.336Z

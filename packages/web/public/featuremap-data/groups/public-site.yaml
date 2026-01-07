@@ -1,0 +1,12 @@
+version: 1
+id: public-site
+name: Публичный сайт
+description: Открытые страницы и навигация для обычных посетителей.
+featureIds:
+  - frontend-public-site
+source: ai
+metadata:
+  createdAt: 2026-01-07T16:20:18.113Z
+  updatedAt: 2026-01-07T16:20:18.113Z
+  lastModifiedBy: ai
+  version: 1

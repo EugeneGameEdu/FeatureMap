@@ -1,0 +1,28 @@
+version: 1
+id: frontend-dev
+layer: frontend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /frontend/
+files:
+  - frontend/src/dev/test-legacy-video-url.ts
+  - frontend/src/dev/test-navigation-conditions.ts
+  - frontend/src/dev/test-player-decisions.ts
+  - frontend/src/dev/validate-fixtures.ts
+exports: []
+imports:
+  external:
+    - fs
+    - node:assert/strict
+    - path
+  internal:
+    - ../domain/mappers
+    - ../domain/models
+    - ../features/editor/state/adventureSerialization
+    - ../features/player/engine/playerEngine
+    - ../features/player/utils/navigationConditions
+compositionHash: 0d76696bc177e126
+metadata:
+  createdAt: 2026-01-07T11:21:49.988Z
+  updatedAt: 2026-01-07T16:12:38.376Z

@@ -1,0 +1,22 @@
+version: 1
+id: react-admin-state-adventures
+layer: shared
+layerDetection:
+  confidence: low
+  signals: []
+files:
+  - react-admin/src/state/adventures/adventures.actions.js
+  - react-admin/src/state/adventures/adventures.constants.js
+  - react-admin/src/state/adventures/adventures.reducer.js
+  - react-admin/src/state/adventures/adventures.service.js
+exports: []
+imports:
+  external: []
+  internal:
+    - ../../config
+    - ../../state/adventures/adventures.constants
+    - ./adventures.constants
+compositionHash: bf7aa70055d0808a
+metadata:
+  createdAt: 2026-01-07T15:30:45.474Z
+  updatedAt: 2026-01-07T16:12:38.465Z

@@ -1,0 +1,20 @@
+version: 1
+id: frontend-dev-tools
+name: Внутренние проверки
+description: Инструменты для разработчиков, чтобы проверять данные и качество.
+source: ai
+status: active
+scope: frontend
+clusters:
+  - frontend-dev
+dependsOn:
+  - frontend-data-domain
+  - frontend-editor
+  - frontend-player
+composition:
+  hash: f53e72e04e81652b
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T16:20:00.780Z
+  lastModifiedBy: ai
+  version: 2

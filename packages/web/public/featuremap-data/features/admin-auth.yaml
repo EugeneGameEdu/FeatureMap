@@ -1,0 +1,18 @@
+version: 1
+id: admin-auth
+name: Вход и личный кабинет
+description: Вход в админку и управление личными данными администратора.
+source: ai
+status: active
+scope: frontend
+clusters:
+  - react-admin-pages-authentication
+  - react-admin-pages-myAccount
+  - react-admin-state-user
+composition:
+  hash: 4680a3b9a26f7044
+metadata:
+  createdAt: 2026-01-07T16:19:45.523Z
+  updatedAt: 2026-01-07T16:19:45.523Z
+  lastModifiedBy: ai
+  version: 1

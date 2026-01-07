@@ -1,0 +1,19 @@
+version: 1
+id: backend-realtime
+name: Живые обновления
+description: Поддерживает соединения для мгновенных обновлений на сайте.
+source: ai
+status: active
+scope: backend
+clusters:
+  - backend-controllers-socket
+dependsOn:
+  - backend-data-models
+  - backend-utilities
+composition:
+  hash: 914e3deb52d75c7f
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T16:19:56.951Z
+  lastModifiedBy: ai
+  version: 2

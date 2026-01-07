@@ -1,73 +1,52 @@
 version: 1
 positions:
-  cli-analyzer:
-    x: 815
-    y: 586
-  cli-command-interface:
-    x: 40
-    y: 76
-  cli-commands:
-    x: 375
-    y: 246
-  cli-constants:
-    x: 795
-    y: 926
-  cli-core:
-    x: 375
-    y: 76
-  cli-demo-scripts:
-    x: 280
-    y: 76
-  cli-scripts:
-    x: 40
-    y: 586
-  cli-server:
-    x: 450
-    y: 416
-  cli-server-routes:
-    x: 450
-    y: 586
-  cli-types:
-    x: 450
-    y: 926
-  cli-utils:
-    x: 320
-    y: 756
-  code-analysis-engine:
-    x: 160
-    y: 246
-  featuremap-serve-server:
-    x: 520
-    y: 76
-  mcp-server:
-    x: 40
-    y: 508
-  mcp-server-core:
-    x: 1419.1028746038933
-    y: 381.6186905839745
-  mcp-server-tools:
-    x: 1419.1028746038933
-    y: 551.6186905839745
-  mcp-server-types:
-    x: 1419.1028746038933
-    y: 891.6186905839745
-  mcp-server-utils:
-    x: 1354.1028746038933
-    y: 721.6186905839745
-  web-components:
-    x: 1135.1056639161823
-    y: -17.337528753852766
-  web-components-ui:
-    x: 1375.1056639161823
-    y: -17.337528753852766
-  web-core:
-    x: 1615.1056639161823
-    y: -17.337528753852766
-  web-featuremap-viewer:
-    x: 401
-    y: 508
-  web-lib:
-    x: 1855.1056639161823
-    y: -17.337528753852766
+  backend-api:
+    x: -600
+    y: 360
+  backend-auth:
+    x: 200
+    y: 360
+  backend-data-models:
+    x: 200
+    y: 600
+  backend-entrypoints:
+    x: 200
+    y: 840
+  backend-media-integrations:
+    x: -600
+    y: 480
+  backend-realtime:
+    x: 200
+    y: -200
+  backend-storage-sql:
+    x: 200
+    y: 720
+  backend-utilities:
+    x: 200
+    y: 480
+  backend-web:
+    x: 200
+    y: 960
+  frontend-data-domain:
+    x: 200
+    y: 120
+  frontend-dev-tools:
+    x: 200
+    y: 240
+  frontend-editor:
+    x: -600
+    y: 120
+  frontend-media:
+    x: -600
+    y: 240
+  frontend-player:
+    x: 200
+    y: -320
+  frontend-public-site:
+    x: -600
+    y: -320
+  frontend-ui-kit:
+    x: -600
+    y: -200
 metadata:
-  updatedAt: 2026-01-07T15:24:59.911Z
+  updatedAt: 2026-01-07T12:01:21.430028Z

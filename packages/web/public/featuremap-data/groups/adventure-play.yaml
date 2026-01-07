@@ -1,0 +1,12 @@
+version: 1
+id: adventure-play
+name: Прохождение приключений
+description: Экраны, где пользователь проходит приключение.
+featureIds:
+  - frontend-player
+source: ai
+metadata:
+  createdAt: 2026-01-07T16:20:19.921Z
+  updatedAt: 2026-01-07T16:20:19.921Z
+  lastModifiedBy: ai
+  version: 1

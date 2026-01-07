@@ -1,0 +1,26 @@
+version: 1
+id: react-admin-pages-coCreatorStartPage
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /pages/
+    - file extension .jsx
+    - imports react
+files:
+  - react-admin/src/pages/coCreatorStartPage/coCreatorStartPage.jsx
+exports: []
+imports:
+  external:
+    - react
+    - react-redux
+  internal:
+    - ../../config
+    - ../../state/list/list.service
+    - ../../state/lists/lists.service
+    - ../../state/user/user.actions
+    - ../../state/user/user.service
+compositionHash: 0974d96e4dd539a1
+metadata:
+  createdAt: 2026-01-07T15:30:45.459Z
+  updatedAt: 2026-01-07T16:12:38.453Z

@@ -1,0 +1,27 @@
+version: 1
+id: react-admin-pages-users
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /pages/
+    - file extension .jsx
+    - imports react
+files:
+  - react-admin/src/pages/users/users.jsx
+exports: []
+imports:
+  external:
+    - react
+    - react-redux
+    - react-router-dom
+  internal:
+    - ../../components/datatable
+    - ../../components/userModal/UserModal.jsx
+    - ../../state/user/user.actions
+    - ../../state/user/user.service
+    - ../../state/users/users.service
+compositionHash: 2cf5075c27239bb5
+metadata:
+  createdAt: 2026-01-07T15:30:45.463Z
+  updatedAt: 2026-01-07T16:12:38.460Z

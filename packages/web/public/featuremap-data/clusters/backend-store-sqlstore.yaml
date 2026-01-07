@@ -1,0 +1,288 @@
+version: 1
+id: backend-store-sqlstore
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+    - imports Go database driver
+files:
+  - backend/store/sqlstore/adventure.go
+  - backend/store/sqlstore/category.go
+  - backend/store/sqlstore/image_category.go
+  - backend/store/sqlstore/image.go
+  - backend/store/sqlstore/link.go
+  - backend/store/sqlstore/list.go
+  - backend/store/sqlstore/logs.go
+  - backend/store/sqlstore/node.go
+  - backend/store/sqlstore/report.go
+  - backend/store/sqlstore/store.go
+  - backend/store/sqlstore/user.go
+exports:
+  - name: _unsplashID
+    type: var
+  - name: active
+    type: var
+  - name: addListItemsToList
+    type: function
+  - name: AddUserToAdventure
+    type: function
+  - name: adventureCount
+    type: var
+  - name: Authenticate
+    type: function
+  - name: authorName
+    type: var
+  - name: authorURL
+    type: var
+  - name: baseQuery
+    type: var
+  - name: categoryID
+    type: var
+  - name: categoryImage
+    type: var
+  - name: comment
+    type: var
+  - name: countAdventuresInCategory
+    type: function
+  - name: countAdventuresWithSearchString
+    type: function
+  - name: countReportedAdventures
+    type: function
+  - name: CountViewAdventure
+    type: function
+  - name: coverUrl
+    type: var
+  - name: created_at
+    type: var
+  - name: createdAt
+    type: var
+  - name: CreateDefaultAdventure
+    type: function
+  - name: CreateNewAdventure
+    type: function
+  - name: CreateNewCategory
+    type: function
+  - name: CreateNewImage
+    type: function
+  - name: CreateNewImageCategory
+    type: function
+  - name: CreateNewLink
+    type: function
+  - name: CreateNewList
+    type: function
+  - name: CreateNewNode
+    type: function
+  - name: CreateUser
+    type: function
+  - name: dbPassword
+    type: var
+  - name: DeleteAdventureByID
+    type: function
+  - name: DeleteCategory
+    type: function
+  - name: DeleteImage
+    type: function
+  - name: DeleteImageCategory
+    type: function
+  - name: deleteImagesByCategoryID
+    type: function
+  - name: DeleteLink
+    type: function
+  - name: DeleteListByID
+    type: function
+  - name: DeleteNode
+    type: function
+  - name: DeleteUser
+    type: function
+  - name: DeleteUserFromAdventure
+    type: function
+  - name: description
+    type: var
+  - name: downloadURL
+    type: var
+  - name: err
+    type: var
+  - name: ErrInvalidPassword
+    type: var
+  - name: ErrInvalidUser
+    type: var
+  - name: fullURL
+    type: var
+  - name: GetAdventure
+    type: function
+  - name: GetAdventureByID
+    type: function
+  - name: getAdventureContent
+    type: function
+  - name: GetAdventures
+    type: function
+  - name: GetAdventuresByCategory
+    type: function
+  - name: GetAdventuresByListID
+    type: function
+  - name: GetAdventuresByReportReason
+    type: function
+  - name: GetAdventuresBySearchString
+    type: function
+  - name: GetAdventuresByUserID
+    type: function
+  - name: GetCategories
+    type: function
+  - name: GetCategory
+    type: function
+  - name: GetImage
+    type: function
+  - name: GetImageByUnsplashID
+    type: function
+  - name: GetImageCategories
+    type: function
+  - name: GetImageCategory
+    type: function
+  - name: GetImageCategoryByUnsplashID
+    type: function
+  - name: GetImagesByCategory
+    type: function
+  - name: GetLink
+    type: function
+  - name: GetLinksByAdventureID
+    type: function
+  - name: GetList
+    type: function
+  - name: GetListByID
+    type: function
+  - name: GetLists
+    type: function
+  - name: GetListsByParent
+    type: function
+  - name: GetNode
+    type: function
+  - name: GetNodesByAdventureID
+    type: function
+  - name: GetReports
+    type: function
+  - name: GetStatisticsByAdventureID
+    type: function
+  - name: GetUser
+    type: function
+  - name: GetUsers
+    type: function
+  - name: GetUsersByAdventureID
+    type: function
+  - name: GetUsersInternal
+    type: function
+  - name: icon
+    type: var
+  - name: image
+    type: var
+  - name: imageID
+    type: var
+  - name: imageLayoutType
+    type: var
+  - name: imageURL
+    type: var
+  - name: linkType
+    type: var
+  - name: LogVisitedNode
+    type: function
+  - name: name
+    type: var
+  - name: NewStore
+    type: function
+  - name: nodeContent
+    type: var
+  - name: nodeCount
+    type: const
+  - name: nodeIcon
+    type: var
+  - name: nodeType
+    type: var
+  - name: parentID
+    type: var
+  - name: props
+    type: var
+  - name: query
+    type: var
+  - name: reason
+    type: var
+  - name: removeListItemsFromList
+    type: function
+  - name: removeReferencesToCategoryID
+    type: function
+  - name: removeReferencesToImageID
+    type: function
+  - name: ReportAdventure
+    type: function
+  - name: role
+    type: var
+  - name: row
+    type: var
+  - name: scanAdventureRows
+    type: function
+  - name: sortOrder
+    type: var
+  - name: sourceLinkTitle
+    type: var
+  - name: SQLStore
+    type: struct
+  - name: targetLinkTitle
+    type: var
+  - name: thumbURL
+    type: var
+  - name: title
+    type: var
+  - name: unsplashID
+    type: var
+  - name: UpdateAdventure
+    type: function
+  - name: UpdateAdventureContent
+    type: function
+  - name: UpdateAdventureEditVersion
+    type: function
+  - name: UpdateCategory
+    type: function
+  - name: updated_at
+    type: var
+  - name: updatedAt
+    type: var
+  - name: UpdateImage
+    type: function
+  - name: UpdateImageCategory
+    type: function
+  - name: UpdateLink
+    type: function
+  - name: UpdateList
+    type: function
+  - name: UpdateNode
+    type: function
+  - name: UpdateReport
+    type: function
+  - name: UpdateUser
+    type: function
+  - name: userID
+    type: var
+  - name: username
+    type: var
+  - name: whateverType0
+    type: const
+  - name: whateverType1
+    type: const
+  - name: xPosition
+    type: var
+  - name: yPosition
+    type: var
+imports:
+  external:
+    - database/sql
+    - errors
+    - fmt
+    - github.com/go-sql-driver/mysql
+    - strconv
+    - strings
+  internal:
+    - projektps/helpers/uniuri
+    - projektps/models
+compositionHash: db210f73776c73cb
+metadata:
+  createdAt: 2026-01-07T11:21:49.977Z
+  updatedAt: 2026-01-07T16:12:38.359Z

@@ -1,0 +1,21 @@
+version: 1
+id: react-admin-state-user
+layer: shared
+layerDetection:
+  confidence: low
+  signals: []
+files:
+  - react-admin/src/state/user/user.actions.js
+  - react-admin/src/state/user/user.constants.js
+  - react-admin/src/state/user/user.reducer.js
+  - react-admin/src/state/user/user.service.js
+exports: []
+imports:
+  external: []
+  internal:
+    - ../servicehelper
+    - ./user.constants
+compositionHash: 72635e4761ecf370
+metadata:
+  createdAt: 2026-01-07T15:30:45.479Z
+  updatedAt: 2026-01-07T16:12:38.472Z

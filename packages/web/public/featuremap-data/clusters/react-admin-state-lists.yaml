@@ -1,0 +1,22 @@
+version: 1
+id: react-admin-state-lists
+layer: shared
+layerDetection:
+  confidence: low
+  signals: []
+files:
+  - react-admin/src/state/lists/lists.actions.js
+  - react-admin/src/state/lists/lists.constants.js
+  - react-admin/src/state/lists/lists.reducer.js
+  - react-admin/src/state/lists/lists.service.js
+exports: []
+imports:
+  external: []
+  internal:
+    - ../../config
+    - ../list/list.constants
+    - ./lists.constants
+compositionHash: 53c46619e42f56e0
+metadata:
+  createdAt: 2026-01-07T15:30:45.478Z
+  updatedAt: 2026-01-07T16:12:38.470Z

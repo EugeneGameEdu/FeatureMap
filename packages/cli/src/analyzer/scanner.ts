@@ -38,6 +38,7 @@ const DEFAULT_TS_IGNORE = [
   '**/*.test.ts',
   '**/*.spec.ts',
   '**/*.d.ts',
+  '**/*.config.js',
   '**/node_modules/**',
   '**/dist/**',
   '**/build/**',
@@ -232,9 +233,9 @@ function addSubproject(
 function getTypescriptPatterns(rootDir: string): string[] {
   const srcPath = path.join(rootDir, 'src');
   if (fs.existsSync(srcPath)) {
-    return ['src/**/*.ts', 'src/**/*.tsx'];
+    return ['src/**/*.{ts,tsx,js,jsx}'];
   }
-  return ['**/*.ts', '**/*.tsx'];
+  return ['**/*.{ts,tsx,js,jsx}'];
 }
 
 function mergeIgnorePatterns(base: string[], extra: string[]): string[] {

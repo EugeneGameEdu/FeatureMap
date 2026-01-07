@@ -1,0 +1,17 @@
+version: 1
+id: frontend-public-site
+name: Публичный сайт
+description: Страницы для посетителей и основная навигация.
+source: ai
+status: active
+scope: frontend
+clusters:
+  - frontend-app
+  - frontend-app-(public)
+composition:
+  hash: 53f94b3dc6df517a
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T16:20:03.637Z
+  lastModifiedBy: ai
+  version: 2

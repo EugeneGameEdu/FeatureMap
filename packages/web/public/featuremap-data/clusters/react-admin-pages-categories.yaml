@@ -1,0 +1,25 @@
+version: 1
+id: react-admin-pages-categories
+layer: frontend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /pages/
+    - imports react
+files:
+  - react-admin/src/pages/categories/categories.js
+exports: []
+imports:
+  external:
+    - react
+    - react-redux
+  internal:
+    - ../../components/datatable
+    - ../../components/loadingindicator
+    - ../../state/categories/categories.actions
+    - ../../state/categories/categories.service
+    - ../../state/category/category.service
+compositionHash: bbc3f8934aa2df7c
+metadata:
+  createdAt: 2026-01-07T15:30:45.458Z
+  updatedAt: 2026-01-07T16:12:38.450Z

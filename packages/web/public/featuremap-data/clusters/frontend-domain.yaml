@@ -1,0 +1,109 @@
+version: 1
+id: frontend-domain
+layer: frontend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /frontend/
+files:
+  - frontend/src/domain/dto.ts
+  - frontend/src/domain/mappers.ts
+  - frontend/src/domain/models.ts
+exports:
+  - isDefault: false
+    name: AdventureDto
+    type: type
+  - isDefault: false
+    name: adventureDtoSchema
+    type: variable
+  - isDefault: false
+    name: AdventureModel
+    type: type
+  - isDefault: false
+    name: AdventurePropsModel
+    type: type
+  - isDefault: false
+    name: CategoryDto
+    type: type
+  - isDefault: false
+    name: categoryDtoSchema
+    type: variable
+  - isDefault: false
+    name: CategoryModel
+    type: type
+  - isDefault: false
+    name: ImageCategoryDto
+    type: type
+  - isDefault: false
+    name: imageCategoryDtoSchema
+    type: variable
+  - isDefault: false
+    name: ImageDto
+    type: type
+  - isDefault: false
+    name: imageDtoSchema
+    type: variable
+  - isDefault: false
+    name: LinkDto
+    type: type
+  - isDefault: false
+    name: linkDtoSchema
+    type: variable
+  - isDefault: false
+    name: LinkModel
+    type: type
+  - isDefault: false
+    name: mapAdventureDto
+    type: function
+  - isDefault: false
+    name: mapCategoryDto
+    type: function
+  - isDefault: false
+    name: mapLinkDto
+    type: function
+  - isDefault: false
+    name: mapNodeDto
+    type: function
+  - isDefault: false
+    name: NodeDto
+    type: type
+  - isDefault: false
+    name: nodeDtoSchema
+    type: variable
+  - isDefault: false
+    name: NodeModel
+    type: type
+  - isDefault: false
+    name: NodePropsModel
+    type: type
+  - isDefault: false
+    name: parseAdventureDto
+    type: function
+  - isDefault: false
+    name: parseLinkDto
+    type: function
+  - isDefault: false
+    name: parseNodeDto
+    type: function
+  - isDefault: false
+    name: ParseResult
+    type: type
+  - isDefault: false
+    name: UserDto
+    type: type
+  - isDefault: false
+    name: userDtoSchema
+    type: variable
+  - isDefault: false
+    name: UserModel
+    type: type
+imports:
+  external:
+    - zod
+  internal:
+    - ./dto
+    - ./models
+compositionHash: c75ec3cd0ebfd44c
+metadata:
+  createdAt: 2026-01-07T11:21:49.989Z
+  updatedAt: 2026-01-07T16:12:38.381Z

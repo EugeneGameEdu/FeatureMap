@@ -1,0 +1,35 @@
+version: 1
+id: backend-cmd
+layer: shared
+layerDetection:
+  confidence: low
+  signals:
+    - path contains /backend/
+    - imports Go web framework
+    - Go cmd/ directory (entry points)
+    - contains main function
+files:
+  - backend/cmd/toolps.go
+exports:
+  - name: main
+    type: function
+  - name: request
+    type: var
+  - name: store
+    type: var
+  - name: storeConvert
+    type: function
+imports:
+  external:
+    - fmt
+    - github.com/joho/godotenv
+    - net/http
+    - os
+  internal:
+    - projektps/controllers/api
+    - projektps/store
+    - projektps/store/sqlstore
+compositionHash: bb6380fadf164b02
+metadata:
+  createdAt: 2026-01-07T11:21:49.933Z
+  updatedAt: 2026-01-07T16:12:38.302Z

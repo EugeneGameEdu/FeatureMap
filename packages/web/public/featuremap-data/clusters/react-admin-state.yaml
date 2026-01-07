@@ -1,0 +1,39 @@
+version: 1
+id: react-admin-state
+layer: shared
+layerDetection:
+  confidence: low
+  signals: []
+files:
+  - react-admin/src/state/actions.js
+  - react-admin/src/state/index.js
+  - react-admin/src/state/reducers.js
+  - react-admin/src/state/servicehelper.js
+exports:
+  - isDefault: true
+    name: doApiFetch
+    type: function
+imports:
+  external:
+    - redux
+  internal:
+    - ../config
+    - ./actions
+    - ./adventure/adventure.actions
+    - ./adventure/adventure.reducer
+    - ./adventures/adventures.actions
+    - ./adventures/adventures.reducer
+    - ./categories/categories.actions
+    - ./categories/categories.reducer
+    - ./category/category.actions
+    - ./category/category.reducer
+    - ./list/list.reducer
+    - ./lists/lists.actions
+    - ./lists/lists.reducer
+    - ./reducers
+    - ./user/user.actions
+    - ./user/user.reducer
+compositionHash: 95954d7561dc4d30
+metadata:
+  createdAt: 2026-01-07T15:30:45.464Z
+  updatedAt: 2026-01-07T16:12:38.462Z

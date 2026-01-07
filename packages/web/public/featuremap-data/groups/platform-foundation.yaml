@@ -1,0 +1,19 @@
+version: 1
+id: platform-foundation
+name: Platform Foundation
+description: Shared domain/data foundations, utilities, storage, and operational entrypoints.
+featureIds:
+  - backend-auth
+  - backend-data-models
+  - backend-entrypoints
+  - backend-storage-sql
+  - backend-utilities
+  - backend-web
+  - frontend-data-domain
+  - frontend-dev-tools
+source: ai
+metadata:
+  createdAt: 2026-01-07T11:51:36.187Z
+  updatedAt: 2026-01-07T11:51:36.187Z
+  lastModifiedBy: ai
+  version: 1

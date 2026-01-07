@@ -1,0 +1,22 @@
+version: 1
+id: react-admin-components-navigation
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /components/
+    - file extension .jsx
+    - imports react
+files:
+  - react-admin/src/components/navigation/navigation.jsx
+exports: []
+imports:
+  external:
+    - react
+    - react-router-dom
+  internal:
+    - ./navigation.css
+compositionHash: 0da3ebe258b688e2
+metadata:
+  createdAt: 2026-01-07T15:30:45.451Z
+  updatedAt: 2026-01-07T16:12:38.438Z

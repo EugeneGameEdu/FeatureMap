@@ -1,0 +1,17 @@
+version: 1
+id: admin-home
+name: Старт админки
+description: Главные и стартовые страницы админки, куда попадает пользователь после входа.
+source: ai
+status: active
+scope: frontend
+clusters:
+  - react-admin-pages-coCreatorStartPage
+  - react-admin-pages-home
+composition:
+  hash: c44ef4401bcd2fb4
+metadata:
+  createdAt: 2026-01-07T16:19:45.523Z
+  updatedAt: 2026-01-07T16:19:45.523Z
+  lastModifiedBy: ai
+  version: 1

@@ -1,0 +1,834 @@
+version: 1
+id: frontend-features-editor
+layer: frontend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /ui/
+    - path contains /components/
+    - path contains /frontend/
+    - path contains /utils/
+    - file extension .tsx
+    - imports @xyflow/react
+    - imports react
+    - exports React components
+    - exports route handlers
+files:
+  - frontend/src/features/editor/hooks/useEditorAutosave.ts
+  - frontend/src/features/editor/panel/components/AdventureInspectorPanel.tsx
+  - frontend/src/features/editor/panel/components/BulkField.tsx
+  - frontend/src/features/editor/panel/components/CollapsibleSection.tsx
+  - frontend/src/features/editor/panel/components/ColorPickerPopover.tsx
+  - frontend/src/features/editor/panel/components/index.ts
+  - frontend/src/features/editor/panel/components/InspectorShell.tsx
+  - frontend/src/features/editor/panel/components/LinkInspectorPanel.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/BulkEditBanner.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/constants.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/ColorAlphaField.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/ColorOnlyField.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/index.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/RangeField.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/ReorderList.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/SelectField.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/fields/ToggleRow.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/hooks/useLivePreview.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/hooks/useNodeMedia.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/hooks/useNodeProps.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/index.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/RouterInspector.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/AnimTab.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/ButtonsTab.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/ContentTab.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/index.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/InspectorTabs.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/LogicTab.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/tabs/StyleTab.tsx
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/utils/formatters.ts
+  - frontend/src/features/editor/panel/components/NodeInspectorPanel/utils/propReaders.ts
+  - frontend/src/features/editor/panel/components/RichTextEditor.tsx
+  - frontend/src/features/editor/panel/constants.ts
+  - frontend/src/features/editor/panel/index.ts
+  - frontend/src/features/editor/panel/InspectorRouter.tsx
+  - frontend/src/features/editor/panel/types.ts
+  - frontend/src/features/editor/state/adventureSerialization.ts
+  - frontend/src/features/editor/state/editorStore.ts
+  - frontend/src/features/editor/state/helpers.ts
+  - frontend/src/features/editor/state/propsEditing.ts
+  - frontend/src/features/editor/state/slices/adventureOpsSlice.ts
+  - frontend/src/features/editor/state/slices/clipboardSlice.ts
+  - frontend/src/features/editor/state/slices/coreSlice.ts
+  - frontend/src/features/editor/state/slices/historySlice.ts
+  - frontend/src/features/editor/state/slices/linkOpsSlice.ts
+  - frontend/src/features/editor/state/slices/nodeOpsSlice.ts
+  - frontend/src/features/editor/state/slices/propsSlice.ts
+  - frontend/src/features/editor/state/slices/selectionSlice.ts
+  - frontend/src/features/editor/state/types.ts
+  - frontend/src/features/editor/ui/EditorHotkeys.tsx
+  - frontend/src/features/editor/ui/EditorInspector.tsx
+  - frontend/src/features/editor/ui/EditorRoute.tsx
+  - frontend/src/features/editor/ui/EditorToolStrip.tsx
+  - frontend/src/features/editor/ui/graph/edges/AdventureEdge.tsx
+  - frontend/src/features/editor/ui/graph/GraphCanvas.tsx
+  - frontend/src/features/editor/ui/graph/hooks/useGraphSelection.ts
+  - frontend/src/features/editor/ui/graph/nodes/AdventureNode.tsx
+  - frontend/src/features/editor/ui/graph/types.ts
+  - frontend/src/features/editor/ui/graph/utils/buildGraphEdges.ts
+  - frontend/src/features/editor/ui/graph/utils/buildGraphNodes.ts
+  - frontend/src/features/editor/ui/graph/utils/graphHelpers.ts
+  - frontend/src/features/editor/ui/previewLiveStyles.ts
+  - frontend/src/features/editor/ui/PreviewOverlay.tsx
+  - frontend/src/features/editor/ui/ShareModal.tsx
+  - frontend/src/features/editor/ui/ShortcutHud.tsx
+exports:
+  - isDefault: false
+    name: AdventureEdge
+    type: function
+  - isDefault: false
+    name: AdventureInspectorPanel
+    type: function
+  - isDefault: false
+    name: AdventureNode
+    type: function
+  - isDefault: false
+    name: adventureOpsSlice
+    type: variable
+  - isDefault: false
+    name: ANIMATION_DELAY_DEFAULT
+    type: variable
+  - isDefault: false
+    name: animationModeOptions
+    type: variable
+  - isDefault: false
+    name: animationModeValues
+    type: variable
+  - isDefault: false
+    name: AnimMixedState
+    type: type
+  - isDefault: false
+    name: AnimTab
+    type: function
+  - isDefault: false
+    name: applyPreviewOverrides
+    type: variable
+  - isDefault: false
+    name: applyPropUpdates
+    type: variable
+  - isDefault: false
+    name: arraysEqual
+    type: function
+  - isDefault: false
+    name: AUDIO_VOLUME_MAX
+    type: variable
+  - isDefault: false
+    name: AUDIO_VOLUME_MIN
+    type: variable
+  - isDefault: false
+    name: BACKGROUND_FADE_DEFAULT
+    type: variable
+  - isDefault: false
+    name: beginPreviewOverride
+    type: variable
+  - isDefault: false
+    name: BLUR_MAX
+    type: variable
+  - isDefault: false
+    name: BLUR_MIN
+    type: variable
+  - isDefault: false
+    name: buildAdventureDto
+    type: variable
+  - isDefault: false
+    name: buildFallbackPositions
+    type: function
+  - isDefault: false
+    name: buildGraphEdges
+    type: function
+  - isDefault: false
+    name: buildGraphNodes
+    type: function
+  - isDefault: false
+    name: builtInFontOptions
+    type: variable
+  - isDefault: false
+    name: BULK_NODE_TEXT_PATH
+    type: variable
+  - isDefault: false
+    name: BULK_NODE_TITLE_PATH
+    type: variable
+  - isDefault: false
+    name: BULK_NODE_TYPE_PATH
+    type: variable
+  - isDefault: false
+    name: BulkDraft
+    type: type
+  - isDefault: false
+    name: BulkDraftEntry
+    type: type
+  - isDefault: false
+    name: BulkDraftKind
+    type: type
+  - isDefault: false
+    name: BulkDraftOp
+    type: type
+  - isDefault: false
+    name: BulkEditBanner
+    type: function
+  - isDefault: false
+    name: BulkEditConfig
+    type: type
+  - isDefault: false
+    name: BulkField
+    type: function
+  - isDefault: false
+    name: ButtonsTab
+    type: function
+  - isDefault: false
+    name: chapterTypeOptions
+    type: variable
+  - isDefault: false
+    name: clampAlpha
+    type: variable
+  - isDefault: false
+    name: clampNumber
+    type: variable
+  - isDefault: false
+    name: ClipboardNode
+    type: type
+  - isDefault: false
+    name: clipboardSlice
+    type: variable
+  - isDefault: false
+    name: cloneRawProps
+    type: function
+  - isDefault: false
+    name: CollapsibleSection
+    type: function
+  - isDefault: false
+    name: ColorAlphaField
+    type: function
+  - isDefault: false
+    name: ColorOnlyField
+    type: function
+  - isDefault: false
+    name: ColorPickerPopover
+    type: variable
+  - isDefault: false
+    name: ColorPickerPopoverProps
+    type: type
+  - isDefault: false
+    name: ConditionedBehavior
+    type: type
+  - isDefault: false
+    name: CONDITIONS_ALPHA_DEFAULT
+    type: variable
+  - isDefault: false
+    name: CONDITIONS_COLOR_DEFAULT
+    type: variable
+  - isDefault: false
+    name: ContentTab
+    type: function
+  - isDefault: false
+    name: coreSlice
+    type: variable
+  - isDefault: false
+    name: createHistoryEntry
+    type: variable
+  - isDefault: false
+    name: EditorClipboard
+    type: type
+  - isDefault: false
+    name: EditorError
+    type: type
+  - isDefault: false
+    name: EditorHistoryEntry
+    type: type
+  - isDefault: false
+    name: EditorHotkeys
+    type: function
+  - isDefault: false
+    name: EditorInspector
+    type: function
+  - isDefault: false
+    name: EditorNodeInspectorTab
+    type: type
+  - isDefault: false
+    name: EditorNodePositionUpdate
+    type: type
+  - isDefault: false
+    name: EditorRoute
+    type: function
+  - isDefault: false
+    name: EditorSaveStatus
+    type: type
+  - isDefault: false
+    name: EditorSelection
+    type: type
+  - isDefault: false
+    name: EditorState
+    type: type
+  - isDefault: false
+    name: EditorStatus
+    type: type
+  - isDefault: false
+    name: EditorToolPanel
+    type: type
+  - isDefault: false
+    name: EditorToolStrip
+    type: function
+  - isDefault: false
+    name: emojiOptions
+    type: variable
+  - isDefault: false
+    name: endPreviewOverride
+    type: variable
+  - isDefault: false
+    name: extraAudioOptions
+    type: variable
+  - isDefault: false
+    name: extraAudioValues
+    type: variable
+  - isDefault: false
+    name: fadeOptions
+    type: variable
+  - isDefault: false
+    name: fadeOptionValues
+    type: variable
+  - isDefault: false
+    name: getAlphaProp
+    type: variable
+  - isDefault: false
+    name: getAlphaValue
+    type: variable
+  - isDefault: false
+    name: getAnimationDelay
+    type: variable
+  - isDefault: false
+    name: getAudioVolume
+    type: variable
+  - isDefault: false
+    name: getBackgroundFade
+    type: variable
+  - isDefault: false
+    name: getBlurAmount
+    type: variable
+  - isDefault: false
+    name: getColorProp
+    type: variable
+  - isDefault: false
+    name: getColorValue
+    type: variable
+  - isDefault: false
+    name: getConditionedBehavior
+    type: variable
+  - isDefault: false
+    name: getEventClientPosition
+    type: function
+  - isDefault: false
+    name: getFontToken
+    type: variable
+  - isDefault: false
+    name: getGrayscaleEnabled
+    type: variable
+  - isDefault: false
+    name: getHideVisitedEnabled
+    type: variable
+  - isDefault: false
+    name: getLegacyAnimationKind
+    type: variable
+  - isDefault: false
+    name: getLegacyAnimationValue
+    type: variable
+  - isDefault: false
+    name: getMediaBasename
+    type: variable
+  - isDefault: false
+    name: getMediaLabel
+    type: variable
+  - isDefault: false
+    name: getMediaPropString
+    type: variable
+  - isDefault: false
+    name: getNavigationDelay
+    type: variable
+  - isDefault: false
+    name: getNavigationSettings
+    type: variable
+  - isDefault: false
+    name: getNavigationStyle
+    type: variable
+  - isDefault: false
+    name: getNavTextSize
+    type: variable
+  - isDefault: false
+    name: getNextLinkId
+    type: function
+  - isDefault: false
+    name: getNextNodeId
+    type: function
+  - isDefault: false
+    name: getNodeChapterType
+    type: variable
+  - isDefault: false
+    name: getNodeConditions
+    type: variable
+  - isDefault: false
+    name: getNodeVariant
+    type: function
+  - isDefault: false
+    name: getNumberProp
+    type: variable
+  - isDefault: false
+    name: getOrderedLinkIds
+    type: variable
+  - isDefault: false
+    name: getScrollSpeed
+    type: variable
+  - isDefault: false
+    name: getStatisticsEnabled
+    type: variable
+  - isDefault: false
+    name: getStringArrayValue
+    type: variable
+  - isDefault: false
+    name: getTextShadow
+    type: variable
+  - isDefault: false
+    name: getVerticalPosition
+    type: variable
+  - isDefault: false
+    name: GraphCanvas
+    type: function
+  - isDefault: false
+    name: GraphEdge
+    type: type
+  - isDefault: false
+    name: GraphEdgeData
+    type: type
+  - isDefault: false
+    name: GraphNode
+    type: type
+  - isDefault: false
+    name: GraphNodeData
+    type: type
+  - isDefault: false
+    name: hasEditorVersion
+    type: variable
+  - isDefault: false
+    name: historySlice
+    type: variable
+  - isDefault: false
+    name: InspectorRouter
+    type: function
+  - isDefault: false
+    name: InspectorShell
+    type: function
+  - isDefault: false
+    name: InspectorTabs
+    type: function
+  - isDefault: false
+    name: isHexColor
+    type: variable
+  - isDefault: false
+    name: isToggleOn
+    type: variable
+  - isDefault: false
+    name: isVideoMedia
+    type: variable
+  - isDefault: false
+    name: LegacyAnimationKind
+    type: type
+  - isDefault: false
+    name: LinkInspectorPanel
+    type: function
+  - isDefault: false
+    name: linkOpsSlice
+    type: variable
+  - isDefault: false
+    name: LogicTab
+    type: function
+  - isDefault: false
+    name: MARGIN_DEFAULT
+    type: variable
+  - isDefault: false
+    name: MARGIN_MAX
+    type: variable
+  - isDefault: false
+    name: MARGIN_MIN
+    type: variable
+  - isDefault: false
+    name: mergeServerAdventureIds
+    type: variable
+  - isDefault: false
+    name: NAV_TEXT_SIZE_DEFAULT
+    type: variable
+  - isDefault: false
+    name: NAV_TEXT_SIZE_MAX
+    type: variable
+  - isDefault: false
+    name: NAV_TEXT_SIZE_MIN
+    type: variable
+  - isDefault: false
+    name: NAVIGATION_DELAY_DEFAULT
+    type: variable
+  - isDefault: false
+    name: navigationStyleOptions
+    type: variable
+  - isDefault: false
+    name: navigationStyleValues
+    type: variable
+  - isDefault: false
+    name: NodeInspectorPanel
+    type: function
+  - isDefault: false
+    name: nodeOpsSlice
+    type: variable
+  - isDefault: false
+    name: NodeVariant
+    type: type
+  - isDefault: false
+    name: parsePropsInput
+    type: variable
+  - isDefault: false
+    name: PlayTraceState
+    type: type
+  - isDefault: false
+    name: PreviewOverlay
+    type: function
+  - isDefault: false
+    name: PreviewPlayTrace
+    type: type
+  - isDefault: false
+    name: PropPathMode
+    type: type
+  - isDefault: false
+    name: PropPathOptions
+    type: type
+  - isDefault: false
+    name: PropsChangeResult
+    type: type
+  - isDefault: false
+    name: PropsInput
+    type: type
+  - isDefault: false
+    name: propsSlice
+    type: variable
+  - isDefault: false
+    name: PropsUpdateResult
+    type: type
+  - isDefault: false
+    name: pushHistory
+    type: variable
+  - isDefault: false
+    name: RangeField
+    type: function
+  - isDefault: false
+    name: rangeInputClasses
+    type: variable
+  - isDefault: false
+    name: readNodePropValue
+    type: variable
+  - isDefault: false
+    name: readStringArray
+    type: variable
+  - isDefault: false
+    name: ReorderList
+    type: function
+  - isDefault: false
+    name: RichTextEditor
+    type: function
+  - isDefault: false
+    name: RouterInspector
+    type: function
+  - isDefault: false
+    name: SCENE_COLOR_DEFAULTS
+    type: variable
+  - isDefault: false
+    name: SceneColors
+    type: type
+  - isDefault: false
+    name: SCROLL_SPEED_DEFAULT
+    type: variable
+  - isDefault: false
+    name: SCROLL_SPEED_MAX
+    type: variable
+  - isDefault: false
+    name: SCROLL_SPEED_MIN
+    type: variable
+  - isDefault: false
+    name: selectEditorAdventure
+    type: variable
+  - isDefault: false
+    name: selectEditorClipboard
+    type: variable
+  - isDefault: false
+    name: selectEditorDirty
+    type: variable
+  - isDefault: false
+    name: selectEditorEditVersion
+    type: variable
+  - isDefault: false
+    name: selectEditorError
+    type: variable
+  - isDefault: false
+    name: selectEditorFocusNodeId
+    type: variable
+  - isDefault: false
+    name: selectEditorInteractionLockCount
+    type: variable
+  - isDefault: false
+    name: selectEditorLiveUpdateCount
+    type: variable
+  - isDefault: false
+    name: selectEditorMenuShortcutPickIndex
+    type: variable
+  - isDefault: false
+    name: selectEditorNodeInspectorTab
+    type: variable
+  - isDefault: false
+    name: selectEditorReadOnly
+    type: variable
+  - isDefault: false
+    name: selectEditorSaveError
+    type: variable
+  - isDefault: false
+    name: selectEditorSaveStatus
+    type: variable
+  - isDefault: false
+    name: selectEditorSelectedLinkIds
+    type: variable
+  - isDefault: false
+    name: selectEditorSelectedNodeIds
+    type: variable
+  - isDefault: false
+    name: selectEditorSelection
+    type: variable
+  - isDefault: false
+    name: selectEditorSelectionToolActive
+    type: variable
+  - isDefault: false
+    name: selectEditorStatus
+    type: variable
+  - isDefault: false
+    name: selectEditorToolPanel
+    type: variable
+  - isDefault: false
+    name: selectEditorUndoStack
+    type: variable
+  - isDefault: false
+    name: selectEditorViewportCenter
+    type: variable
+  - isDefault: false
+    name: SelectField
+    type: function
+  - isDefault: false
+    name: SelectFieldOption
+    type: type
+  - isDefault: false
+    name: selectionSlice
+    type: variable
+  - isDefault: false
+    name: serializeProps
+    type: variable
+  - isDefault: false
+    name: setAny
+    type: variable
+  - isDefault: false
+    name: setMultiSelect
+    type: variable
+  - isDefault: false
+    name: setPreviewRoot
+    type: variable
+  - isDefault: false
+    name: setPropPath
+    type: variable
+  - isDefault: false
+    name: setStringArraySelect
+    type: variable
+  - isDefault: false
+    name: ShareModal
+    type: function
+  - isDefault: false
+    name: ShortcutHud
+    type: function
+  - isDefault: false
+    name: StringArraySelectOptions
+    type: type
+  - isDefault: false
+    name: stripMediaUrl
+    type: variable
+  - isDefault: false
+    name: StyleTab
+    type: function
+  - isDefault: false
+    name: tabOptions
+    type: variable
+  - isDefault: false
+    name: textShadowOptions
+    type: variable
+  - isDefault: false
+    name: textShadowValues
+    type: variable
+  - isDefault: false
+    name: ToggleRow
+    type: function
+  - isDefault: false
+    name: toNumericId
+    type: function
+  - isDefault: false
+    name: unsetPropPath
+    type: variable
+  - isDefault: false
+    name: updatePropsInput
+    type: variable
+  - isDefault: false
+    name: useEditorAutosave
+    type: variable
+  - isDefault: false
+    name: useEditorStore
+    type: variable
+  - isDefault: false
+    name: useGraphSelection
+    type: function
+  - isDefault: false
+    name: useLivePreview
+    type: variable
+  - isDefault: false
+    name: useNodeMedia
+    type: variable
+  - isDefault: false
+    name: useNodeProps
+    type: variable
+  - isDefault: false
+    name: verticalPositionOptions
+    type: variable
+  - isDefault: false
+    name: verticalPositionValues
+    type: variable
+  - isDefault: false
+    name: videoAudioOptions
+    type: variable
+  - isDefault: false
+    name: videoAudioValues
+    type: variable
+imports:
+  external:
+    - "@/domain/dto"
+    - "@/domain/models"
+    - "@/features/editor/panel/constants"
+    - "@/features/editor/state/editorStore"
+    - "@/features/editor/ui/previewLiveStyles"
+    - "@/features/media/MediaLibraryModal"
+    - "@/features/player/state/playerStore"
+    - "@/features/player/ui/PlayerRuntime"
+    - "@/features/state/api"
+    - "@/features/state/api/adventures"
+    - "@/features/state/api/client"
+    - "@/features/state/api/images"
+    - "@/features/state/api/media"
+    - "@/features/ui-core/components/EditorLayout"
+    - "@/features/ui-core/LabelValue"
+    - "@/features/ui-core/primitives"
+    - "@/features/ui-core/primitives/button"
+    - "@/features/ui-core/primitives/dialog"
+    - "@/features/ui-core/primitives/dropdown-menu"
+    - "@/features/ui-core/primitives/tabs"
+    - "@/features/ui-core/props/props"
+    - "@/features/ui-core/toast"
+    - "@/features/ui-core/Toolbar"
+    - "@/lib/fonts"
+    - "@/lib/utils"
+    - "@tiptap/core"
+    - "@tiptap/extension-font-family"
+    - "@tiptap/extension-link"
+    - "@tiptap/extension-text-align"
+    - "@tiptap/extension-text-style"
+    - "@tiptap/extension-underline"
+    - "@tiptap/react"
+    - "@tiptap/starter-kit"
+    - "@xyflow/react"
+    - lucide-react
+    - markdown-it
+    - qrcode
+    - react
+    - react-colorful
+    - sanitize-html
+    - zustand
+  internal:
+    - ../../../constants
+    - ../../../state/types
+    - ../../BulkField
+    - ../../CollapsibleSection
+    - ../../ColorPickerPopover
+    - ../../constants
+    - ../../RichTextEditor
+    - ../../state/types
+    - ../../types
+    - ../BulkField
+    - ../CollapsibleSection
+    - ../constants
+    - ../EditorToolStrip
+    - ../fields
+    - ../helpers
+    - ../hooks/useEditorAutosave
+    - ../hooks/useNodeProps
+    - ../InspectorShell
+    - ../panel
+    - ../PreviewOverlay
+    - ../propsEditing
+    - ../ShortcutHud
+    - ../state/adventureSerialization
+    - ../state/editorStore
+    - ../state/types
+    - ../types
+    - ../utils/buildGraphNodes
+    - ../utils/formatters
+    - ../utils/graphHelpers
+    - ../utils/propReaders
+    - ./AnimTab
+    - ./BulkEditBanner
+    - ./ButtonsTab
+    - ./CollapsibleSection
+    - ./components
+    - ./components/NodeInspectorPanel/utils/propReaders
+    - ./constants
+    - ./ContentTab
+    - ./edges/AdventureEdge
+    - ./EditorHotkeys
+    - ./EditorInspector
+    - ./fields
+    - ./formatters
+    - ./graph/GraphCanvas
+    - ./graphHelpers
+    - ./historySlice
+    - ./hooks/useGraphSelection
+    - ./hooks/useLivePreview
+    - ./hooks/useNodeMedia
+    - ./hooks/useNodeProps
+    - ./InspectorShell
+    - ./LogicTab
+    - ./nodes/AdventureNode
+    - ./previewLiveStyles
+    - ./propsEditing
+    - ./RichTextEditor.css
+    - ./RouterInspector
+    - ./ShareModal
+    - ./slices/adventureOpsSlice
+    - ./slices/clipboardSlice
+    - ./slices/coreSlice
+    - ./slices/historySlice
+    - ./slices/linkOpsSlice
+    - ./slices/nodeOpsSlice
+    - ./slices/propsSlice
+    - ./slices/selectionSlice
+    - ./StyleTab
+    - ./tabs
+    - ./tabs/AnimTab
+    - ./types
+    - ./utils/buildGraphEdges
+    - ./utils/buildGraphNodes
+    - ./utils/graphHelpers
+    - ./utils/propReaders
+compositionHash: f2b34e5213e048e9
+metadata:
+  createdAt: 2026-01-07T11:21:50.006Z
+  updatedAt: 2026-01-07T16:12:38.398Z

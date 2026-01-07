@@ -1,0 +1,21 @@
+version: 1
+id: react-admin-state-categories
+layer: shared
+layerDetection:
+  confidence: low
+  signals: []
+files:
+  - react-admin/src/state/categories/categories.actions.js
+  - react-admin/src/state/categories/categories.constants.js
+  - react-admin/src/state/categories/categories.reducer.js
+  - react-admin/src/state/categories/categories.service.js
+exports: []
+imports:
+  external: []
+  internal:
+    - ../../config
+    - ./categories.constants
+compositionHash: 98cab3c32ae04802
+metadata:
+  createdAt: 2026-01-07T15:30:45.475Z
+  updatedAt: 2026-01-07T16:12:38.466Z

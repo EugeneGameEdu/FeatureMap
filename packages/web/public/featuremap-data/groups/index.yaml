@@ -1,5 +1,12 @@
 version: 1
 groups:
-  - cli-core
-  - mcp-integration
-  - web-viewer
+  - admin-panel
+  - adventure-creation
+  - adventure-play
+  - authoring
+  - client-foundation
+  - platform-foundation
+  - playback
+  - public-experience
+  - public-site
+  - server
