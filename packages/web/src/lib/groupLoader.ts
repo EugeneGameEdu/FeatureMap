@@ -91,6 +91,7 @@ function buildGroupSummary(group: Group, knownFeatureIds: Set<string>): GroupSum
     id: group.id,
     name: group.name,
     description: group.description,
+    note: group.note,
     featureIds,
     source: group.source,
     ...(missingFeatureIds.length > 0 ? { missingFeatureIds } : {}),

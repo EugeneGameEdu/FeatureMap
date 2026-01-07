@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
+import { buildGroupNotePreviews, buildGroupSummaries } from '../utils/groupNotes.js';
 import { normalizeStringList } from '../utils/listUtils.js';
 import { buildIndices } from '../utils/navigationLoaders.js';
 import { filterCommentsForNode, loadComments } from '../utils/commentLoader.js';
@@ -29,7 +30,8 @@ export const getClusterFilesTool = {
       };
     }
 
-    const { clustersById } = buildIndices(featuremapDir);
+    const { clustersById, featuresById, groupsById, groupIdsByFeatureId } =
+      buildIndices(featuremapDir);
     const cluster = clustersById.get(params.clusterId);
     if (!cluster) {
       return {
@@ -50,6 +52,10 @@ export const getClusterFilesTool = {
     const entryPoints = normalizeStringList(cluster.entry_points);
     const importsExternal = normalizeStringList(cluster.imports?.external);
     const exportsCount = Array.isArray(cluster.exports) ? cluster.exports.length : 0;
+    const featureIds = findFeatureIdsForCluster(featuresById, cluster.id ?? params.clusterId);
+    const groupIds = collectGroupIds(featureIds, groupIdsByFeatureId);
+    const groups = buildGroupSummaries(groupIds, groupsById);
+    const groupNotes = buildGroupNotePreviews(groupIds, groupsById);
     const comments = filterCommentsForNode(
       loadComments(featuremapDir),
       'cluster',
@@ -74,6 +80,10 @@ export const getClusterFilesTool = {
         ...(importsExternal.length > 0 ? { imports_external: importsExternal } : {}),
         exportsCount,
       },
+      featureIds,
+      groups,
+      groupIds,
+      groupNotes,
       files: filesReturned,
       commentIds,
       commentCount: commentIds.length,
@@ -85,6 +95,7 @@ export const getClusterFilesTool = {
         maxFiles,
         hints: {
           commentsTool: `Use get_node_comments(cluster,${cluster.id ?? params.clusterId}) for truncation or metadata-only access`,
+          groupDetailsTool: 'Use get_group_details(groupId) for full group note context',
         },
       },
     };
@@ -94,3 +105,35 @@ export const getClusterFilesTool = {
     };
   },
 };
+
+function findFeatureIdsForCluster(
+  featuresById: Map<string, { id?: string; clusters?: string[] }>,
+  clusterId: string
+): string[] {
+  const featureIds: string[] = [];
+
+  for (const feature of featuresById.values()) {
+    const clusters = normalizeStringList(feature.clusters);
+    if (clusters.includes(clusterId)) {
+      featureIds.push(feature.id ?? '');
+    }
+  }
+
+  return normalizeStringList(featureIds.filter((id) => id.length > 0));
+}
+
+function collectGroupIds(
+  featureIds: string[],
+  groupIdsByFeatureId: Map<string, string[]>
+): string[] {
+  const groupIds = new Set<string>();
+
+  for (const featureId of featureIds) {
+    const ids = groupIdsByFeatureId.get(featureId) ?? [];
+    for (const groupId of ids) {
+      groupIds.add(groupId);
+    }
+  }
+
+  return normalizeStringList([...groupIds]);
+}

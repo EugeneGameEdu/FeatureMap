@@ -3,12 +3,17 @@ import { AlertTriangle, ArrowRight, Clock, FileCode, Layers, Tag, X } from 'luci
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import type { FeatureDetails, GroupSummary, MapEntity } from '@/lib/types';
+import { GroupDetailsPanel } from '@/components/GroupDetailsPanel';
+import type { FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
+import type { GroupMember } from '@/lib/groupMembership';
 
 interface SidebarProps {
   node: MapEntity | null;
+  group?: GroupSummary | null;
+  groupMembers?: GroupMember[];
+  viewMode?: ViewMode;
   onClose: () => void;
   onDependencyClick?: (featureId: string) => void;
   groups?: GroupSummary[];
@@ -17,6 +22,9 @@ interface SidebarProps {
 
 export function Sidebar({
   node,
+  group,
+  groupMembers = [],
+  viewMode = 'clusters',
   onClose,
   onDependencyClick,
   groups = [],
@@ -40,9 +48,7 @@ export function Sidebar({
     shared: 'bg-gray-100 text-gray-600',
     infrastructure: 'bg-indigo-100 text-indigo-700',
   };
-
   const fileRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
-
   useEffect(() => {
     fileRowRefs.current.clear();
   }, [node?.data.id]);
@@ -55,7 +61,7 @@ export function Sidebar({
     row?.scrollIntoView({ block: 'center' });
   }, [focusedFilePath, node]);
 
-  if (!node) {
+  if (!node && !group) {
     return (
       <div className="w-[350px] border-l bg-white flex flex-col">
         <div className="p-4 border-b">
@@ -67,6 +73,17 @@ export function Sidebar({
           </p>
         </div>
       </div>
+    );
+  }
+
+  if (group) {
+    return (
+      <GroupDetailsPanel
+        group={group}
+        groupMembers={groupMembers}
+        viewMode={viewMode}
+        onClose={onClose}
+      />
     );
   }
 

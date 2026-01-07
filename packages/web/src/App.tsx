@@ -1,26 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactFlowInstance } from '@xyflow/react';
-import { RefreshCw } from 'lucide-react';
 import { FeatureMap } from '@/components/FeatureMap';
 import { Sidebar } from '@/components/Sidebar';
 import { LeftToolbar } from '@/components/LeftToolbar';
 import { MapHeader } from '@/components/MapHeader';
 import { SearchPalette } from '@/components/SearchPalette';
-import { Button } from '@/components/ui/button';
-import { loadComments } from '@/lib/commentLoader';
+import { ErrorScreen, LoadingScreen } from '@/components/StatusScreens';
 import { COMMENT_NODE_PREFIX } from '@/lib/commentTypes';
 import { applyGroupFilter } from '@/lib/groupFilters';
-import { loadFeatureMap } from '@/lib/loadFeatureMap';
 import { applyLayerFilter } from '@/lib/layerFilters';
 import { useCommentsTool } from '@/lib/useCommentsTool';
+import { useFeatureMapData } from '@/lib/useFeatureMapData';
+import { useGroupSelection } from '@/lib/useGroupSelection';
 import { useSearchNavigation } from '@/lib/useSearchNavigation';
-import { connectFeaturemapWs } from '@/lib/wsClient';
-import type { FeatureMapData, LayerFilter, ViewMode } from '@/lib/types';
+import type { LayerFilter, ViewMode } from '@/lib/types';
 
 function App() {
-  const [data, setData] = useState<FeatureMapData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, loading, error, loadData } = useFeatureMapData();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('clusters');
@@ -54,6 +50,26 @@ function App() {
     return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
   }, [activeGraph, data?.entities, data?.groupsById, selectedGroupId, selectedLayer, viewMode]);
   const visibleNodeIds = useMemo(() => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []), [visibleGraph]);
+  const {
+    clearGroupSelection,
+    selectGroup,
+    selectedGroupDetails,
+    selectedGroupDetailsId,
+    selectedGroupMembers,
+    groupMembership,
+  } = useGroupSelection({
+    data,
+    viewMode,
+    selectedGroupId,
+    visibleNodeIds,
+  });
+  const handleSelectedNodeChange = useCallback((nodeId: string | null) => {
+    setSelectedNodeId(nodeId);
+    if (nodeId) {
+      clearGroupSelection();
+      setSelectedCommentId(null);
+    }
+  }, [clearGroupSelection]);
   const {
     commentElements,
     commentToolMode,
@@ -93,53 +109,9 @@ function App() {
     onViewModeChange: setViewMode,
     onSelectedLayerChange: setSelectedLayer,
     onSelectedGroupChange: setSelectedGroupId,
-    onSelectedNodeChange: setSelectedNodeId,
+    onSelectedNodeChange: handleSelectedNodeChange,
     onFocusedFilePathChange: setFocusedFilePath,
   });
-  const loadData = useCallback(async (options?: { showLoading?: boolean }) => {
-    const showLoading = options?.showLoading ?? true;
-    if (showLoading) {
-      setLoading(true);
-      setError(null);
-    }
-    try {
-      const featureMap = await loadFeatureMap();
-      setData(featureMap);
-    } catch (err) {
-      if (showLoading) {
-        setError(err instanceof Error ? err.message : 'Failed to load data');
-      } else {
-        console.warn('Failed to refresh data:', err);
-      }
-    } finally {
-      if (showLoading) {
-        setLoading(false);
-      }
-    }
-  }, []);
-  const refreshComments = useCallback(async () => {
-    try {
-      const comments = await loadComments();
-      setData((prev) => (prev ? { ...prev, comments } : prev));
-    } catch (err) {
-      console.warn('Failed to refresh comments:', err);
-    }
-  }, []);
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-  useEffect(() => {
-    const disconnect = connectFeaturemapWs((message) => {
-      if (message.type === 'featuremap_changed') {
-        if (message.reason === 'comments_updated' || message.file?.startsWith('comments/')) {
-          refreshComments();
-          return;
-        }
-        loadData({ showLoading: false });
-      }
-    });
-    return disconnect;
-  }, [loadData, refreshComments]);
   useEffect(() => {
     if (!selectedNodeId || !visibleGraph) {
       return;
@@ -170,11 +142,19 @@ function App() {
   const handleNodeClick = (nodeId: string) => {
     if (handleCommentNodeClick(nodeId)) {
       setFocusedFilePath(null); setSelectedNodeId(null);
+      clearGroupSelection();
       setSelectedCommentId(nodeId.slice(COMMENT_NODE_PREFIX.length));
       return;
     }
     setFocusedFilePath(null); setSelectedCommentId(null);
+    clearGroupSelection();
     setSelectedNodeId(nodeId);
+  };
+  const handleGroupSelect = (groupId: string) => {
+    setFocusedFilePath(null);
+    setSelectedCommentId(null);
+    setSelectedNodeId(null);
+    selectGroup(groupId);
   };
   const handleDependencyClick = (nodeId: string) => {
     if (!data?.entities[nodeId]) {
@@ -186,39 +166,26 @@ function App() {
       setViewMode('clusters');
     }
     setFocusedFilePath(null); setSelectedCommentId(null);
+    clearGroupSelection();
     setSelectedNodeId(nodeId);
   };
   const handleCloseSidebar = () => {
     setFocusedFilePath(null);
     setSelectedNodeId(null);
+    clearGroupSelection();
   };
 
   if (loading) {
-    return (
-      <div className="h-screen bg-gray-100 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-gray-600">
-          <RefreshCw className="animate-spin" size={20} />
-          <span>Loading feature map...</span>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (error) {
-    return (
-      <div className="h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-red-600 font-bold mb-2">Error</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={loadData}>Retry</Button>
-        </div>
-      </div>
-    );
+    return <ErrorScreen message={error} onRetry={loadData} />;
   }
 
   if (!data || !activeGraph || !visibleGraph) return null;
 
-  const selectedNode = selectedNodeId ? data.entities[selectedNodeId] : null;
+  const selectedNode = selectedGroupDetailsId ? null : selectedNodeId ? data.entities[selectedNodeId] : null;
   const clusterCount = data.clusterGraph.nodes.length;
   const featureCount = data.featureGraph.nodes.length;
   const fileCount = Object.values(data.entities).reduce(
@@ -268,6 +235,11 @@ function App() {
           <FeatureMap
             graph={visibleGraph}
             entities={data.entities}
+            groups={data.groups}
+            groupMembership={groupMembership}
+            selectedGroupId={selectedGroupId}
+            selectedGroupDetailsId={selectedGroupDetailsId}
+            onGroupSelect={handleGroupSelect}
             commentNodes={commentElements.nodes}
             commentEdges={commentElements.edges}
             onNodeClick={handleNodeClick}
@@ -286,6 +258,9 @@ function App() {
 
         <Sidebar
           node={selectedNode}
+          group={selectedGroupDetails}
+          groupMembers={selectedGroupMembers}
+          viewMode={viewMode}
           onClose={handleCloseSidebar}
           onDependencyClick={handleDependencyClick}
           groups={data.groups}

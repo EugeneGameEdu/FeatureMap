@@ -35,9 +35,9 @@ export const KEY_ORDER: Record<string, string[]> = {
     'name',
     'description',
     'featureIds',
-    'source',
-    'locks',
-    'metadata',
+    'note',
+    'createdAt',
+    'updatedAt',
   ],
   comment: [
     'version',

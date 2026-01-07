@@ -14,6 +14,7 @@ import { getFeatureDetailsTool } from './tools/getFeatureDetails.js';
 import { getClusterFilesTool } from './tools/getClusterFiles.js';
 import { findRelevantFeaturesTool } from './tools/findRelevantFeatures.js';
 import { getNodeCommentsTool } from './tools/getNodeComments.js';
+import { getGroupDetailsTool } from './tools/getGroupDetails.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -160,6 +161,14 @@ server.tool(
   getClusterFilesTool.execute
 );
 
+// Tool: get_group_details
+server.tool(
+  getGroupDetailsTool.name,
+  getGroupDetailsTool.description,
+  getGroupDetailsTool.parameters,
+  getGroupDetailsTool.execute
+);
+
 // Tool: find_relevant_features
 server.tool(
   findRelevantFeaturesTool.name,
@@ -179,7 +188,7 @@ server.tool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 11 tools');
+  console.error('FeatureMap MCP server started with 12 tools');
 }
 
 main().catch((error) => {

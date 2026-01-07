@@ -34,6 +34,7 @@ export const GroupSchema = z
     name: z.string(),
     description: z.string().optional(),
     featureIds: z.array(z.string()),
+    note: z.string().optional(),
     source: GroupSourceSchema,
     locks: GroupLocksSchema.optional(),
     metadata: GroupMetadataSchema,
@@ -189,6 +190,7 @@ export interface GroupSummary {
   id: string;
   name: string;
   description?: string;
+  note?: string;
   featureIds: string[];
   source?: GroupSource;
   missingFeatureIds?: string[];

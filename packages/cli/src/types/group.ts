@@ -26,6 +26,7 @@ export const GroupSchema = z
     name: z.string(),
     description: z.string().optional(),
     featureIds: z.array(z.string()),
+    note: z.string().optional(),
     source: GroupSourceSchema,
     locks: GroupLocksSchema.optional(),
     metadata: GroupMetadataSchema,

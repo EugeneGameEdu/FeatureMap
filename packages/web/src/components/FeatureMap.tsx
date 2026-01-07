@@ -17,15 +17,25 @@ import {
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import dagre from '@dagrejs/dagre';
 import { FeatureNode, type FeatureNodeData } from './FeatureNode';
 import { CommentNode } from './CommentNode';
+import { GroupContainerNode } from './GroupContainerNode';
 import { COMMENT_EDGE_TYPE } from '@/lib/commentTypes';
-import type { GraphData, MapEntity, NodeType } from '@/lib/types';
+import {
+  buildGroupContainerNodes,
+  GROUP_CONTAINER_NODE_TYPE,
+} from '@/lib/groupContainers';
+import { getLayoutedElements } from '@/lib/graphLayout';
+import type { GraphData, GroupSummary, MapEntity, NodeType } from '@/lib/types';
 
 interface FeatureMapProps {
   graph: GraphData;
   entities: Record<string, MapEntity>;
+  groups?: GroupSummary[];
+  groupMembership?: Map<string, string[]>;
+  selectedGroupId?: string;
+  selectedGroupDetailsId?: string | null;
+  onGroupSelect?: (groupId: string) => void;
   commentNodes?: Node[];
   commentEdges?: Edge[];
   onNodeClick?: (featureId: string) => void;
@@ -45,51 +55,21 @@ const nodeTypes: NodeTypes = {
   feature: FeatureNode,
   cluster: FeatureNode,
   comment: CommentNode,
+  [GROUP_CONTAINER_NODE_TYPE]: GroupContainerNode,
 };
 
 const edgeTypes: EdgeTypes = {
   [COMMENT_EDGE_TYPE]: BezierEdge,
 };
 
-const NODE_WIDTH = 180;
-const NODE_HEIGHT = 70;
-
-function getLayoutedElements(
-  nodes: Node[],
-  edges: Edge[],
-  direction: 'TB' | 'LR' = 'TB'
-): { nodes: Node[]; edges: Edge[] } {
-  const dagreGraph = new dagre.graphlib.Graph();
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: direction, nodesep: 60, ranksep: 100 });
-
-  nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
-  });
-
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
-  });
-
-  dagre.layout(dagreGraph);
-
-  const layoutedNodes = nodes.map((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
-    return {
-      ...node,
-      position: {
-        x: nodeWithPosition.x - NODE_WIDTH / 2,
-        y: nodeWithPosition.y - NODE_HEIGHT / 2,
-      },
-    };
-  });
-
-  return { nodes: layoutedNodes, edges };
-}
-
 export function FeatureMap({
   graph,
   entities,
+  groups = [],
+  groupMembership,
+  selectedGroupId = 'all',
+  selectedGroupDetailsId,
+  onGroupSelect,
   commentNodes = [],
   commentEdges = [],
   onNodeClick,
@@ -142,6 +122,7 @@ export function FeatureMap({
         position: { x: 0, y: 0 },
         selected: node.id === selectedNodeId,
         deletable: false,
+        zIndex: 2,
       };
     });
   }, [graph.nodes, entities, dependencyCountById, selectedNodeId, focusedNodeId, focusedUntil]);
@@ -166,9 +147,32 @@ export function FeatureMap({
     return getLayoutedElements(graphNodes, graphEdges, 'TB');
   }, [graphEdges, graphNodes]);
 
+  const groupContainerNodes = useMemo(() => {
+    if (groups.length === 0) {
+      return [];
+    }
+    const activeGroups =
+      selectedGroupId === 'all' ? groups : groups.filter((group) => group.id === selectedGroupId);
+    return buildGroupContainerNodes({
+      visibleNodes: layoutedGraphNodes,
+      groups: activeGroups,
+      membership: groupMembership ?? new Map(),
+      padding: 40,
+      selectedGroupId: selectedGroupDetailsId ?? null,
+      onSelectGroup: onGroupSelect,
+    });
+  }, [
+    groups,
+    groupMembership,
+    layoutedGraphNodes,
+    onGroupSelect,
+    selectedGroupDetailsId,
+    selectedGroupId,
+  ]);
+
   const layoutedNodes = useMemo(
-    () => [...layoutedGraphNodes, ...commentNodes],
-    [commentNodes, layoutedGraphNodes]
+    () => [...groupContainerNodes, ...layoutedGraphNodes, ...commentNodes],
+    [commentNodes, groupContainerNodes, layoutedGraphNodes]
   );
   const layoutedEdges = useMemo(
     () => [...layoutedGraphEdges, ...commentEdges],
@@ -185,6 +189,9 @@ export function FeatureMap({
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
+        return;
+      }
       onNodeClick?.(node.id);
     },
     [onNodeClick]

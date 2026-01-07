@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { findFeaturemapDir } from '../utils/findFeaturemapDir.js';
+import { buildGroupNotePreviews, buildGroupSummaries } from '../utils/groupNotes.js';
 import { normalizeStringList } from '../utils/listUtils.js';
 import { buildIndices } from '../utils/navigationLoaders.js';
 import { filterCommentsForNode, loadComments } from '../utils/commentLoader.js';
@@ -26,7 +27,8 @@ export const getFeatureDetailsTool = {
       };
     }
 
-    const { featuresById, clustersById, groupIdsByFeatureId } = buildIndices(featuremapDir);
+    const { featuresById, clustersById, groupsById, groupIdsByFeatureId } =
+      buildIndices(featuremapDir);
     const feature = featuresById.get(params.featureId);
     if (!feature) {
       const hint = buildFeatureIdHint(params.featureId, featuresById);
@@ -55,6 +57,8 @@ export const getFeatureDetailsTool = {
 
     const dependsOn = normalizeStringList(feature.dependsOn);
     const groupIds = groupIdsByFeatureId.get(feature.id) ?? [];
+    const groups = buildGroupSummaries(groupIds, groupsById);
+    const groupNotes = buildGroupNotePreviews(groupIds, groupsById);
     const missingClusters = clusterIds.filter((clusterId) => !clustersById.has(clusterId));
     const comments = filterCommentsForNode(loadComments(featuremapDir), 'feature', feature.id);
     const commentIds = comments.map((comment) => comment.id);
@@ -84,7 +88,9 @@ export const getFeatureDetailsTool = {
     const result = {
       feature: featureDetails,
       clusters,
+      groups,
       groupIds,
+      groupNotes,
       commentIds,
       commentCount: commentIds.length,
       comments: commentEntries,
@@ -93,6 +99,7 @@ export const getFeatureDetailsTool = {
         missingClusters,
         hints: {
           commentsTool: `Use get_node_comments(feature,${feature.id}) for truncation or metadata-only access`,
+          groupDetailsTool: 'Use get_group_details(groupId) for full group note context',
         },
       },
     };

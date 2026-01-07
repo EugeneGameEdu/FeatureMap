@@ -87,6 +87,7 @@ function normalizeGroupOutput(group: GroupFile): Record<string, unknown> {
     name: group.name,
     ...(group.description !== undefined ? { description: group.description } : {}),
     featureIds,
+    ...(group.note !== undefined ? { note: group.note } : {}),
     source: group.source,
     ...(locks ? { locks } : {}),
     metadata,
