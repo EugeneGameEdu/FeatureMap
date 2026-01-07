@@ -1,11 +1,12 @@
 import * as path from 'path';
-import { ParsedFile, parseFile } from './parser.js';
+import { parseFile } from './parser.js';
 import { ScanResult, getRelativePath } from './scanner.js';
+import type { ExportSymbol, ImportList } from '../types/index.js';
 
 export interface FileNode {
   path: string;           // относительный путь
-  exports: ParsedFile['exports'];
-  imports: ParsedFile['imports'];
+  exports: ExportSymbol[];
+  imports: ImportList;
   linesOfCode: number;
 }
 
@@ -17,6 +18,8 @@ export interface DependencyGraph {
 
 export async function buildGraph(scanResult: ScanResult): Promise<DependencyGraph> {
   const { files, projectRoot } = scanResult;
+  const goFiles = scanResult.goFiles ?? [];
+  const goImportIndex = buildGoImportIndex(goFiles);
   
   const graph: DependencyGraph = {
     files: {},
@@ -25,7 +28,7 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
   };
 
   // Шаг 1: Парсим все файлы
-  const parsedFiles: Map<string, ParsedFile> = new Map();
+  const parsedFiles: Map<string, ParsedCodeFile> = new Map();
   
   for (const absolutePath of files) {
     const relativePath = getRelativePath(absolutePath, projectRoot);
@@ -43,18 +46,57 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
     graph.dependents[relativePath] = [];
   }
 
-  // Шаг 2: Резолвим внутренние импорты в реальные пути
+  for (const parsed of goFiles) {
+    const relativePath = normalizeFilePath(parsed.path);
+    const exportSymbols = parsed.exports.map((entry) => ({
+      name: entry.name,
+      type: entry.type,
+    }));
+
+    parsedFiles.set(relativePath, {
+      path: relativePath,
+      exports: exportSymbols,
+      imports: parsed.imports,
+      linesOfCode: parsed.linesOfCode,
+    });
+
+    graph.files[relativePath] = {
+      path: relativePath,
+      exports: exportSymbols,
+      imports: parsed.imports,
+      linesOfCode: parsed.linesOfCode,
+    };
+
+    graph.dependencies[relativePath] = [];
+    graph.dependents[relativePath] = [];
+  }
+
+  // Step 2: resolve internal imports to real file paths
   for (const [filePath, parsed] of parsedFiles) {
-    const fileDir = path.dirname(filePath);
-    
+    const fileDir = path.posix.dirname(filePath);
+
+    if (filePath.endsWith('.go')) {
+      for (const importPath of parsed.imports.internal) {
+        const resolvedPath = resolveGoImport(importPath, goImportIndex);
+        if (!resolvedPath) {
+          continue;
+        }
+        graph.dependencies[filePath].push(resolvedPath);
+        if (graph.dependents[resolvedPath]) {
+          graph.dependents[resolvedPath].push(filePath);
+        }
+      }
+      continue;
+    }
+
     for (const importPath of parsed.imports.internal) {
       const resolvedPath = resolveImport(importPath, fileDir, parsedFiles);
-      
+
       if (resolvedPath) {
-        // filePath зависит от resolvedPath
+        // filePath úø±±  resolvedPath
         graph.dependencies[filePath].push(resolvedPath);
-        
-        // resolvedPath имеет зависимого filePath
+
+        // resolvedPath ¿¿ úø±± filePath
         if (graph.dependents[resolvedPath]) {
           graph.dependents[resolvedPath].push(filePath);
         }
@@ -71,7 +113,7 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
 function resolveImport(
   importPath: string,
   fromDir: string,
-  existingFiles: Map<string, ParsedFile>
+  existingFiles: Map<string, ParsedCodeFile>
 ): string | null {
   // Нормализуем путь
   const resolved = path.join(fromDir, importPath).replace(/\\/g, '/');
@@ -105,6 +147,44 @@ function resolveImport(
   return null;
 }
 
+function resolveGoImport(
+  importPath: string,
+  goImportIndex: Map<string, string>
+): string | null {
+  return goImportIndex.get(importPath) ?? null;
+}
+
+function buildGoImportIndex(goFiles: ParsedGoFileEntry[]): Map<string, string> {
+  const index = new Map<string, string>();
+
+  for (const file of goFiles) {
+    if (!file.modulePath) {
+      continue;
+    }
+
+    const normalized = normalizeFilePath(file.path);
+    const moduleRoot = normalizeFilePath(file.moduleRoot || '.');
+    const dir = path.posix.dirname(normalized);
+    const relativeDir = moduleRoot === '.' ? dir : path.posix.relative(moduleRoot, dir);
+
+    if (relativeDir.startsWith('..')) {
+      continue;
+    }
+
+    const importPath = relativeDir === '.' ? file.modulePath : `${file.modulePath}/${relativeDir}`;
+    if (!index.has(importPath)) {
+      index.set(importPath, normalized);
+    }
+  }
+
+  return index;
+}
+
+function normalizeFilePath(filePath: string): string {
+  return filePath.replace(/\\/g, '/');
+}
+
+
 /**
  * Подсчитывает статистику графа
  */
@@ -127,3 +207,13 @@ export function getGraphStats(graph: DependencyGraph): {
     avgDependencies: totalFiles > 0 ? totalDependencies / totalFiles : 0,
   };
 }
+
+
+type ParsedCodeFile = {
+  path: string;
+  exports: ExportSymbol[];
+  imports: ImportList;
+  linesOfCode: number;
+};
+
+type ParsedGoFileEntry = NonNullable<ScanResult['goFiles']>[number];

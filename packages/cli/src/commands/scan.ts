@@ -57,7 +57,24 @@ export function createScanCommand(): Command {
         ensureDirectory(path.join(featuremapDir, 'context'));
 
         const scanResult = await scanProject(projectRoot);
-        console.log(`  OK Found ${scanResult.files.length} files`);
+        const tsCount = scanResult.files.length;
+        const goCount = scanResult.goFiles?.length ?? 0;
+
+        if (scanResult.subprojects && scanResult.subprojects.length > 0) {
+          console.log('Detected subprojects:');
+          for (const subproject of scanResult.subprojects) {
+            const label = subproject.type === 'typescript' ? 'TypeScript' : 'Go';
+            console.log(`  - ${subproject.name} (${label})`);
+          }
+          console.log('');
+        }
+
+        if (goCount > 0) {
+          console.log(`  OK Found ${tsCount} TypeScript files`);
+          console.log(`  OK Found ${goCount} Go files`);
+        } else {
+          console.log(`  OK Found ${tsCount} files`);
+        }
 
         const packageJsonPaths = findPackageJsonPaths(projectRoot);
         const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });

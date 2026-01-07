@@ -1,0 +1,17 @@
+version: 1
+id: frontend-editor
+name: Adventure Editor
+description: Tools and screens used to create and edit adventures.
+source: ai
+status: active
+scope: frontend
+clusters:
+  - frontend-app-redigera
+  - frontend-features-editor
+composition:
+  hash: 7bc2f5c2e9a21fef
+metadata:
+  createdAt: 2026-01-07T11:35:55.240Z
+  updatedAt: 2026-01-07T12:01:06.083Z
+  lastModifiedBy: ai
+  version: 3

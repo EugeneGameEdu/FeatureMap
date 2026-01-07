@@ -1,5 +1,6 @@
 version: 1
 groups:
-  - cli-core
-  - mcp-integration
-  - web-viewer
+  - authoring
+  - platform-foundation
+  - playback
+  - public-experience

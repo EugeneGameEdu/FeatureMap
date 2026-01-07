@@ -1,0 +1,24 @@
+version: 1
+id: backend-cmd-unsplash
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+    - Go cmd/ directory (entry points)
+    - contains main function
+files:
+  - backend/cmd/unsplash/main.go
+exports:
+  - name: main
+    type: function
+imports:
+  external:
+    - log
+  internal:
+    - projektps/services/imagebank
+    - projektps/store/sqlstore
+compositionHash: f28fc20619a10610
+metadata:
+  createdAt: 2026-01-07T11:21:49.939Z
+  updatedAt: 2026-01-07T11:22:03.823Z

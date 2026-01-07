@@ -1,0 +1,17 @@
+version: 1
+id: backend-utilities
+name: Server Utilities
+description: Small helper functions like IDs and time formatting.
+source: ai
+status: active
+scope: backend
+clusters:
+  - backend-helpers-timeago
+  - backend-helpers-uniuri
+composition:
+  hash: c682fd107148be65
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T12:01:06.083Z
+  lastModifiedBy: ai
+  version: 2

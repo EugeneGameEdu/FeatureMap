@@ -1,0 +1,37 @@
+version: 1
+id: backend-router
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+    - exports route handlers
+    - internal imports reference frontend and backend
+    - imports Go web framework
+files:
+  - backend/router/router.go
+exports:
+  - name: CacheControlMiddleware
+    type: function
+  - name: CORSControlMiddleware
+    type: function
+  - name: NewRouter
+    type: function
+  - name: Router
+    type: struct
+imports:
+  external:
+    - fmt
+    - github.com/gorilla/handlers
+    - github.com/gorilla/mux
+    - net/http
+  internal:
+    - projektps/controllers/api
+    - projektps/controllers/socket
+    - projektps/controllers/web
+    - projektps/helpers/jwt
+    - projektps/store
+compositionHash: 9287171754d055f2
+metadata:
+  createdAt: 2026-01-07T11:21:49.972Z
+  updatedAt: 2026-01-07T11:22:03.861Z

@@ -1,0 +1,132 @@
+version: 1
+id: frontend-features-ui-core
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /components/
+    - path contains /frontend/
+    - file extension .tsx
+    - imports react
+    - exports React components
+files:
+  - frontend/src/features/ui-core/components/EditorLayout.tsx
+  - frontend/src/features/ui-core/components/Footer.tsx
+  - frontend/src/features/ui-core/components/Header.tsx
+  - frontend/src/features/ui-core/components/ImageZoom.tsx
+  - frontend/src/features/ui-core/components/LegacyContent.tsx
+  - frontend/src/features/ui-core/components/PlayerLayout.tsx
+  - frontend/src/features/ui-core/LabelValue.tsx
+  - frontend/src/features/ui-core/PageShell.tsx
+  - frontend/src/features/ui-core/Panel.tsx
+  - frontend/src/features/ui-core/primitives/button.tsx
+  - frontend/src/features/ui-core/primitives/dialog.tsx
+  - frontend/src/features/ui-core/primitives/dropdown-menu.tsx
+  - frontend/src/features/ui-core/primitives/index.ts
+  - frontend/src/features/ui-core/primitives/tabs.tsx
+  - frontend/src/features/ui-core/primitives/tooltip.tsx
+  - frontend/src/features/ui-core/props/index.ts
+  - frontend/src/features/ui-core/props/props.ts
+  - frontend/src/features/ui-core/SectionTitle.tsx
+  - frontend/src/features/ui-core/toast.ts
+  - frontend/src/features/ui-core/Toolbar.tsx
+exports:
+  - isDefault: false
+    name: buildPropsStyle
+    type: variable
+  - isDefault: false
+    name: Button
+    type: variable
+  - isDefault: false
+    name: ButtonProps
+    type: interface
+  - isDefault: false
+    name: combinePreviewClasses
+    type: variable
+  - isDefault: false
+    name: defaultCssVars
+    type: variable
+  - isDefault: true
+    name: EditorLayout
+    type: function
+  - isDefault: false
+    name: Footer
+    type: function
+  - isDefault: false
+    name: Header
+    type: function
+  - isDefault: false
+    name: hexToRgba
+    type: variable
+  - isDefault: false
+    name: ImageZoom
+    type: function
+  - isDefault: false
+    name: LabelValue
+    type: function
+  - isDefault: false
+    name: LegacyContent
+    type: variable
+  - isDefault: false
+    name: PageShell
+    type: function
+  - isDefault: false
+    name: Panel
+    type: function
+  - isDefault: false
+    name: PlayerLayout
+    type: function
+  - isDefault: false
+    name: PropsInput
+    type: type
+  - isDefault: false
+    name: PropsResult
+    type: type
+  - isDefault: false
+    name: renderLegacyContent
+    type: variable
+  - isDefault: false
+    name: SectionTitle
+    type: function
+  - isDefault: false
+    name: toastError
+    type: variable
+  - isDefault: false
+    name: toastInfo
+    type: variable
+  - isDefault: false
+    name: toastPromise
+    type: variable
+  - isDefault: false
+    name: toastSuccess
+    type: variable
+  - isDefault: false
+    name: toastWarning
+    type: variable
+  - isDefault: false
+    name: Toolbar
+    type: function
+imports:
+  external:
+    - "@/features/ui-core/primitives"
+    - "@/lib/utils"
+    - "@radix-ui/react-dialog"
+    - "@radix-ui/react-dropdown-menu"
+    - "@radix-ui/react-slot"
+    - "@radix-ui/react-tabs"
+    - "@radix-ui/react-tooltip"
+    - class-variance-authority
+    - lucide-react
+    - markdown-it
+    - next/image
+    - next/link
+    - react
+    - react-resizable-panels
+    - sanitize-html
+    - sonner
+  internal:
+    - ./player-layout.css
+compositionHash: 34ffc1bbba934dcd
+metadata:
+  createdAt: 2026-01-07T11:21:50.043Z
+  updatedAt: 2026-01-07T11:22:03.952Z

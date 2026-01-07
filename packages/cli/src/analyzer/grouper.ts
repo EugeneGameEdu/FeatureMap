@@ -79,31 +79,85 @@ export function groupByFolders(graph: DependencyGraph): GroupingResult {
  *   packages/web/src/App.tsx -> web-core
  */
 function getClusterId(filePath: string): string {
-  const parts = filePath.split('/');
+  const normalized = filePath.replace(/\\/g, '/');
+
+  if (isGoFile(normalized)) {
+    return getGoClusterId(normalized);
+  }
+
+  const parts = normalized.split('/');
   
   const packagesIndex = parts.indexOf('packages');
-  if (packagesIndex === -1 || parts.length < packagesIndex + 4) {
-    return parts.slice(0, 2).join('-') || 'root';
+  if (packagesIndex !== -1 && parts.length >= packagesIndex + 4) {
+    const packageName = parts[packagesIndex + 1]; // cli, web, mcp-server
+    const srcIndex = packagesIndex + 3; // after packages/*/src/
+
+    // file directly in src/
+    if (srcIndex >= parts.length - 1) {
+      return `${packageName}-core`;
+    }
+
+    const folderAfterSrc = parts[srcIndex];
+
+    if (srcIndex + 1 < parts.length - 1) {
+      const secondFolder = parts[srcIndex + 1];
+      if (!secondFolder.includes('.')) {
+        return `${packageName}-${folderAfterSrc}-${secondFolder}`;
+      }
+    }
+
+    return `${packageName}-${folderAfterSrc}`;
   }
 
-  const packageName = parts[packagesIndex + 1]; // cli, web, mcp-server
-  const srcIndex = packagesIndex + 3; // after packages/*/src/
-  
-  // file directly in src/
+  const srcIndex = parts.indexOf('src');
+  if (srcIndex > 0 && srcIndex < parts.length) {
+    return getSubprojectClusterId(parts, srcIndex);
+  }
+
+  return getFallbackClusterId(parts);
+}
+
+function isGoFile(filePath: string): boolean {
+  return filePath.toLowerCase().endsWith('.go');
+}
+
+// For Go: folder = cluster
+function getGoClusterId(filePath: string): string {
+  const normalized = filePath.replace(/\\/g, '/');
+  const dir = path.posix.dirname(normalized);
+  if (dir === '.' || dir === '') {
+    return 'root';
+  }
+  return dir.replace(/[\/\\]/g, '-').toLowerCase();
+}
+
+function getSubprojectClusterId(parts: string[], srcIndex: number): string {
+  const projectName = parts[srcIndex - 1];
+
   if (srcIndex >= parts.length - 1) {
-    return `${packageName}-core`;
+    return `${projectName}-core`;
   }
 
-  const folderAfterSrc = parts[srcIndex];
-  
-  if (srcIndex + 1 < parts.length - 1) {
-    const secondFolder = parts[srcIndex + 1];
-    if (!secondFolder.includes('.')) {
-      return `${packageName}-${folderAfterSrc}-${secondFolder}`;
+  const folderAfterSrc = parts[srcIndex + 1];
+  if (!folderAfterSrc || folderAfterSrc.includes('.')) {
+    return `${projectName}-core`;
+  }
+
+  if (srcIndex + 2 < parts.length - 1) {
+    const secondFolder = parts[srcIndex + 2];
+    if (secondFolder && !secondFolder.includes('.')) {
+      return `${projectName}-${folderAfterSrc}-${secondFolder}`;
     }
   }
 
-  return `${packageName}-${folderAfterSrc}`;
+  return `${projectName}-${folderAfterSrc}`;
+}
+
+function getFallbackClusterId(parts: string[]): string {
+  if (parts.length >= 2) {
+    return `${parts[0]}-${parts[1]}`;
+  }
+  return parts[0] || 'root';
 }
 
 /**

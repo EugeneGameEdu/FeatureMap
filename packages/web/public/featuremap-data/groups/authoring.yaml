@@ -1,0 +1,15 @@
+version: 1
+id: authoring
+name: Authoring
+description: Editor workflow, media management, and supporting backend API integrations.
+featureIds:
+  - backend-api
+  - backend-media-integrations
+  - frontend-editor
+  - frontend-media
+source: ai
+metadata:
+  createdAt: 2026-01-07T11:51:32.615Z
+  updatedAt: 2026-01-07T11:51:32.615Z
+  lastModifiedBy: ai
+  version: 1

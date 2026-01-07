@@ -1,0 +1,41 @@
+version: 1
+id: backend-services-imagebank
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+    - imports Go database driver
+files:
+  - backend/services/imagebank/sync.go
+exports:
+  - name: Initialize
+    type: function
+  - name: PerformSync
+    type: function
+  - name: removeObsoleteCategories
+    type: function
+  - name: removeObsoleteImages
+    type: function
+  - name: runSynchronization
+    type: function
+  - name: syncCollectionsWithCategories
+    type: function
+  - name: synchronizeTask
+    type: function
+  - name: syncPhotosWithImages
+    type: function
+imports:
+  external:
+    - database/sql
+    - fmt
+    - github.com/jasonlvhit/gocron
+    - strconv
+  internal:
+    - projektps/helpers/unsplash
+    - projektps/models
+    - projektps/store
+compositionHash: 10d7a511250f9416
+metadata:
+  createdAt: 2026-01-07T11:21:49.973Z
+  updatedAt: 2026-01-07T11:22:03.863Z

@@ -46,6 +46,26 @@ const BACKEND_IMPORT_PREFIXES = ['@modelcontextprotocol/', '@nestjs/'];
 
 const INFRA_IMPORTS = ['vite', 'webpack', 'rollup', 'esbuild', 'tsup'];
 
+const GO_BACKEND_IMPORTS = [
+  'github.com/gin-gonic/gin',
+  'github.com/labstack/echo',
+  'github.com/gofiber/fiber',
+  'net/http',
+  'github.com/gorilla/mux',
+];
+const GO_DATABASE_IMPORTS = [
+  'database/sql',
+  'gorm.io/gorm',
+  'github.com/jmoiron/sqlx',
+  'github.com/lib/pq',
+  'github.com/go-sql-driver/mysql',
+  'go.mongodb.org/mongo-driver',
+];
+const GO_INFRA_IMPORTS = [
+  'github.com/spf13/cobra',
+  'github.com/spf13/viper',
+];
+
 const FRONTEND_PATHS = ['/web/', '/ui/', '/components/', '/pages/', '/views/', '/frontend/'];
 const BACKEND_PATHS = [
   '/api/',
@@ -176,6 +196,15 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
   if (internalFrontendHit && internalBackendHit) {
     addSignal('shared', 'internal imports reference frontend and backend');
   }
+
+  addGoSignals(
+    {
+      files: normalizedFiles,
+      imports: input.imports,
+      exports: input.exports,
+    },
+    addSignal
+  );
 
   const layerCounts = LAYERS.map((layer) => ({
     layer,
@@ -317,4 +346,41 @@ function hasTypeOnlyExports(exportsList: Array<{ name: string; type: string }>):
     return false;
   }
   return exportsList.every((entry) => ['type', 'interface'].includes(entry.type));
+}
+
+function addGoSignals(
+  input: LayerDetectionInput,
+  addSignal: (layer: Layer, message: string) => void
+): void {
+  const goImports = input.imports.external.map((entry) => entry.toLowerCase());
+
+  if (goImports.some((value) => GO_BACKEND_IMPORTS.some((entry) => value.includes(entry)))) {
+    addSignal('backend', 'imports Go web framework');
+  }
+
+  if (goImports.some((value) => GO_DATABASE_IMPORTS.some((entry) => value.includes(entry)))) {
+    addSignal('backend', 'imports Go database driver');
+  }
+
+  if (goImports.some((value) => GO_INFRA_IMPORTS.some((entry) => value.includes(entry)))) {
+    addSignal('infrastructure', 'imports Go infrastructure library');
+  }
+
+  if (input.files.some((file) => file.includes('/cmd/'))) {
+    addSignal('infrastructure', 'Go cmd/ directory (entry points)');
+  }
+
+  if (input.files.some((file) => file.includes('/internal/'))) {
+    addSignal('backend', 'Go internal/ directory');
+  }
+
+  if (input.exports.some((entry) => entry.name === 'main' && entry.type === 'function')) {
+    addSignal('infrastructure', 'contains main function');
+  }
+
+  const structCount = input.exports.filter((entry) => entry.type === 'struct').length;
+  const totalExports = input.exports.length;
+  if (totalExports > 0 && structCount / totalExports > 0.7) {
+    addSignal('shared', 'mostly struct definitions (models)');
+  }
 }

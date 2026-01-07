@@ -1,0 +1,51 @@
+version: 1
+id: backend-helpers-timeago
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+files:
+  - backend/helpers/timeago/timeago.go
+exports:
+  - name: DateAgoValues
+    type: type
+  - name: DaysAgo
+    type: const
+  - name: FromNowWithString
+    type: function
+  - name: FromNowWithTime
+    type: function
+  - name: HoursAgo
+    type: const
+  - name: localizedStringFor
+    type: function
+  - name: MinutesAgo
+    type: const
+  - name: MonthsAgo
+    type: const
+  - name: round
+    type: function
+  - name: SecondsAgo
+    type: const
+  - name: stringForDuration
+    type: function
+  - name: WeeksAgo
+    type: const
+  - name: WithString
+    type: function
+  - name: WithTime
+    type: function
+  - name: YearsAgo
+    type: const
+imports:
+  external:
+    - errors
+    - fmt
+    - math
+    - time
+  internal: []
+compositionHash: 562da21b4c73b991
+metadata:
+  createdAt: 2026-01-07T11:21:49.964Z
+  updatedAt: 2026-01-07T11:22:03.849Z

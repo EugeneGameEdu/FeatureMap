@@ -1,0 +1,19 @@
+version: 1
+id: backend-realtime
+name: Live Connections
+description: Real-time connections for live updates.
+source: ai
+status: active
+scope: backend
+clusters:
+  - backend-controllers-socket
+dependsOn:
+  - backend-data-models
+  - backend-utilities
+composition:
+  hash: 914e3deb52d75c7f
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T12:01:06.083Z
+  lastModifiedBy: ai
+  version: 2

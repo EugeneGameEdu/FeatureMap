@@ -1,0 +1,68 @@
+version: 1
+id: backend-models
+layer: backend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /backend/
+files:
+  - backend/models/adventure.go
+  - backend/models/category.go
+  - backend/models/image_category.go
+  - backend/models/image.go
+  - backend/models/link.go
+  - backend/models/list.go
+  - backend/models/node.go
+  - backend/models/report.go
+  - backend/models/user.go
+exports:
+  - name: Adventure
+    type: struct
+  - name: AdventureProps
+    type: struct
+  - name: Category
+    type: struct
+  - name: CheckPasswordHash
+    type: function
+  - name: HashPassword
+    type: function
+  - name: Ignore
+    type: const
+  - name: Image
+    type: struct
+  - name: ImageCategory
+    type: struct
+  - name: Link
+    type: struct
+  - name: List
+    type: struct
+  - name: Node
+    type: struct
+  - name: NodeStat
+    type: struct
+  - name: Permission
+    type: type
+  - name: Props
+    type: struct
+  - name: ReadOnly
+    type: const
+  - name: ReadWrite
+    type: const
+  - name: Report
+    type: struct
+  - name: UpdatedTimeAgo
+    type: function
+  - name: User
+    type: struct
+  - name: UserAdventure
+    type: struct
+imports:
+  external:
+    - golang.org/x/crypto/bcrypt
+    - time
+  internal:
+    - projektps/helpers/timeago
+compositionHash: e25bb0068594ab6f
+metadata:
+  createdAt: 2026-01-07T11:21:49.971Z
+  updatedAt: 2026-01-07T11:22:03.858Z

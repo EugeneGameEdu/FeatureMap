@@ -1,0 +1,17 @@
+version: 1
+id: frontend-ui-kit
+name: Shared UI Components
+description: Reusable buttons, panels, forms, and visual building blocks.
+source: ai
+status: active
+scope: fullstack
+clusters:
+  - frontend-features-ui-core
+  - frontend-lib
+composition:
+  hash: 6d0cdfcb2003bc85
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T12:01:06.083Z
+  lastModifiedBy: ai
+  version: 2

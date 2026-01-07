@@ -1,0 +1,30 @@
+version: 1
+id: frontend-features-media
+layer: frontend
+layerDetection:
+  confidence: high
+  signals:
+    - path contains /frontend/
+    - file extension .tsx
+    - imports react
+    - exports React components
+files:
+  - frontend/src/features/media/MediaLibraryModal.tsx
+exports:
+  - isDefault: false
+    name: MediaLibraryModal
+    type: function
+imports:
+  external:
+    - "@/features/state/api/images"
+    - "@/features/ui-core/primitives"
+    - "@/features/ui-core/primitives/dialog"
+    - "@/features/ui-core/toast"
+    - "@/lib/utils"
+    - lucide-react
+    - react
+  internal: []
+compositionHash: 12c16b6c6f7220d1
+metadata:
+  createdAt: 2026-01-07T11:21:50.026Z
+  updatedAt: 2026-01-07T11:22:03.929Z

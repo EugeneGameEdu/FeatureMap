@@ -1,0 +1,17 @@
+version: 1
+id: frontend-data-domain
+name: Data & Server Communication
+description: Shared data rules and how the site talks to the server.
+source: ai
+status: active
+scope: fullstack
+clusters:
+  - frontend-domain
+  - frontend-features-state
+composition:
+  hash: d3b1931c0d406e58
+metadata:
+  createdAt: 2026-01-07T11:50:40.211Z
+  updatedAt: 2026-01-07T12:01:06.083Z
+  lastModifiedBy: ai
+  version: 2

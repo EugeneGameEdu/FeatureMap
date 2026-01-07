@@ -1,0 +1,480 @@
+version: 1
+id: frontend-features-player
+layer: frontend
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /ui/
+    - path contains /components/
+    - path contains /frontend/
+    - path contains /utils/
+    - file extension .tsx
+    - imports react
+    - exports React components
+    - exports route handlers
+files:
+  - frontend/src/features/player/engine/playerEngine.ts
+  - frontend/src/features/player/media/audioEngine.ts
+  - frontend/src/features/player/state/playerStore.ts
+  - frontend/src/features/player/ui/PlayerRoute.tsx
+  - frontend/src/features/player/ui/PlayerRuntime.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/index.ts
+  - frontend/src/features/player/ui/PlayerRuntime/components/NavigationArea.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/NodeContent.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/PlayerOverlay/index.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/PlayerOverlay/OverlayButton.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/PlayerOverlay/OverlayShortcutRow.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/PlayerOverlay/OverlayToggleRow.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/components/SwipeNodeNavigator.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/constants.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/useAudioEngine.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/useLegacyAnimations.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/useLoadAdventureFonts.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/useMediaOverscan.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/usePlayerPreferences.ts
+  - frontend/src/features/player/ui/PlayerRuntime/hooks/useStatsTracking.ts
+  - frontend/src/features/player/ui/PlayerRuntime/index.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/navigation/buildNavigationModel.ts
+  - frontend/src/features/player/ui/PlayerRuntime/navigation/helpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/navigation/types.ts
+  - frontend/src/features/player/ui/PlayerRuntime/StaticPlayerPreview.tsx
+  - frontend/src/features/player/ui/PlayerRuntime/types.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/audioHelpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/contentHelpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/mediaHelpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/menuHelpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/paramHelpers.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/preferences.ts
+  - frontend/src/features/player/ui/PlayerRuntime/utils/propsParser.ts
+  - frontend/src/features/player/ui/ScrollyTracker.tsx
+  - frontend/src/features/player/ui/useViewportDevice.ts
+  - frontend/src/features/player/utils/navigationConditions.ts
+  - frontend/src/features/player/utils/navigationUtils.ts
+  - frontend/src/features/player/utils/nodeUtils.ts
+exports:
+  - isDefault: false
+    name: applyMediaOverscan
+    type: variable
+  - isDefault: false
+    name: AudioDebugSnapshot
+    type: type
+  - isDefault: false
+    name: AudioEngine
+    type: type
+  - isDefault: false
+    name: AudioEnginePlaybackState
+    type: type
+  - isDefault: false
+    name: AudioSourceConfig
+    type: type
+  - isDefault: false
+    name: booleanFromTokens
+    type: variable
+  - isDefault: false
+    name: buildAudioSourceConfig
+    type: variable
+  - isDefault: false
+    name: buildConditionedButtonStyle
+    type: variable
+  - isDefault: false
+    name: buildGraphIndexes
+    type: variable
+  - isDefault: false
+    name: buildLegacyContent
+    type: variable
+  - isDefault: false
+    name: buildLinksBySource
+    type: variable
+  - isDefault: false
+    name: buildNavigationConfig
+    type: variable
+  - isDefault: false
+    name: buildNavigationModel
+    type: variable
+  - isDefault: false
+    name: BuildNavigationModelArgs
+    type: type
+  - isDefault: false
+    name: buildNodeById
+    type: variable
+  - isDefault: false
+    name: clampVolume
+    type: variable
+  - isDefault: false
+    name: ClickDecision
+    type: type
+  - isDefault: false
+    name: coerceSeconds
+    type: variable
+  - isDefault: false
+    name: ConditionedStyle
+    type: type
+  - isDefault: false
+    name: createAudioEngine
+    type: variable
+  - isDefault: false
+    name: createPlayerStore
+    type: variable
+  - isDefault: false
+    name: decideOnClick
+    type: variable
+  - isDefault: false
+    name: decideOnEnterNode
+    type: variable
+  - isDefault: false
+    name: EMPTY_LINKS
+    type: variable
+  - isDefault: false
+    name: EngineContext
+    type: type
+  - isDefault: false
+    name: EngineError
+    type: type
+  - isDefault: false
+    name: EnterNodeDecision
+    type: type
+  - isDefault: false
+    name: getLinkConditionResult
+    type: variable
+  - isDefault: false
+    name: getNavigationLinksForNode
+    type: variable
+  - isDefault: false
+    name: getOutgoingLinksForNode
+    type: variable
+  - isDefault: false
+    name: getRawSubtitlesValue
+    type: variable
+  - isDefault: false
+    name: getVideoAudioSetting
+    type: variable
+  - isDefault: false
+    name: getVideoLoopSetting
+    type: variable
+  - isDefault: false
+    name: isLinkConditioned
+    type: variable
+  - isDefault: false
+    name: isPlainRecord
+    type: variable
+  - isDefault: false
+    name: isVideoUrl
+    type: variable
+  - isDefault: false
+    name: LinkConditionResult
+    type: type
+  - isDefault: false
+    name: MENU_OPTION_VALUES
+    type: variable
+  - isDefault: false
+    name: MenuShortcut
+    type: type
+  - isDefault: false
+    name: MenuShortcutItem
+    type: type
+  - isDefault: false
+    name: NavigationArea
+    type: function
+  - isDefault: false
+    name: NavigationButton
+    type: type
+  - isDefault: false
+    name: NavigationConfig
+    type: type
+  - isDefault: false
+    name: NavigationModel
+    type: type
+  - isDefault: false
+    name: NavigationOverrides
+    type: type
+  - isDefault: false
+    name: NavItem
+    type: type
+  - isDefault: false
+    name: NavPlacement
+    type: type
+  - isDefault: false
+    name: NavStyle
+    type: type
+  - isDefault: false
+    name: NodeContent
+    type: function
+  - isDefault: false
+    name: NodeKind
+    type: type
+  - isDefault: false
+    name: normalizeAudioVolume
+    type: variable
+  - isDefault: false
+    name: normalizeNavStyle
+    type: variable
+  - isDefault: false
+    name: OverlayButton
+    type: function
+  - isDefault: false
+    name: OverlayShortcutRow
+    type: function
+  - isDefault: false
+    name: OverlayToggleRow
+    type: function
+  - isDefault: false
+    name: paramIsTruthy
+    type: variable
+  - isDefault: false
+    name: parsePropsInput
+    type: variable
+  - isDefault: false
+    name: persistPreferences
+    type: variable
+  - isDefault: false
+    name: pickFirstString
+    type: variable
+  - isDefault: false
+    name: PlayerError
+    type: type
+  - isDefault: false
+    name: PlayerMode
+    type: type
+  - isDefault: false
+    name: PlayerOverlay
+    type: function
+  - isDefault: false
+    name: PlayerPreferences
+    type: type
+  - isDefault: false
+    name: PlayerRoute
+    type: function
+  - isDefault: false
+    name: PlayerRuntime
+    type: function
+  - isDefault: false
+    name: PlayerRuntimeProps
+    type: type
+  - isDefault: false
+    name: PlayerStatus
+    type: type
+  - isDefault: false
+    name: PlayerStoreHook
+    type: type
+  - isDefault: false
+    name: preferenceStorageKey
+    type: variable
+  - isDefault: false
+    name: readBooleanParam
+    type: variable
+  - isDefault: false
+    name: readLegacyAnimationSettings
+    type: variable
+  - isDefault: false
+    name: readMenuOptions
+    type: variable
+  - isDefault: false
+    name: readMenuShortcuts
+    type: variable
+  - isDefault: false
+    name: readMenuSoundOverride
+    type: variable
+  - isDefault: false
+    name: readNumberParam
+    type: variable
+  - isDefault: false
+    name: readRawProp
+    type: variable
+  - isDefault: false
+    name: readStoredPreferences
+    type: variable
+  - isDefault: false
+    name: resolveAudioCandidates
+    type: variable
+  - isDefault: false
+    name: resolveConditionedStyle
+    type: variable
+  - isDefault: false
+    name: resolveLinkConditionBehaviorOverride
+    type: variable
+  - isDefault: false
+    name: resolveNavigationLabel
+    type: variable
+  - isDefault: false
+    name: resolveNavigationTargetId
+    type: variable
+  - isDefault: false
+    name: resolveNodeImageUrl
+    type: variable
+  - isDefault: false
+    name: resolveNodeKind
+    type: variable
+  - isDefault: false
+    name: resolveNodeVideoSource
+    type: variable
+  - isDefault: false
+    name: resolveReferenceUrl
+    type: variable
+  - isDefault: false
+    name: resolveSoundParam
+    type: variable
+  - isDefault: false
+    name: resolveSubtitleCandidates
+    type: variable
+  - isDefault: false
+    name: resolveUploadCandidates
+    type: variable
+  - isDefault: false
+    name: resolveVideoSource
+    type: variable
+  - isDefault: false
+    name: ScrollyTracker
+    type: function
+  - isDefault: false
+    name: SearchParamLike
+    type: type
+  - isDefault: false
+    name: selectPlayerAdventure
+    type: variable
+  - isDefault: false
+    name: selectPlayerCurrentNode
+    type: variable
+  - isDefault: false
+    name: selectPlayerCurrentNodeId
+    type: variable
+  - isDefault: false
+    name: selectPlayerCurrentNodeKind
+    type: variable
+  - isDefault: false
+    name: selectPlayerError
+    type: variable
+  - isDefault: false
+    name: selectPlayerHistoryLength
+    type: variable
+  - isDefault: false
+    name: selectPlayerMode
+    type: variable
+  - isDefault: false
+    name: selectPlayerOutgoingLinks
+    type: variable
+  - isDefault: false
+    name: selectPlayerProgress
+    type: variable
+  - isDefault: false
+    name: selectPlayerRootNodeId
+    type: variable
+  - isDefault: false
+    name: selectPlayerStatus
+    type: variable
+  - isDefault: false
+    name: selectPlayerVisitedCount
+    type: variable
+  - isDefault: false
+    name: StaticPlayerPreview
+    type: function
+  - isDefault: false
+    name: StatsDebugState
+    type: type
+  - isDefault: false
+    name: SubtitleStatus
+    type: type
+  - isDefault: false
+    name: SwipeNodeNavigator
+    type: function
+  - isDefault: false
+    name: tokenize
+    type: variable
+  - isDefault: false
+    name: useAudioEngine
+    type: variable
+  - isDefault: false
+    name: useLegacyAnimations
+    type: variable
+  - isDefault: false
+    name: useLoadAdventureFonts
+    type: variable
+  - isDefault: false
+    name: useMediaOverscan
+    type: variable
+  - isDefault: false
+    name: usePlayerPreferences
+    type: variable
+  - isDefault: false
+    name: usePlayerStore
+    type: variable
+  - isDefault: false
+    name: useStatsTracking
+    type: variable
+  - isDefault: false
+    name: useViewportDevice
+    type: variable
+  - isDefault: false
+    name: writeStoredPreferences
+    type: variable
+imports:
+  external:
+    - "@/domain/models"
+    - "@/features/player/engine/playerEngine"
+    - "@/features/player/media/audioEngine"
+    - "@/features/player/utils/navigationConditions"
+    - "@/features/player/utils/navigationUtils"
+    - "@/features/state/api/adventures"
+    - "@/features/state/api/client"
+    - "@/features/ui-core/components/LegacyContent"
+    - "@/features/ui-core/components/PlayerLayout"
+    - "@/features/ui-core/PageShell"
+    - "@/features/ui-core/Panel"
+    - "@/features/ui-core/primitives"
+    - "@/features/ui-core/props"
+    - "@/features/ui-core/toast"
+    - "@/lib/fonts"
+    - "@/lib/utils"
+    - lucide-react
+    - next/navigation
+    - react
+    - zustand
+  internal:
+    - ../../engine/playerEngine
+    - ../../media/audioEngine
+    - ../../state/playerStore
+    - ../../types
+    - ../../utils/navigationUtils
+    - ../../utils/nodeUtils
+    - ../constants
+    - ../engine/playerEngine
+    - ../navigation/types
+    - ../player-legacy-skin.css
+    - ../player-runtime.css
+    - ../ScrollyTracker
+    - ../state/playerStore
+    - ../types
+    - ../useViewportDevice
+    - ../utils/mediaHelpers
+    - ../utils/paramHelpers
+    - ../utils/preferences
+    - ../utils/propsParser
+    - ./audioHelpers
+    - ./components
+    - ./constants
+    - ./helpers
+    - ./hooks/useAudioEngine
+    - ./hooks/useLegacyAnimations
+    - ./hooks/useLoadAdventureFonts
+    - ./hooks/useMediaOverscan
+    - ./hooks/usePlayerPreferences
+    - ./hooks/useStatsTracking
+    - ./mediaHelpers
+    - ./navigation/buildNavigationModel
+    - ./navigation/helpers
+    - ./navigation/types
+    - ./OverlayButton
+    - ./OverlayShortcutRow
+    - ./OverlayToggleRow
+    - ./PlayerRuntime
+    - ./propsParser
+    - ./types
+    - ./utils/audioHelpers
+    - ./utils/contentHelpers
+    - ./utils/mediaHelpers
+    - ./utils/menuHelpers
+    - ./utils/paramHelpers
+    - ./utils/propsParser
+compositionHash: 15696efc5ea74d26
+metadata:
+  createdAt: 2026-01-07T11:21:50.029Z
+  updatedAt: 2026-01-07T11:22:03.942Z

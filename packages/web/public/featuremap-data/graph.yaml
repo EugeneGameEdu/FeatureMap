@@ -1,203 +1,406 @@
 version: 1
-generatedAt: 2026-01-06T22:36:09.236Z
+generatedAt: 2026-01-07T12:01:06.083Z
 nodes:
-  - fileCount: 15
-    id: cli-analyzer
-    label: Cli Analyzer
-    type: cluster
-  - fileCount: 6
-    id: cli-commands
-    label: Cli Commands
+  - fileCount: 1
+    id: backend-cmd
+    label: Backend Cmd
     type: cluster
   - fileCount: 1
-    id: cli-constants
-    label: Cli Constants
-    type: cluster
-  - fileCount: 1
-    id: cli-core
-    label: Cli Core
-    type: cluster
-  - fileCount: 1
-    id: cli-scripts
-    label: Cli Scripts
-    type: cluster
-  - fileCount: 5
-    id: cli-server
-    label: Cli Server
+    id: backend-cmd-jwt
+    label: Backend Cmd Jwt
     type: cluster
   - fileCount: 2
-    id: cli-server-routes
-    label: Cli Server Routes
+    id: backend-cmd-server
+    label: Backend Cmd Server
+    type: cluster
+  - fileCount: 1
+    id: backend-cmd-unsplash
+    label: Backend Cmd Unsplash
+    type: cluster
+  - fileCount: 10
+    id: backend-controllers-api
+    label: Backend Controllers Api
+    type: cluster
+  - fileCount: 4
+    id: backend-controllers-socket
+    label: Backend Controllers Socket
+    type: cluster
+  - fileCount: 6
+    id: backend-controllers-web
+    label: Backend Controllers Web
+    type: cluster
+  - fileCount: 1
+    id: backend-helpers-imgur
+    label: Backend Helpers Imgur
+    type: cluster
+  - fileCount: 1
+    id: backend-helpers-jwt
+    label: Backend Helpers Jwt
+    type: cluster
+  - fileCount: 1
+    id: backend-helpers-timeago
+    label: Backend Helpers Timeago
+    type: cluster
+  - fileCount: 1
+    id: backend-helpers-uniuri
+    label: Backend Helpers Uniuri
+    type: cluster
+  - fileCount: 2
+    id: backend-helpers-unsplash
+    label: Backend Helpers Unsplash
+    type: cluster
+  - fileCount: 9
+    id: backend-models
+    label: Backend Models
+    type: cluster
+  - fileCount: 1
+    id: backend-router
+    label: Backend Router
+    type: cluster
+  - fileCount: 1
+    id: backend-services-imagebank
+    label: Backend Services Imagebank
+    type: cluster
+  - fileCount: 1
+    id: backend-store
+    label: Backend Store
     type: cluster
   - fileCount: 11
-    id: cli-types
-    label: Cli Types
-    type: cluster
-  - fileCount: 10
-    id: cli-utils
-    label: Cli Utils
-    type: cluster
-  - fileCount: 1
-    id: mcp-server-core
-    label: Mcp Server Core
-    type: cluster
-  - fileCount: 12
-    id: mcp-server-tools
-    label: Mcp Server Tools
+    id: backend-store-sqlstore
+    label: Backend Store Sqlstore
     type: cluster
   - fileCount: 3
-    id: mcp-server-types
-    label: Mcp Server Types
+    id: frontend-app
+    label: Frontend App
     type: cluster
-  - fileCount: 12
-    id: mcp-server-utils
-    label: Mcp Server Utils
+  - fileCount: 3
+    id: frontend-app-(public)
+    label: Frontend App (public)
     type: cluster
-  - fileCount: 10
-    id: web-components
-    label: Web Components
-    type: cluster
-  - fileCount: 6
-    id: web-components-ui
-    label: Web Components Ui
+  - fileCount: 3
+    id: frontend-app-redigera
+    label: Frontend App Redigera
     type: cluster
   - fileCount: 2
-    id: web-core
-    label: Web Core
+    id: frontend-app-spela
+    label: Frontend App Spela
     type: cluster
-  - fileCount: 26
-    id: web-lib
-    label: Web Lib
+  - fileCount: 1
+    id: frontend-app-testa
+    label: Frontend App Testa
     type: cluster
-  - id: cli-command-interface
-    label: Command Line Tools
+  - fileCount: 4
+    id: frontend-dev
+    label: Frontend Dev
+    type: cluster
+  - fileCount: 3
+    id: frontend-domain
+    label: Frontend Domain
+    type: cluster
+  - fileCount: 65
+    id: frontend-features-editor
+    label: Frontend Features Editor
+    type: cluster
+  - fileCount: 1
+    id: frontend-features-media
+    label: Frontend Features Media
+    type: cluster
+  - fileCount: 38
+    id: frontend-features-player
+    label: Frontend Features Player
+    type: cluster
+  - fileCount: 6
+    id: frontend-features-state
+    label: Frontend Features State
+    type: cluster
+  - fileCount: 20
+    id: frontend-features-ui-core
+    label: Frontend Features Ui Core
+    type: cluster
+  - fileCount: 3
+    id: frontend-lib
+    label: Frontend Lib
+    type: cluster
+  - id: backend-api
+    label: Server Requests (API)
     type: feature
-    fileCount: 7
-  - id: cli-demo-scripts
-    label: Demo Scripts
+    fileCount: 11
+  - id: backend-auth
+    label: Sign-in & Access
     type: feature
     fileCount: 1
-  - id: code-analysis-engine
-    label: Code Reader
+  - id: backend-data-models
+    label: Data Models
     type: feature
-    fileCount: 37
-  - id: featuremap-serve-server
-    label: Serve Web Server
+    fileCount: 10
+  - id: backend-entrypoints
+    label: Server Startup & Tools
     type: feature
-    fileCount: 7
-  - id: mcp-server
-    label: AI Bridge Server
+    fileCount: 5
+  - id: backend-media-integrations
+    label: External Media Services
     type: feature
-    fileCount: 28
-  - id: web-featuremap-viewer
-    label: Project Map Viewer
+    fileCount: 4
+  - id: backend-realtime
+    label: Live Connections
     type: feature
-    fileCount: 44
+    fileCount: 4
+  - id: backend-storage-sql
+    label: Database Storage
+    type: feature
+    fileCount: 11
+  - id: backend-utilities
+    label: Server Utilities
+    type: feature
+    fileCount: 2
+  - id: backend-web
+    label: Server-rendered Pages
+    type: feature
+    fileCount: 6
+  - id: frontend-data-domain
+    label: Data & Server Communication
+    type: feature
+    fileCount: 9
+  - id: frontend-dev-tools
+    label: Internal Checks
+    type: feature
+    fileCount: 4
+  - id: frontend-editor
+    label: Adventure Editor
+    type: feature
+    fileCount: 68
+  - id: frontend-media
+    label: Media Library
+    type: feature
+    fileCount: 1
+  - id: frontend-player
+    label: Adventure Player
+    type: feature
+    fileCount: 41
+  - id: frontend-public-site
+    label: Public Website
+    type: feature
+    fileCount: 6
+  - id: frontend-ui-kit
+    label: Shared UI Components
+    type: feature
+    fileCount: 23
 edges:
-  - source: cli-analyzer
-    target: cli-constants
-  - source: cli-analyzer
-    target: cli-types
-  - source: cli-analyzer
-    target: cli-utils
-  - source: cli-commands
-    target: cli-analyzer
-  - source: cli-commands
-    target: cli-constants
-  - source: cli-commands
-    target: cli-server
-  - source: cli-commands
-    target: cli-types
-  - source: cli-commands
-    target: cli-utils
-  - source: cli-core
-    target: cli-commands
-  - source: cli-scripts
-    target: cli-types
-  - source: cli-scripts
-    target: cli-utils
-  - source: cli-server
-    target: cli-constants
-  - source: cli-server
-    target: cli-server-routes
-  - source: cli-server
-    target: cli-types
-  - source: cli-server
-    target: cli-utils
-  - source: cli-server-routes
-    target: cli-server
-  - source: cli-server-routes
-    target: cli-types
-  - source: cli-server-routes
-    target: cli-utils
-  - source: cli-utils
-    target: cli-analyzer
-  - source: cli-utils
-    target: cli-constants
-  - source: cli-utils
-    target: cli-types
-  - source: mcp-server-core
-    target: mcp-server-tools
-  - source: mcp-server-tools
-    target: mcp-server-types
-  - source: mcp-server-tools
-    target: mcp-server-utils
-  - source: mcp-server-utils
-    target: mcp-server-types
-  - source: cli-command-interface
-    target: cli-commands
+  - source: backend-cmd
+    target: backend-controllers-api
+  - source: backend-cmd
+    target: backend-store
+  - source: backend-cmd
+    target: backend-store-sqlstore
+  - source: backend-cmd-jwt
+    target: backend-helpers-jwt
+  - source: backend-cmd-jwt
+    target: backend-store-sqlstore
+  - source: backend-cmd-server
+    target: backend-router
+  - source: backend-cmd-server
+    target: backend-services-imagebank
+  - source: backend-cmd-server
+    target: backend-store-sqlstore
+  - source: backend-cmd-unsplash
+    target: backend-services-imagebank
+  - source: backend-cmd-unsplash
+    target: backend-store-sqlstore
+  - source: backend-controllers-api
+    target: backend-controllers-web
+  - source: backend-controllers-api
+    target: backend-helpers-jwt
+  - source: backend-controllers-api
+    target: backend-helpers-unsplash
+  - source: backend-controllers-api
+    target: backend-models
+  - source: backend-controllers-api
+    target: backend-store
+  - source: backend-controllers-socket
+    target: backend-helpers-uniuri
+  - source: backend-controllers-socket
+    target: backend-store
+  - source: backend-controllers-web
+    target: backend-models
+  - source: backend-controllers-web
+    target: backend-store
+  - source: backend-models
+    target: backend-helpers-timeago
+  - source: backend-router
+    target: backend-controllers-api
+  - source: backend-router
+    target: backend-controllers-socket
+  - source: backend-router
+    target: backend-controllers-web
+  - source: backend-router
+    target: backend-helpers-jwt
+  - source: backend-router
+    target: backend-store
+  - source: backend-services-imagebank
+    target: backend-helpers-unsplash
+  - source: backend-services-imagebank
+    target: backend-models
+  - source: backend-services-imagebank
+    target: backend-store
+  - source: backend-store
+    target: backend-models
+  - source: backend-store-sqlstore
+    target: backend-helpers-uniuri
+  - source: backend-store-sqlstore
+    target: backend-models
+  - source: frontend-dev
+    target: frontend-domain
+  - source: frontend-dev
+    target: frontend-features-editor
+  - source: frontend-dev
+    target: frontend-features-player
+  - source: backend-api
+    target: backend-controllers-api
     type: contains
-  - source: cli-command-interface
-    target: cli-core
+  - source: backend-api
+    target: backend-router
     type: contains
-  - source: cli-demo-scripts
-    target: cli-scripts
+  - source: backend-auth
+    target: backend-helpers-jwt
     type: contains
-  - source: code-analysis-engine
-    target: cli-analyzer
+  - source: backend-data-models
+    target: backend-models
     type: contains
-  - source: code-analysis-engine
-    target: cli-constants
+  - source: backend-data-models
+    target: backend-store
     type: contains
-  - source: code-analysis-engine
-    target: cli-types
+  - source: backend-entrypoints
+    target: backend-cmd
     type: contains
-  - source: code-analysis-engine
-    target: cli-utils
+  - source: backend-entrypoints
+    target: backend-cmd-jwt
     type: contains
-  - source: featuremap-serve-server
-    target: cli-server
+  - source: backend-entrypoints
+    target: backend-cmd-server
     type: contains
-  - source: featuremap-serve-server
-    target: cli-server-routes
+  - source: backend-entrypoints
+    target: backend-cmd-unsplash
     type: contains
-  - source: mcp-server
-    target: mcp-server-core
+  - source: backend-media-integrations
+    target: backend-helpers-imgur
     type: contains
-  - source: mcp-server
-    target: mcp-server-tools
+  - source: backend-media-integrations
+    target: backend-helpers-unsplash
     type: contains
-  - source: mcp-server
-    target: mcp-server-types
+  - source: backend-media-integrations
+    target: backend-services-imagebank
     type: contains
-  - source: mcp-server
-    target: mcp-server-utils
+  - source: backend-realtime
+    target: backend-controllers-socket
     type: contains
-  - source: web-featuremap-viewer
-    target: web-components
+  - source: backend-storage-sql
+    target: backend-store-sqlstore
     type: contains
-  - source: web-featuremap-viewer
-    target: web-components-ui
+  - source: backend-utilities
+    target: backend-helpers-timeago
     type: contains
-  - source: web-featuremap-viewer
-    target: web-core
+  - source: backend-utilities
+    target: backend-helpers-uniuri
     type: contains
-  - source: web-featuremap-viewer
-    target: web-lib
+  - source: backend-web
+    target: backend-controllers-web
     type: contains
-  - source: cli-command-interface
-    target: code-analysis-engine
+  - source: frontend-data-domain
+    target: frontend-domain
+    type: contains
+  - source: frontend-data-domain
+    target: frontend-features-state
+    type: contains
+  - source: frontend-dev-tools
+    target: frontend-dev
+    type: contains
+  - source: frontend-editor
+    target: frontend-app-redigera
+    type: contains
+  - source: frontend-editor
+    target: frontend-features-editor
+    type: contains
+  - source: frontend-media
+    target: frontend-features-media
+    type: contains
+  - source: frontend-player
+    target: frontend-app-spela
+    type: contains
+  - source: frontend-player
+    target: frontend-app-testa
+    type: contains
+  - source: frontend-player
+    target: frontend-features-player
+    type: contains
+  - source: frontend-public-site
+    target: frontend-app
+    type: contains
+  - source: frontend-public-site
+    target: frontend-app-(public)
+    type: contains
+  - source: frontend-ui-kit
+    target: frontend-features-ui-core
+    type: contains
+  - source: frontend-ui-kit
+    target: frontend-lib
+    type: contains
+  - source: backend-api
+    target: backend-auth
     type: feature_dep
-  - source: cli-demo-scripts
-    target: code-analysis-engine
+  - source: backend-api
+    target: backend-data-models
+    type: feature_dep
+  - source: backend-api
+    target: backend-media-integrations
+    type: feature_dep
+  - source: backend-api
+    target: backend-realtime
+    type: feature_dep
+  - source: backend-api
+    target: backend-web
+    type: feature_dep
+  - source: backend-data-models
+    target: backend-utilities
+    type: feature_dep
+  - source: backend-entrypoints
+    target: backend-api
+    type: feature_dep
+  - source: backend-entrypoints
+    target: backend-auth
+    type: feature_dep
+  - source: backend-entrypoints
+    target: backend-data-models
+    type: feature_dep
+  - source: backend-entrypoints
+    target: backend-media-integrations
+    type: feature_dep
+  - source: backend-entrypoints
+    target: backend-storage-sql
+    type: feature_dep
+  - source: backend-media-integrations
+    target: backend-data-models
+    type: feature_dep
+  - source: backend-realtime
+    target: backend-data-models
+    type: feature_dep
+  - source: backend-realtime
+    target: backend-utilities
+    type: feature_dep
+  - source: backend-storage-sql
+    target: backend-data-models
+    type: feature_dep
+  - source: backend-storage-sql
+    target: backend-utilities
+    type: feature_dep
+  - source: backend-web
+    target: backend-data-models
+    type: feature_dep
+  - source: frontend-dev-tools
+    target: frontend-data-domain
+    type: feature_dep
+  - source: frontend-dev-tools
+    target: frontend-editor
+    type: feature_dep
+  - source: frontend-dev-tools
+    target: frontend-player
     type: feature_dep
