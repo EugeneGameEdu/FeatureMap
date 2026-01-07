@@ -1,6 +1,7 @@
 import * as http from 'http';
 import type { Server } from 'http';
 import express from 'express';
+import * as path from 'path';
 import { createContextUpdateHandler } from './routes/contextUpdate.js';
 import { createCommentsRouter } from './routes/commentsRoutes.js';
 import { createGroupRouter } from './routes/groupRoutes.js';
@@ -69,6 +70,7 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
     })
   );
   app.use('/api', apiRouter);
+  app.use('/featuremap-data', express.static(path.join(options.projectRoot, '.featuremap')));
 
   const webHosting = await setupWebHosting(app, {
     projectRoot: options.projectRoot,

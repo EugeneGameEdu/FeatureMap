@@ -21,7 +21,7 @@ export function findWebPackagePath(): string | null {
     // ignore
   }
 
-  const nodeModulesPath = path.resolve(process.cwd(), 'node_modules', '@featuremap', 'web');
+  const nodeModulesPath = path.resolve(__dirname, '..', '..', 'node_modules', '@featuremap', 'web');
   if (fs.existsSync(path.join(nodeModulesPath, 'package.json'))) {
     return nodeModulesPath;
   }

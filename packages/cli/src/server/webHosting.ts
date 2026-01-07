@@ -3,6 +3,7 @@ import express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 
 interface WebHostingOptions {
   projectRoot: string;
@@ -46,23 +47,25 @@ export async function setupWebHosting(
   return { close: async () => undefined };
 }
 
-function resolveWebRoot(projectRoot: string): string | null {
-  const workspacePath = path.resolve(projectRoot, 'packages', 'web');
+function resolveWebRoot(_projectRoot: string): string | null {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const cliRoot = path.resolve(__dirname, '..', '..');
+
+  const workspacePath = path.resolve(cliRoot, '..', 'web');
   if (fs.existsSync(path.join(workspacePath, 'package.json'))) {
     return workspacePath;
   }
 
   try {
     const require = createRequire(import.meta.url);
-    const resolved = require.resolve('@featuremap/web/package.json', {
-      paths: [projectRoot],
-    });
+    const resolved = require.resolve('@featuremap/web/package.json');
     return path.dirname(resolved);
   } catch {
     // ignore
   }
 
-  const nodeModulesPath = path.resolve(projectRoot, 'node_modules', '@featuremap', 'web');
+  const nodeModulesPath = path.resolve(cliRoot, 'node_modules', '@featuremap', 'web');
   if (fs.existsSync(path.join(nodeModulesPath, 'package.json'))) {
     return nodeModulesPath;
   }
