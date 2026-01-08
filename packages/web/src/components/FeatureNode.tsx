@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { Handle, Position, type Node, type NodeProps } from '@xyflow/react';
 import { Box, Folder, Layers } from 'lucide-react';
 import type { Layer } from '@/lib/types';
 
-export interface FeatureNodeData {
+export interface FeatureNodeData extends Record<string, unknown> {
   label: string;
   kind: 'cluster' | 'feature';
   fileCount: number;
@@ -15,9 +15,10 @@ export interface FeatureNodeData {
   isFocused?: boolean;
 }
 
-function FeatureNodeComponent({ data, selected }: NodeProps) {
-  const { label, kind, fileCount, source, status, dependencyCount, isFocused } =
-    data as unknown as FeatureNodeData;
+export type FeatureFlowNode = Node<FeatureNodeData, 'feature' | 'cluster'>;
+
+function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
+  const { label, kind, fileCount, source, status, dependencyCount, isFocused } = data;
 
   const Icon = fileCount > 5 ? Layers : fileCount > 1 ? Folder : Box;
 

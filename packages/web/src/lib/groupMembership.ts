@@ -80,13 +80,15 @@ export function buildGroupMembers(
       ? normalizeStringList(group.featureIds)
       : normalizeStringList(getClusterIdsForGroup(group, entities));
 
-  const members = memberIds.map((id) => {
+  const members: GroupMember[] = memberIds.map((id) => {
     const entity = entities[id];
     if (!entity) {
-      return { id, label: id, kind: viewMode === 'features' ? 'feature' : 'cluster', missing: true };
+      const kind: GroupMember['kind'] = viewMode === 'features' ? 'feature' : 'cluster';
+      return { id, label: id, kind, missing: true };
     }
     const label = entity.kind === 'feature' ? entity.data.name : entity.label;
-    return { id, label, kind: entity.kind };
+    const kind: GroupMember['kind'] = entity.kind;
+    return { id, label, kind };
   });
 
   return members.sort((a, b) => {

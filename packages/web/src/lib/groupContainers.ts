@@ -5,7 +5,7 @@ import { buildGroupRectangles, GROUP_HEADER_HEIGHT } from './groupPacking';
 export const GROUP_CONTAINER_NODE_TYPE = 'group_container';
 export const GROUP_CONTAINER_ID_PREFIX = 'group-container:';
 
-export interface GroupContainerData {
+export interface GroupContainerData extends Record<string, unknown> {
   groupId: string;
   name: string;
   description?: string;
@@ -15,6 +15,8 @@ export interface GroupContainerData {
   isSelected: boolean;
   onSelectGroup?: (groupId: string) => void;
 }
+
+export type GroupContainerNode = Node<GroupContainerData, typeof GROUP_CONTAINER_NODE_TYPE>;
 
 interface BuildGroupContainerNodesInput {
   visibleNodes: Node[];
@@ -32,10 +34,10 @@ export function buildGroupContainerNodes({
   padding,
   selectedGroupId,
   onSelectGroup,
-}: BuildGroupContainerNodesInput): Array<Node<GroupContainerData>> {
+}: BuildGroupContainerNodesInput): GroupContainerNode[] {
   const nodesById = new Map(visibleNodes.map((node) => [node.id, node]));
   const rectangles = buildGroupRectangles({ nodesById, groups, membership, padding });
-  const containerNodes: Array<Node<GroupContainerData>> = [];
+  const containerNodes: GroupContainerNode[] = [];
 
   for (const rect of rectangles) {
     const group = groups.find((entry) => entry.id === rect.id);

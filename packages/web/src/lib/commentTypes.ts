@@ -35,7 +35,7 @@ export interface CommentIndex {
   comments: string[];
 }
 
-export interface CommentNodeData {
+export interface CommentNodeData extends Record<string, unknown> {
   id: string;
   content: string;
   isDraft: boolean;

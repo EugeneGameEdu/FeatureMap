@@ -66,7 +66,6 @@ export function applyGroupDragChanges(
     return {
       ...node,
       position: nextPosition,
-      ...(node.positionAbsolute ? { positionAbsolute: nextPosition } : {}),
     };
   });
 }
@@ -85,7 +84,7 @@ export function collectMemberPositions(
     if (node.type !== 'feature' && node.type !== 'cluster') {
       continue;
     }
-    const position = node.positionAbsolute ?? node.position;
+    const position = node.position;
     positions[node.id] = { x: position.x, y: position.y };
   }
 

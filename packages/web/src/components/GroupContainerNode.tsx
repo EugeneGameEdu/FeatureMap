@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import type { NodeProps } from '@xyflow/react';
-import type { GroupContainerData } from '@/lib/groupContainers';
+import type { GroupContainerNode as GroupContainerFlowNode } from '@/lib/groupContainers';
 
-function GroupContainerNodeComponent({ data }: NodeProps<GroupContainerData>) {
+function GroupContainerNodeComponent({ data }: NodeProps<GroupContainerFlowNode>) {
   const { groupId, name, description, note, headerHeight, noteHeight, isSelected, onSelectGroup } =
     data;
   const hasNote = Boolean(note);

@@ -109,17 +109,18 @@ export function useCommentPersistence({
         const resolvedPinned = saved.pinned ?? override.pinned ?? comment.pinned ?? false;
         setComments((prev) => {
           const withoutOld = prev.filter((entry) => entry.id !== comment.id);
+          const next: UiComment = {
+            ...saved,
+            pinned: resolvedPinned,
+            status: 'saved',
+            isDirty: false,
+            isEditing: false,
+            saveError: null,
+            saveState: 'saved',
+          };
           return [
             ...withoutOld,
-            {
-              ...saved,
-              pinned: resolvedPinned,
-              status: 'saved',
-              isDirty: false,
-              isEditing: false,
-              saveError: null,
-              saveState: 'saved',
-            },
+            next,
           ].sort((a, b) => a.id.localeCompare(b.id));
         });
         setSaveState(saved.id, 'saved');

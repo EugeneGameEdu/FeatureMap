@@ -1,9 +1,11 @@
 import { memo, useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { Handle, Position, type Node, type NodeProps } from '@xyflow/react';
 import { Pin, PinOff } from 'lucide-react';
 import type { CommentNodeData } from '@/lib/commentTypes';
 
-function CommentNodeComponent({ data, selected }: NodeProps) {
+export type CommentFlowNode = Node<CommentNodeData, 'comment'>;
+
+function CommentNodeComponent({ data, selected }: NodeProps<CommentFlowNode>) {
   const {
     content,
     isDraft,
@@ -16,7 +18,7 @@ function CommentNodeComponent({ data, selected }: NodeProps) {
     onCommitEdit,
     onCancelEdit,
     onTogglePin,
-  } = data as CommentNodeData;
+  } = data;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const skipCommitRef = useRef(false);
   const [draftValue, setDraftValue] = useState(content);

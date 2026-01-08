@@ -98,7 +98,7 @@ function resolveBounds(nodes: Node[]): { minX: number; minY: number; maxX: numbe
   for (const node of nodes) {
     const width = resolveNodeWidth(node);
     const height = resolveNodeHeight(node);
-    const position = node.positionAbsolute ?? node.position;
+    const position = node.position;
     const left = position.x;
     const top = position.y;
     const right = left + width;

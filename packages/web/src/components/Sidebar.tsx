@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { GroupDetailsPanel } from '@/components/GroupDetailsPanel';
-import type { FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
+import type { Cluster, FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
 import type { GroupMember } from '@/lib/groupMembership';
@@ -61,7 +61,18 @@ export function Sidebar({
     row?.scrollIntoView({ block: 'center' });
   }, [focusedFilePath, node]);
 
-  if (!node && !group) {
+  if (group) {
+    return (
+      <GroupDetailsPanel
+        group={group}
+        groupMembers={groupMembers}
+        viewMode={viewMode}
+        onClose={onClose}
+        onGroupUpdated={onGroupUpdated}
+      />
+    );
+  }
+  if (!node) {
     return (
       <div className="w-[350px] border-l bg-white flex flex-col">
         <div className="p-4 border-b">
@@ -75,22 +86,21 @@ export function Sidebar({
       </div>
     );
   }
-  if (group) {
-    return (
-      <GroupDetailsPanel
-        group={group}
-        groupMembers={groupMembers}
-        viewMode={viewMode}
-        onClose={onClose}
-        onGroupUpdated={onGroupUpdated}
-      />
-    );
+
+  let featureData: FeatureDetails | undefined;
+  let clusterData: Cluster | undefined;
+
+  if (isFeatureEntity(node)) {
+    featureData = node.data;
+  } else {
+    clusterData = node.data;
   }
-  const isFeature = node.kind === 'feature';
-  const title = isFeature ? node.data.name : node.label;
-  const description = isFeature ? node.data.description ?? node.data.purpose : node.data.purpose_hint;
-  const featureSource = isFeature ? resolveFeatureSource(node.data) : 'auto';
-  const featureGroups = isFeature ? getGroupsForFeature(groups, node.data.id) : [];
+  const title = featureData ? featureData.name : node.label;
+  const description = featureData
+    ? featureData.description ?? featureData.purpose
+    : clusterData?.purpose_hint;
+  const featureSource = featureData ? resolveFeatureSource(featureData) : 'auto';
+  const featureGroups = featureData ? getGroupsForFeature(groups, featureData.id) : [];
 
   return (
     <div className="w-[350px] border-l bg-white flex flex-col">
@@ -99,19 +109,19 @@ export function Sidebar({
           <div className="flex-1 pr-2">
             <h2 className="font-semibold text-gray-900">{title}</h2>
             <div className="flex gap-2 mt-2">
-              {isFeature ? (
+              {featureData ? (
                 <>
                   <Badge variant="outline" className={sourceColors[featureSource]}>
                     {featureSource}
                   </Badge>
-                  <Badge variant="outline" className={statusColors[node.data.status]}>
-                    {node.data.status}
+                  <Badge variant="outline" className={statusColors[featureData.status]}>
+                    {featureData.status}
                   </Badge>
                 </>
               ) : (
                 <>
-                  <Badge variant="outline" className={layerColors[node.data.layer]}>
-                    {node.data.layer}
+                  <Badge variant="outline" className={layerColors[clusterData?.layer ?? 'shared']}>
+                    {clusterData?.layer ?? 'shared'}
                   </Badge>
                   <Badge variant="outline">cluster</Badge>
                 </>
@@ -138,14 +148,14 @@ export function Sidebar({
             </section>
           )}
 
-          {isFeature ? (
+          {featureData ? (
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <Layers size={16} />
-                Clusters ({node.data.clustersDetailed.length})
+                Clusters ({featureData.clustersDetailed.length})
               </h3>
               <div className="space-y-2">
-                {node.data.clustersDetailed.map((cluster) => (
+                {featureData.clustersDetailed.map((cluster) => (
                   <div
                     key={cluster.id}
                     className="rounded border border-gray-100 bg-gray-50 px-2 py-2"
@@ -185,10 +195,10 @@ export function Sidebar({
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <FileCode size={16} />
-                Files ({node.data.files.length})
+                Files ({clusterData?.files.length ?? 0})
               </h3>
               <div className="space-y-1">
-                {node.data.files.map((file, index) => (
+                {(clusterData?.files ?? []).map((file, index) => (
                   <div
                     key={index}
                     ref={(element) => fileRowRefs.current.set(file, element)}
@@ -204,7 +214,7 @@ export function Sidebar({
             </section>
           )}
 
-          {isFeature && featureGroups.length > 0 && (
+          {featureData && featureGroups.length > 0 && (
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <Layers size={16} />
@@ -220,14 +230,14 @@ export function Sidebar({
             </section>
           )}
 
-          {!isFeature && node.data.exports.length > 0 && (
+          {!featureData && (clusterData?.exports.length ?? 0) > 0 && (
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <Tag size={16} />
-                Exports ({node.data.exports.length})
+                Exports ({clusterData?.exports.length ?? 0})
               </h3>
               <div className="flex flex-wrap gap-1">
-                {node.data.exports.map((exp, index) => (
+                {(clusterData?.exports ?? []).map((exp, index) => (
                   <Badge key={`${exp.name}-${index}`} variant="secondary" className="font-mono text-xs">
                     {exp.name}
                   </Badge>
@@ -236,14 +246,14 @@ export function Sidebar({
             </section>
           )}
 
-          {isFeature && node.data.dependsOn && node.data.dependsOn.length > 0 && (
+          {featureData && featureData.dependsOn && featureData.dependsOn.length > 0 && (
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <ArrowRight size={16} />
-                Depends On ({node.data.dependsOn.length})
+                Depends On ({featureData.dependsOn.length})
               </h3>
               <div className="space-y-1">
-                {node.data.dependsOn.map((dep) => (
+                {featureData.dependsOn.map((dep) => (
                   <button
                     key={dep}
                     onClick={() => onDependencyClick?.(dep)}
@@ -257,14 +267,14 @@ export function Sidebar({
             </section>
           )}
 
-          {!isFeature && node.data.imports.external.length > 0 && (
+          {!featureData && (clusterData?.imports.external.length ?? 0) > 0 && (
             <section>
               <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
                 <ArrowRight size={16} />
-                External Imports ({node.data.imports.external.length})
+                External Imports ({clusterData?.imports.external.length ?? 0})
               </h3>
               <div className="flex flex-wrap gap-1">
-                {node.data.imports.external.map((imp) => (
+                {(clusterData?.imports.external ?? []).map((imp) => (
                   <Badge key={imp} variant="secondary" className="font-mono text-xs">
                     {imp}
                   </Badge>
@@ -296,4 +306,8 @@ function resolveFeatureSource(feature: FeatureDetails): 'auto' | 'ai' | 'user' {
   }
 
   return feature.source === 'user' ? 'user' : 'auto';
+}
+
+function isFeatureEntity(entity: MapEntity): entity is Extract<MapEntity, { kind: 'feature' }> {
+  return entity.kind === 'feature';
 }

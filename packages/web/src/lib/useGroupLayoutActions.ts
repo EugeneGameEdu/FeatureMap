@@ -147,7 +147,7 @@ function buildNodePositionUpdates(
       if (!node) {
         continue;
       }
-      const basePosition = node.positionAbsolute ?? node.position;
+      const basePosition = node.position;
       updates[memberId] = {
         x: basePosition.x + deltaX,
         y: basePosition.y + deltaY,
