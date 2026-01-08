@@ -77,6 +77,22 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
       res.sendFile(indexPath);
       return;
     }
+    const groupsDir = path.join(options.projectRoot, '.featuremap', 'groups');
+    if (fs.existsSync(groupsDir)) {
+      const files = fs
+        .readdirSync(groupsDir)
+        .filter((file) => file.endsWith('.yaml') && file !== 'index.yaml');
+      const groupIds = files
+        .map((file) => path.basename(file, '.yaml'))
+        .sort((a, b) => a.localeCompare(b));
+      if (groupIds.length > 0) {
+        const yaml = `version: 1\ngroups:\n${groupIds
+          .map((id) => `  - ${id}`)
+          .join('\n')}\n`;
+        res.type('text/yaml').send(yaml);
+        return;
+      }
+    }
     res.type('text/yaml').send('version: 1\ngroups: []\n');
   });
   app.get('/featuremap-data/comments/index.yaml', (_req, res) => {
@@ -84,6 +100,22 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
       return;
+    }
+    const commentsDir = path.join(options.projectRoot, '.featuremap', 'comments');
+    if (fs.existsSync(commentsDir)) {
+      const files = fs
+        .readdirSync(commentsDir)
+        .filter((file) => file.endsWith('.yaml') && file !== 'index.yaml');
+      const commentIds = files
+        .map((file) => path.basename(file, '.yaml'))
+        .sort((a, b) => a.localeCompare(b));
+      if (commentIds.length > 0) {
+        const yaml = `version: 1\ncomments:\n${commentIds
+          .map((id) => `  - ${id}`)
+          .join('\n')}\n`;
+        res.type('text/yaml').send(yaml);
+        return;
+      }
     }
     res.type('text/yaml').send('version: 1\ncomments: []\n');
   });
