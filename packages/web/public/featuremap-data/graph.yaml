@@ -1,787 +1,203 @@
 version: 1
-generatedAt: 2026-01-07T16:20:04.410Z
+generatedAt: 2026-01-06T22:36:09.236Z
 nodes:
-  - fileCount: 1
-    id: backend-cmd
-    label: Backend Cmd
-    type: cluster
-  - fileCount: 1
-    id: backend-cmd-jwt
-    label: Backend Cmd Jwt
-    type: cluster
-  - fileCount: 2
-    id: backend-cmd-server
-    label: Backend Cmd Server
-    type: cluster
-  - fileCount: 1
-    id: backend-cmd-unsplash
-    label: Backend Cmd Unsplash
-    type: cluster
-  - fileCount: 10
-    id: backend-controllers-api
-    label: Backend Controllers Api
-    type: cluster
-  - fileCount: 4
-    id: backend-controllers-socket
-    label: Backend Controllers Socket
+  - fileCount: 15
+    id: cli-analyzer
+    label: Cli Analyzer
     type: cluster
   - fileCount: 6
-    id: backend-controllers-web
-    label: Backend Controllers Web
+    id: cli-commands
+    label: Cli Commands
     type: cluster
   - fileCount: 1
-    id: backend-helpers-imgur
-    label: Backend Helpers Imgur
+    id: cli-constants
+    label: Cli Constants
     type: cluster
   - fileCount: 1
-    id: backend-helpers-jwt
-    label: Backend Helpers Jwt
+    id: cli-core
+    label: Cli Core
     type: cluster
   - fileCount: 1
-    id: backend-helpers-timeago
-    label: Backend Helpers Timeago
+    id: cli-scripts
+    label: Cli Scripts
     type: cluster
-  - fileCount: 1
-    id: backend-helpers-uniuri
-    label: Backend Helpers Uniuri
+  - fileCount: 5
+    id: cli-server
+    label: Cli Server
     type: cluster
   - fileCount: 2
-    id: backend-helpers-unsplash
-    label: Backend Helpers Unsplash
-    type: cluster
-  - fileCount: 9
-    id: backend-models
-    label: Backend Models
-    type: cluster
-  - fileCount: 1
-    id: backend-router
-    label: Backend Router
-    type: cluster
-  - fileCount: 1
-    id: backend-services-imagebank
-    label: Backend Services Imagebank
-    type: cluster
-  - fileCount: 1
-    id: backend-store
-    label: Backend Store
+    id: cli-server-routes
+    label: Cli Server Routes
     type: cluster
   - fileCount: 11
-    id: backend-store-sqlstore
-    label: Backend Store Sqlstore
+    id: cli-types
+    label: Cli Types
     type: cluster
-  - fileCount: 3
-    id: frontend-app
-    label: Frontend App
-    type: cluster
-  - fileCount: 3
-    id: frontend-app-(public)
-    label: Frontend App (public)
-    type: cluster
-  - fileCount: 3
-    id: frontend-app-redigera
-    label: Frontend App Redigera
-    type: cluster
-  - fileCount: 2
-    id: frontend-app-spela
-    label: Frontend App Spela
+  - fileCount: 10
+    id: cli-utils
+    label: Cli Utils
     type: cluster
   - fileCount: 1
-    id: frontend-app-testa
-    label: Frontend App Testa
+    id: mcp-server-core
+    label: Mcp Server Core
     type: cluster
-  - fileCount: 4
-    id: frontend-dev
-    label: Frontend Dev
+  - fileCount: 12
+    id: mcp-server-tools
+    label: Mcp Server Tools
     type: cluster
   - fileCount: 3
-    id: frontend-domain
-    label: Frontend Domain
+    id: mcp-server-types
+    label: Mcp Server Types
     type: cluster
-  - fileCount: 65
-    id: frontend-features-editor
-    label: Frontend Features Editor
+  - fileCount: 12
+    id: mcp-server-utils
+    label: Mcp Server Utils
     type: cluster
-  - fileCount: 1
-    id: frontend-features-media
-    label: Frontend Features Media
-    type: cluster
-  - fileCount: 38
-    id: frontend-features-player
-    label: Frontend Features Player
+  - fileCount: 10
+    id: web-components
+    label: Web Components
     type: cluster
   - fileCount: 6
-    id: frontend-features-state
-    label: Frontend Features State
-    type: cluster
-  - fileCount: 20
-    id: frontend-features-ui-core
-    label: Frontend Features Ui Core
-    type: cluster
-  - fileCount: 3
-    id: frontend-lib
-    label: Frontend Lib
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-contentcontainer
-    label: React Admin Components Contentcontainer
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-datatable
-    label: React Admin Components Datatable
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-dropdown
-    label: React Admin Components Dropdown
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-loadingindicator
-    label: React Admin Components Loadingindicator
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-navigation
-    label: React Admin Components Navigation
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-pagination
-    label: React Admin Components Pagination
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-statisticModal
-    label: React Admin Components StatisticModal
-    type: cluster
-  - fileCount: 1
-    id: react-admin-components-userModal
-    label: React Admin Components UserModal
-    type: cluster
-  - fileCount: 3
-    id: react-admin-core
-    label: React Admin Core
-    type: cluster
-  - fileCount: 3
-    id: react-admin-pages-adventure
-    label: React Admin Pages Adventure
-    type: cluster
-  - fileCount: 3
-    id: react-admin-pages-adventures
-    label: React Admin Pages Adventures
+    id: web-components-ui
+    label: Web Components Ui
     type: cluster
   - fileCount: 2
-    id: react-admin-pages-authentication
-    label: React Admin Pages Authentication
+    id: web-core
+    label: Web Core
     type: cluster
-  - fileCount: 1
-    id: react-admin-pages-categories
-    label: React Admin Pages Categories
+  - fileCount: 26
+    id: web-lib
+    label: Web Lib
     type: cluster
-  - fileCount: 2
-    id: react-admin-pages-category
-    label: React Admin Pages Category
-    type: cluster
-  - fileCount: 1
-    id: react-admin-pages-coCreatorStartPage
-    label: React Admin Pages CoCreatorStartPage
-    type: cluster
-  - fileCount: 2
-    id: react-admin-pages-home
-    label: React Admin Pages Home
-    type: cluster
-  - fileCount: 2
-    id: react-admin-pages-list
-    label: React Admin Pages List
-    type: cluster
-  - fileCount: 1
-    id: react-admin-pages-lists
-    label: React Admin Pages Lists
-    type: cluster
-  - fileCount: 1
-    id: react-admin-pages-myAccount
-    label: React Admin Pages MyAccount
-    type: cluster
-  - fileCount: 1
-    id: react-admin-pages-users
-    label: React Admin Pages Users
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state
-    label: React Admin State
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-adventure
-    label: React Admin State Adventure
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-adventures
-    label: React Admin State Adventures
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-categories
-    label: React Admin State Categories
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-category
-    label: React Admin State Category
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-list
-    label: React Admin State List
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-lists
-    label: React Admin State Lists
-    type: cluster
-  - fileCount: 4
-    id: react-admin-state-user
-    label: React Admin State User
-    type: cluster
-  - fileCount: 1
-    id: react-admin-state-users
-    label: React Admin State Users
-    type: cluster
-  - id: admin-adventure-management
-    label: Управление приключениями
-    type: feature
-    fileCount: 14
-  - id: admin-app-shell
-    label: Каркас админки
-    type: feature
-    fileCount: 9
-  - id: admin-auth
-    label: Вход и личный кабинет
+  - id: cli-command-interface
+    label: Command Line Tools
     type: feature
     fileCount: 7
-  - id: admin-categories
-    label: Управление категориями
-    type: feature
-    fileCount: 11
-  - id: admin-home
-    label: Старт админки
-    type: feature
-    fileCount: 3
-  - id: admin-lists
-    label: Управление списками
-    type: feature
-    fileCount: 11
-  - id: admin-ui-widgets
-    label: Стандартные блоки админки
-    type: feature
-    fileCount: 6
-  - id: admin-user-management
-    label: Управление пользователями
-    type: feature
-    fileCount: 2
-  - id: backend-api
-    label: Запросы к серверу
-    type: feature
-    fileCount: 11
-  - id: backend-auth
-    label: Вход и права доступа
+  - id: cli-demo-scripts
+    label: Demo Scripts
     type: feature
     fileCount: 1
-  - id: backend-data-models
-    label: Основные данные
+  - id: code-analysis-engine
+    label: Code Reader
     type: feature
-    fileCount: 10
-  - id: backend-entrypoints
-    label: Запуск и служебные задачи
+    fileCount: 37
+  - id: featuremap-serve-server
+    label: Serve Web Server
     type: feature
-    fileCount: 5
-  - id: backend-media-integrations
-    label: Внешние источники медиа
+    fileCount: 7
+  - id: mcp-server
+    label: AI Bridge Server
     type: feature
-    fileCount: 4
-  - id: backend-realtime
-    label: Живые обновления
+    fileCount: 28
+  - id: web-featuremap-viewer
+    label: Project Map Viewer
     type: feature
-    fileCount: 4
-  - id: backend-storage-sql
-    label: Хранение в базе данных
-    type: feature
-    fileCount: 11
-  - id: backend-utilities
-    label: Служебные функции сервера
-    type: feature
-    fileCount: 2
-  - id: backend-web
-    label: Страницы с сервера
-    type: feature
-    fileCount: 6
-  - id: frontend-data-domain
-    label: Общие данные и связь с сервером
-    type: feature
-    fileCount: 9
-  - id: frontend-dev-tools
-    label: Внутренние проверки
-    type: feature
-    fileCount: 4
-  - id: frontend-editor
-    label: Редактор приключений
-    type: feature
-    fileCount: 68
-  - id: frontend-media
-    label: Медиатека
-    type: feature
-    fileCount: 1
-  - id: frontend-player
-    label: Прохождение приключений
-    type: feature
-    fileCount: 41
-  - id: frontend-public-site
-    label: Публичный сайт
-    type: feature
-    fileCount: 6
-  - id: frontend-ui-kit
-    label: Общие элементы интерфейса
-    type: feature
-    fileCount: 23
+    fileCount: 44
 edges:
-  - source: backend-cmd
-    target: backend-controllers-api
-  - source: backend-cmd
-    target: backend-store
-  - source: backend-cmd
-    target: backend-store-sqlstore
-  - source: backend-cmd-jwt
-    target: backend-helpers-jwt
-  - source: backend-cmd-jwt
-    target: backend-store-sqlstore
-  - source: backend-cmd-server
-    target: backend-router
-  - source: backend-cmd-server
-    target: backend-services-imagebank
-  - source: backend-cmd-server
-    target: backend-store-sqlstore
-  - source: backend-cmd-unsplash
-    target: backend-services-imagebank
-  - source: backend-cmd-unsplash
-    target: backend-store-sqlstore
-  - source: backend-controllers-api
-    target: backend-controllers-web
-  - source: backend-controllers-api
-    target: backend-helpers-jwt
-  - source: backend-controllers-api
-    target: backend-helpers-unsplash
-  - source: backend-controllers-api
-    target: backend-models
-  - source: backend-controllers-api
-    target: backend-store
-  - source: backend-controllers-socket
-    target: backend-helpers-uniuri
-  - source: backend-controllers-socket
-    target: backend-store
-  - source: backend-controllers-web
-    target: backend-models
-  - source: backend-controllers-web
-    target: backend-store
-  - source: backend-models
-    target: backend-helpers-timeago
-  - source: backend-router
-    target: backend-controllers-api
-  - source: backend-router
-    target: backend-controllers-socket
-  - source: backend-router
-    target: backend-controllers-web
-  - source: backend-router
-    target: backend-helpers-jwt
-  - source: backend-router
-    target: backend-store
-  - source: backend-services-imagebank
-    target: backend-helpers-unsplash
-  - source: backend-services-imagebank
-    target: backend-models
-  - source: backend-services-imagebank
-    target: backend-store
-  - source: backend-store
-    target: backend-models
-  - source: backend-store-sqlstore
-    target: backend-helpers-uniuri
-  - source: backend-store-sqlstore
-    target: backend-models
-  - source: frontend-dev
-    target: frontend-domain
-  - source: frontend-dev
-    target: frontend-features-editor
-  - source: frontend-dev
-    target: frontend-features-player
-  - source: react-admin-components-statisticModal
-    target: react-admin-state-adventure
-  - source: react-admin-core
-    target: react-admin-components-contentcontainer
-  - source: react-admin-core
-    target: react-admin-components-navigation
-  - source: react-admin-core
-    target: react-admin-pages-adventure
-  - source: react-admin-core
-    target: react-admin-pages-adventures
-  - source: react-admin-core
-    target: react-admin-pages-authentication
-  - source: react-admin-core
-    target: react-admin-pages-categories
-  - source: react-admin-core
-    target: react-admin-pages-category
-  - source: react-admin-core
-    target: react-admin-pages-coCreatorStartPage
-  - source: react-admin-core
-    target: react-admin-pages-home
-  - source: react-admin-core
-    target: react-admin-pages-list
-  - source: react-admin-core
-    target: react-admin-pages-lists
-  - source: react-admin-core
-    target: react-admin-pages-myAccount
-  - source: react-admin-core
-    target: react-admin-pages-users
-  - source: react-admin-core
-    target: react-admin-state
-  - source: react-admin-pages-adventure
-    target: react-admin-components-loadingindicator
-  - source: react-admin-pages-adventure
-    target: react-admin-core
-  - source: react-admin-pages-adventure
-    target: react-admin-state-adventure
-  - source: react-admin-pages-adventure
-    target: react-admin-state-categories
-  - source: react-admin-pages-adventure
-    target: react-admin-state-users
-  - source: react-admin-pages-adventures
-    target: react-admin-components-datatable
-  - source: react-admin-pages-adventures
-    target: react-admin-components-dropdown
-  - source: react-admin-pages-adventures
-    target: react-admin-components-pagination
-  - source: react-admin-pages-adventures
-    target: react-admin-components-statisticModal
-  - source: react-admin-pages-adventures
-    target: react-admin-core
-  - source: react-admin-pages-adventures
-    target: react-admin-state-adventure
-  - source: react-admin-pages-adventures
-    target: react-admin-state-adventures
-  - source: react-admin-pages-adventures
-    target: react-admin-state-categories
-  - source: react-admin-pages-adventures
-    target: react-admin-state-list
-  - source: react-admin-pages-adventures
-    target: react-admin-state-lists
-  - source: react-admin-pages-authentication
-    target: react-admin-state-user
-  - source: react-admin-pages-categories
-    target: react-admin-components-datatable
-  - source: react-admin-pages-categories
-    target: react-admin-components-loadingindicator
-  - source: react-admin-pages-categories
-    target: react-admin-state-categories
-  - source: react-admin-pages-categories
-    target: react-admin-state-category
-  - source: react-admin-pages-category
-    target: react-admin-components-loadingindicator
-  - source: react-admin-pages-category
-    target: react-admin-state-categories
-  - source: react-admin-pages-category
-    target: react-admin-state-category
-  - source: react-admin-pages-coCreatorStartPage
-    target: react-admin-core
-  - source: react-admin-pages-coCreatorStartPage
-    target: react-admin-state-list
-  - source: react-admin-pages-coCreatorStartPage
-    target: react-admin-state-lists
-  - source: react-admin-pages-coCreatorStartPage
-    target: react-admin-state-user
-  - source: react-admin-pages-list
-    target: react-admin-components-loadingindicator
-  - source: react-admin-pages-list
-    target: react-admin-state-adventure
-  - source: react-admin-pages-list
-    target: react-admin-state-list
-  - source: react-admin-pages-list
-    target: react-admin-state-lists
-  - source: react-admin-pages-lists
-    target: react-admin-components-datatable
-  - source: react-admin-pages-lists
-    target: react-admin-components-loadingindicator
-  - source: react-admin-pages-lists
-    target: react-admin-state-list
-  - source: react-admin-pages-lists
-    target: react-admin-state-lists
-  - source: react-admin-pages-myAccount
-    target: react-admin-pages-users
-  - source: react-admin-pages-myAccount
-    target: react-admin-state-user
-  - source: react-admin-pages-users
-    target: react-admin-components-datatable
-  - source: react-admin-pages-users
-    target: react-admin-components-userModal
-  - source: react-admin-pages-users
-    target: react-admin-state-user
-  - source: react-admin-pages-users
-    target: react-admin-state-users
-  - source: react-admin-state
-    target: react-admin-core
-  - source: react-admin-state
-    target: react-admin-state-adventure
-  - source: react-admin-state
-    target: react-admin-state-adventures
-  - source: react-admin-state
-    target: react-admin-state-categories
-  - source: react-admin-state
-    target: react-admin-state-category
-  - source: react-admin-state
-    target: react-admin-state-list
-  - source: react-admin-state
-    target: react-admin-state-lists
-  - source: react-admin-state
-    target: react-admin-state-user
-  - source: react-admin-state-adventure
-    target: react-admin-core
-  - source: react-admin-state-adventures
-    target: react-admin-core
-  - source: react-admin-state-categories
-    target: react-admin-core
-  - source: react-admin-state-category
-    target: react-admin-core
-  - source: react-admin-state-list
-    target: react-admin-core
-  - source: react-admin-state-lists
-    target: react-admin-core
-  - source: react-admin-state-lists
-    target: react-admin-state-list
-  - source: react-admin-state-user
-    target: react-admin-state
-  - source: react-admin-state-users
-    target: react-admin-state
-  - source: admin-adventure-management
-    target: react-admin-pages-adventure
+  - source: cli-analyzer
+    target: cli-constants
+  - source: cli-analyzer
+    target: cli-types
+  - source: cli-analyzer
+    target: cli-utils
+  - source: cli-commands
+    target: cli-analyzer
+  - source: cli-commands
+    target: cli-constants
+  - source: cli-commands
+    target: cli-server
+  - source: cli-commands
+    target: cli-types
+  - source: cli-commands
+    target: cli-utils
+  - source: cli-core
+    target: cli-commands
+  - source: cli-scripts
+    target: cli-types
+  - source: cli-scripts
+    target: cli-utils
+  - source: cli-server
+    target: cli-constants
+  - source: cli-server
+    target: cli-server-routes
+  - source: cli-server
+    target: cli-types
+  - source: cli-server
+    target: cli-utils
+  - source: cli-server-routes
+    target: cli-server
+  - source: cli-server-routes
+    target: cli-types
+  - source: cli-server-routes
+    target: cli-utils
+  - source: cli-utils
+    target: cli-analyzer
+  - source: cli-utils
+    target: cli-constants
+  - source: cli-utils
+    target: cli-types
+  - source: mcp-server-core
+    target: mcp-server-tools
+  - source: mcp-server-tools
+    target: mcp-server-types
+  - source: mcp-server-tools
+    target: mcp-server-utils
+  - source: mcp-server-utils
+    target: mcp-server-types
+  - source: cli-command-interface
+    target: cli-commands
     type: contains
-  - source: admin-adventure-management
-    target: react-admin-pages-adventures
+  - source: cli-command-interface
+    target: cli-core
     type: contains
-  - source: admin-adventure-management
-    target: react-admin-state-adventure
+  - source: cli-demo-scripts
+    target: cli-scripts
     type: contains
-  - source: admin-adventure-management
-    target: react-admin-state-adventures
+  - source: code-analysis-engine
+    target: cli-analyzer
     type: contains
-  - source: admin-app-shell
-    target: react-admin-components-contentcontainer
+  - source: code-analysis-engine
+    target: cli-constants
     type: contains
-  - source: admin-app-shell
-    target: react-admin-components-navigation
+  - source: code-analysis-engine
+    target: cli-types
     type: contains
-  - source: admin-app-shell
-    target: react-admin-core
+  - source: code-analysis-engine
+    target: cli-utils
     type: contains
-  - source: admin-app-shell
-    target: react-admin-state
+  - source: featuremap-serve-server
+    target: cli-server
     type: contains
-  - source: admin-auth
-    target: react-admin-pages-authentication
+  - source: featuremap-serve-server
+    target: cli-server-routes
     type: contains
-  - source: admin-auth
-    target: react-admin-pages-myAccount
+  - source: mcp-server
+    target: mcp-server-core
     type: contains
-  - source: admin-auth
-    target: react-admin-state-user
+  - source: mcp-server
+    target: mcp-server-tools
     type: contains
-  - source: admin-categories
-    target: react-admin-pages-categories
+  - source: mcp-server
+    target: mcp-server-types
     type: contains
-  - source: admin-categories
-    target: react-admin-pages-category
+  - source: mcp-server
+    target: mcp-server-utils
     type: contains
-  - source: admin-categories
-    target: react-admin-state-categories
+  - source: web-featuremap-viewer
+    target: web-components
     type: contains
-  - source: admin-categories
-    target: react-admin-state-category
+  - source: web-featuremap-viewer
+    target: web-components-ui
     type: contains
-  - source: admin-home
-    target: react-admin-pages-coCreatorStartPage
+  - source: web-featuremap-viewer
+    target: web-core
     type: contains
-  - source: admin-home
-    target: react-admin-pages-home
+  - source: web-featuremap-viewer
+    target: web-lib
     type: contains
-  - source: admin-lists
-    target: react-admin-pages-list
-    type: contains
-  - source: admin-lists
-    target: react-admin-pages-lists
-    type: contains
-  - source: admin-lists
-    target: react-admin-state-list
-    type: contains
-  - source: admin-lists
-    target: react-admin-state-lists
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-datatable
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-dropdown
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-loadingindicator
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-pagination
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-statisticModal
-    type: contains
-  - source: admin-ui-widgets
-    target: react-admin-components-userModal
-    type: contains
-  - source: admin-user-management
-    target: react-admin-pages-users
-    type: contains
-  - source: admin-user-management
-    target: react-admin-state-users
-    type: contains
-  - source: backend-api
-    target: backend-controllers-api
-    type: contains
-  - source: backend-api
-    target: backend-router
-    type: contains
-  - source: backend-auth
-    target: backend-helpers-jwt
-    type: contains
-  - source: backend-data-models
-    target: backend-models
-    type: contains
-  - source: backend-data-models
-    target: backend-store
-    type: contains
-  - source: backend-entrypoints
-    target: backend-cmd
-    type: contains
-  - source: backend-entrypoints
-    target: backend-cmd-jwt
-    type: contains
-  - source: backend-entrypoints
-    target: backend-cmd-server
-    type: contains
-  - source: backend-entrypoints
-    target: backend-cmd-unsplash
-    type: contains
-  - source: backend-media-integrations
-    target: backend-helpers-imgur
-    type: contains
-  - source: backend-media-integrations
-    target: backend-helpers-unsplash
-    type: contains
-  - source: backend-media-integrations
-    target: backend-services-imagebank
-    type: contains
-  - source: backend-realtime
-    target: backend-controllers-socket
-    type: contains
-  - source: backend-storage-sql
-    target: backend-store-sqlstore
-    type: contains
-  - source: backend-utilities
-    target: backend-helpers-timeago
-    type: contains
-  - source: backend-utilities
-    target: backend-helpers-uniuri
-    type: contains
-  - source: backend-web
-    target: backend-controllers-web
-    type: contains
-  - source: frontend-data-domain
-    target: frontend-domain
-    type: contains
-  - source: frontend-data-domain
-    target: frontend-features-state
-    type: contains
-  - source: frontend-dev-tools
-    target: frontend-dev
-    type: contains
-  - source: frontend-editor
-    target: frontend-app-redigera
-    type: contains
-  - source: frontend-editor
-    target: frontend-features-editor
-    type: contains
-  - source: frontend-media
-    target: frontend-features-media
-    type: contains
-  - source: frontend-player
-    target: frontend-app-spela
-    type: contains
-  - source: frontend-player
-    target: frontend-app-testa
-    type: contains
-  - source: frontend-player
-    target: frontend-features-player
-    type: contains
-  - source: frontend-public-site
-    target: frontend-app
-    type: contains
-  - source: frontend-public-site
-    target: frontend-app-(public)
-    type: contains
-  - source: frontend-ui-kit
-    target: frontend-features-ui-core
-    type: contains
-  - source: frontend-ui-kit
-    target: frontend-lib
-    type: contains
-  - source: backend-api
-    target: backend-auth
+  - source: cli-command-interface
+    target: code-analysis-engine
     type: feature_dep
-  - source: backend-api
-    target: backend-data-models
-    type: feature_dep
-  - source: backend-api
-    target: backend-media-integrations
-    type: feature_dep
-  - source: backend-api
-    target: backend-realtime
-    type: feature_dep
-  - source: backend-api
-    target: backend-web
-    type: feature_dep
-  - source: backend-data-models
-    target: backend-utilities
-    type: feature_dep
-  - source: backend-entrypoints
-    target: backend-api
-    type: feature_dep
-  - source: backend-entrypoints
-    target: backend-auth
-    type: feature_dep
-  - source: backend-entrypoints
-    target: backend-data-models
-    type: feature_dep
-  - source: backend-entrypoints
-    target: backend-media-integrations
-    type: feature_dep
-  - source: backend-entrypoints
-    target: backend-storage-sql
-    type: feature_dep
-  - source: backend-media-integrations
-    target: backend-data-models
-    type: feature_dep
-  - source: backend-realtime
-    target: backend-data-models
-    type: feature_dep
-  - source: backend-realtime
-    target: backend-utilities
-    type: feature_dep
-  - source: backend-storage-sql
-    target: backend-data-models
-    type: feature_dep
-  - source: backend-storage-sql
-    target: backend-utilities
-    type: feature_dep
-  - source: backend-web
-    target: backend-data-models
-    type: feature_dep
-  - source: frontend-dev-tools
-    target: frontend-data-domain
-    type: feature_dep
-  - source: frontend-dev-tools
-    target: frontend-editor
-    type: feature_dep
-  - source: frontend-dev-tools
-    target: frontend-player
+  - source: cli-demo-scripts
+    target: code-analysis-engine
     type: feature_dep

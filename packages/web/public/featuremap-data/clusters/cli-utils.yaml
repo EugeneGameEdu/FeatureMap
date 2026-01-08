@@ -1,0 +1,118 @@
+version: 1
+id: cli-utils
+layer: shared
+layerDetection:
+  confidence: medium
+  signals:
+    - path contains /utils/
+files:
+  - packages/cli/src/utils/cluster-builder.ts
+  - packages/cli/src/utils/composition-hash.ts
+  - packages/cli/src/utils/contextTemplates.ts
+  - packages/cli/src/utils/contextUtils.ts
+  - packages/cli/src/utils/file-categories.ts
+  - packages/cli/src/utils/layout-builder.ts
+  - packages/cli/src/utils/scanCompare.ts
+  - packages/cli/src/utils/version-checker.ts
+  - packages/cli/src/utils/yaml-key-order.ts
+  - packages/cli/src/utils/yaml-loader.ts
+exports:
+  - isDefault: false
+    name: areClustersEquivalent
+    type: function
+  - isDefault: false
+    name: areFeaturesEquivalent
+    type: function
+  - isDefault: false
+    name: areGraphsEquivalent
+    type: function
+  - isDefault: false
+    name: buildClusterFile
+    type: function
+  - isDefault: false
+    name: buildContextTemplates
+    type: function
+  - isDefault: false
+    name: buildConventionsInput
+    type: function
+  - isDefault: false
+    name: buildDefaultLayout
+    type: function
+  - isDefault: false
+    name: buildUpdatedMetadata
+    type: function
+  - isDefault: false
+    name: checkVersion
+    type: function
+  - isDefault: false
+    name: ContextTemplateDefinition
+    type: interface
+  - isDefault: false
+    name: findPackageJsonPaths
+    type: function
+  - isDefault: false
+    name: generateCompositionHash
+    type: function
+  - isDefault: false
+    name: getKeyComparator
+    type: function
+  - isDefault: false
+    name: hasCompositionChanged
+    type: function
+  - isDefault: false
+    name: isAuthoredFile
+    type: function
+  - isDefault: false
+    name: isDerivedFile
+    type: function
+  - isDefault: false
+    name: KEY_ORDER
+    type: variable
+  - isDefault: false
+    name: loadYAML
+    type: function
+  - isDefault: false
+    name: LoadYAMLOptions
+    type: interface
+  - isDefault: false
+    name: saveAutoContext
+    type: function
+  - isDefault: false
+    name: saveYAML
+    type: function
+  - isDefault: false
+    name: VersionCheckError
+    type: class
+  - isDefault: false
+    name: VersionCheckResult
+    type: interface
+  - isDefault: false
+    name: writeYamlTemplate
+    type: function
+  - isDefault: false
+    name: YAMLWriteOptions
+    type: interface
+imports:
+  external:
+    - crypto
+    - fast-glob
+    - fs
+    - path
+    - yaml
+    - zod
+  internal:
+    - ../analyzer/conventions-detector.js
+    - ../analyzer/graph.js
+    - ../analyzer/grouper.js
+    - ../analyzer/layer-detector.js
+    - ../constants/versions.js
+    - ../types/index.js
+    - ../types/layout.js
+    - ./composition-hash.js
+    - ./version-checker.js
+    - ./yaml-key-order.js
+    - ./yaml-loader.js
+compositionHash: 5e84d4004748abec
+metadata:
+  createdAt: 2026-01-06T09:31:36.345Z
+  updatedAt: 2026-01-06T22:04:33.531Z

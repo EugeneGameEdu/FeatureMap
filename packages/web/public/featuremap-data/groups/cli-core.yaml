@@ -1,0 +1,15 @@
+version: 1
+id: cli-core
+name: CLI Core
+description: CLI commands and analysis engine features.
+featureIds:
+  - cli-command-interface
+  - cli-demo-scripts
+  - code-analysis-engine
+  - featuremap-serve-server
+source: ai
+metadata:
+  createdAt: 2026-01-06T10:33:17.250Z
+  updatedAt: 2026-01-06T14:52:35.860Z
+  lastModifiedBy: ai
+  version: 1

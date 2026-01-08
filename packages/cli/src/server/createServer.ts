@@ -1,6 +1,7 @@
 import * as http from 'http';
 import type { Server } from 'http';
 import express from 'express';
+import * as fs from 'fs';
 import * as path from 'path';
 import { createContextUpdateHandler } from './routes/contextUpdate.js';
 import { createCommentsRouter } from './routes/commentsRoutes.js';
@@ -70,6 +71,22 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
     })
   );
   app.use('/api', apiRouter);
+  app.get('/featuremap-data/groups/index.yaml', (_req, res) => {
+    const indexPath = path.join(options.projectRoot, '.featuremap', 'groups', 'index.yaml');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+      return;
+    }
+    res.type('text/yaml').send('version: 1\ngroups: []\n');
+  });
+  app.get('/featuremap-data/comments/index.yaml', (_req, res) => {
+    const indexPath = path.join(options.projectRoot, '.featuremap', 'comments', 'index.yaml');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+      return;
+    }
+    res.type('text/yaml').send('version: 1\ncomments: []\n');
+  });
   app.use('/featuremap-data', express.static(path.join(options.projectRoot, '.featuremap')));
 
   const webHosting = await setupWebHosting(app, {
