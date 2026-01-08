@@ -57,3 +57,27 @@ Bad: 1 file × 1750 lines ❌
 **Files:** camelCase.ts, PascalCase.tsx, kebab-case.yaml  
 **Functions:** verbs (parseFile, buildGraph)  
 **Variables:** descriptive (clusters not cls)
+
+---
+
+## Build Rules
+
+### After modifying packages/web/**
+ALWAYS rebuild the web package:
+```bash
+npm run build --workspace=@featuremap/web
+```
+
+This is required because external projects use dist/ not live code.
+Without rebuild, changes won't appear when running serve from other projects.
+
+### After modifying packages/cli/**
+Rebuild CLI:
+```bash
+npm run build --workspace=@featuremap/cli
+```
+
+### Full rebuild (when in doubt)
+```bash
+npm run build
+```

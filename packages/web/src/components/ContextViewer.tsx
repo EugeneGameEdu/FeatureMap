@@ -27,8 +27,6 @@ type ContextSectionConfig = {
 };
 
 const CONTEXT_SECTIONS: ContextSectionConfig[] = [
-  { key: 'techStack', label: 'Tech Stack', filename: 'tech-stack.yaml', editable: false },
-  { key: 'conventions', label: 'Conventions', filename: 'conventions.yaml', editable: false },
   {
     key: 'decisions',
     label: 'Decisions',

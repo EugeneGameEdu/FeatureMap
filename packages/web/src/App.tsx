@@ -219,6 +219,14 @@ function App() {
     (sum, entity) => (entity.kind === 'cluster' ? sum + entity.data.files.length : sum),
     0
   );
+  const connectionCount = data.graph.edges.length;
+  const projectStats = {
+    clusters: clusterCount,
+    features: featureCount,
+    files: fileCount,
+    connections: connectionCount,
+    updatedAt: data.graph.generatedAt,
+  };
   const selectedGroup = selectedGroupId === 'all' ? null : data.groupsById[selectedGroupId];
   const missingGroupFeatures = selectedGroup?.missingFeatureIds ?? [];
   const hasGroups = data.groups.length > 0;
@@ -234,10 +242,6 @@ function App() {
         onSelectResult={onSearchSelect}
       />
       <MapHeader
-        clusterCount={clusterCount}
-        featureCount={featureCount}
-        fileCount={fileCount}
-        generatedAt={data.graph.generatedAt}
         viewMode={viewMode}
         selectedLayer={selectedLayer}
         selectedGroupId={selectedGroupId}
@@ -296,6 +300,9 @@ function App() {
           onDependencyClick={handleDependencyClick}
           groups={data.groups}
           focusedFilePath={focusedFilePath}
+          stats={projectStats}
+          techStack={data.context.techStack}
+          conventions={data.context.conventions}
         />
       </div>
     </div>

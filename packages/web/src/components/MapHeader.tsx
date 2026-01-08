@@ -1,15 +1,10 @@
 import { MapControlsRow } from '@/components/MapControlsRow';
-import { formatDate } from '@/lib/loadFeatureMap';
 import type { ContextData } from '@/lib/contextTypes';
 import type { GroupSummary, LayerFilter, ViewMode } from '@/lib/types';
 
 type LayoutMessage = { type: 'error' | 'warning' | 'success'; text: string } | null;
 
 interface MapHeaderProps {
-  clusterCount: number;
-  featureCount: number;
-  fileCount: number;
-  generatedAt: string;
   viewMode: ViewMode;
   selectedLayer: LayerFilter;
   selectedGroupId: string;
@@ -28,10 +23,6 @@ interface MapHeaderProps {
 }
 
 export function MapHeader({
-  clusterCount,
-  featureCount,
-  fileCount,
-  generatedAt,
   viewMode,
   selectedLayer,
   selectedGroupId,
@@ -53,10 +44,6 @@ export function MapHeader({
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-xl font-bold text-gray-800">FeatureMap</h1>
-          <p className="text-sm text-gray-500">
-            {clusterCount} clusters, {featureCount} features, {fileCount} files - Updated{' '}
-            {formatDate(generatedAt)}
-          </p>
         </div>
       </div>
       <MapControlsRow

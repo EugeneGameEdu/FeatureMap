@@ -4,10 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { GroupDetailsPanel } from '@/components/GroupDetailsPanel';
+import { ProjectOverview, type ProjectStats } from '@/components/ProjectOverview';
 import type { Cluster, FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
 import type { GroupMember } from '@/lib/groupMembership';
+import type { ContextFile, Conventions, TechStack } from '@/lib/contextTypes';
 
 interface SidebarProps {
   node: MapEntity | null;
@@ -19,6 +21,9 @@ interface SidebarProps {
   onDependencyClick?: (featureId: string) => void;
   groups?: GroupSummary[];
   focusedFilePath?: string | null;
+  stats?: ProjectStats;
+  techStack?: ContextFile<TechStack>;
+  conventions?: ContextFile<Conventions>;
 }
 
 export function Sidebar({
@@ -31,6 +36,9 @@ export function Sidebar({
   onDependencyClick,
   groups = [],
   focusedFilePath,
+  stats,
+  techStack,
+  conventions,
 }: SidebarProps) {
   const sourceColors = {
     auto: 'bg-gray-100 text-gray-700',
@@ -76,13 +84,22 @@ export function Sidebar({
     return (
       <div className="w-[350px] border-l bg-white flex flex-col">
         <div className="p-4 border-b">
-          <h2 className="font-semibold text-gray-400">Details</h2>
+          <h2 className="font-semibold text-gray-900">Project Overview</h2>
         </div>
-        <div className="flex-1 flex items-center justify-center p-8">
-          <p className="text-sm text-gray-400 text-center">
-            Click on a node to see details
-          </p>
-        </div>
+        <ScrollArea className="flex-1">
+          <ProjectOverview
+            stats={
+              stats ?? {
+                clusters: 0,
+                features: 0,
+                files: 0,
+                connections: 0,
+              }
+            }
+            techStack={techStack ?? { status: 'missing' }}
+            conventions={conventions ?? { status: 'missing' }}
+          />
+        </ScrollArea>
       </div>
     );
   }
