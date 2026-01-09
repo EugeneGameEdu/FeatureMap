@@ -7,7 +7,8 @@ import { detectConventions } from '../analyzer/conventions-detector.js';
 import { detectTechStack } from '../analyzer/tech-stack-detector.js';
 import { loadExistingClusters } from '../analyzer/cluster-loader.js';
 import { applyClusterMatching } from '../analyzer/cluster-id-matching.js';
-import { scanProject } from '../analyzer/scanner.js';
+import { loadConfig, scanProject } from '../analyzer/scanner.js';
+import { scanProjectStructure } from '../analyzer/structure-scanner.js';
 import {
   type Cluster as ClusterFile,
   ClusterSchema,
@@ -56,24 +57,35 @@ export function createScanCommand(): Command {
         ensureDirectory(path.join(featuremapDir, 'features'));
         ensureDirectory(path.join(featuremapDir, 'context'));
 
+        const configPath = path.join(featuremapDir, 'config.yaml');
+        const config = loadConfig(configPath);
+
+        if (config.scan.include.length === 0) {
+          console.error('ERROR: No include patterns in config.');
+          console.error('Run "featuremap init" to generate configuration.');
+          process.exit(1);
+        }
+
         const scanResult = await scanProject(projectRoot);
         const tsCount = scanResult.files.length;
         const goCount = scanResult.goFiles?.length ?? 0;
-
-        if (scanResult.subprojects && scanResult.subprojects.length > 0) {
-          console.log('Detected subprojects:');
-          for (const subproject of scanResult.subprojects) {
-            const label = subproject.type === 'typescript' ? 'TypeScript' : 'Go';
-            console.log(`  - ${subproject.name} (${label})`);
-          }
-          console.log('');
-        }
+        const totalScannedFiles = tsCount + goCount;
 
         if (goCount > 0) {
           console.log(`  OK Found ${tsCount} TypeScript files`);
           console.log(`  OK Found ${goCount} Go files`);
         } else {
           console.log(`  OK Found ${tsCount} files`);
+        }
+
+        if (totalScannedFiles < 5) {
+          const structure = await scanProjectStructure(projectRoot);
+          const projectHasMoreFiles = structure.totalFiles > totalScannedFiles;
+          if (projectHasMoreFiles) {
+            console.warn(`WARNING: Only found ${totalScannedFiles} files.`);
+            console.warn('Your config.scan.include patterns might be too restrictive.');
+            console.warn('Config format changed. Run "featuremap init" to regenerate.');
+          }
         }
 
         const packageJsonPaths = findPackageJsonPaths(projectRoot);

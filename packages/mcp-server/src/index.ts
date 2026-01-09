@@ -15,6 +15,7 @@ import { getClusterFilesTool } from './tools/getClusterFiles.js';
 import { findRelevantFeaturesTool } from './tools/findRelevantFeatures.js';
 import { getNodeCommentsTool } from './tools/getNodeComments.js';
 import { getGroupDetailsTool } from './tools/getGroupDetails.js';
+import { analyzeProjectStructureTool } from './tools/analyzeProjectStructure.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -185,10 +186,18 @@ server.tool(
   getNodeCommentsTool.execute
 );
 
+// Tool: analyze_project_structure
+server.tool(
+  analyzeProjectStructureTool.name,
+  analyzeProjectStructureTool.description,
+  analyzeProjectStructureTool.parameters,
+  analyzeProjectStructureTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 12 tools');
+  console.error('FeatureMap MCP server started with 13 tools');
 }
 
 main().catch((error) => {
