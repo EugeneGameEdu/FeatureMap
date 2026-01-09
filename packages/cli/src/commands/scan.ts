@@ -223,8 +223,10 @@ function saveClusters(
   const layerSummary: Record<Layer, string[]> = {
     frontend: [],
     backend: [],
+    fullstack: [],
     shared: [],
     infrastructure: [],
+    smell: [],
   };
 
   for (const cluster of clusters) {
@@ -348,7 +350,14 @@ function ensureLayout(featuremapDir: string, clusters: FolderCluster[]): void {
 
 function printLayerSummary(layerSummary: Record<Layer, string[]>): void {
   console.log('\nLayer distribution:');
-  const order: Layer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
+  const order: Layer[] = [
+    'frontend',
+    'backend',
+    'fullstack',
+    'shared',
+    'infrastructure',
+    'smell',
+  ];
 
   for (const layer of order) {
     const clusters = layerSummary[layer];

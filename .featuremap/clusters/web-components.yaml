@@ -4,24 +4,31 @@ layer: frontend
 layerDetection:
   confidence: high
   signals:
-    - path contains /web/
-    - path contains /components/
+    - exports React components
     - file extension .tsx
     - imports @xyflow/react
     - imports react
-    - exports React components
+    - path contains /components/
+    - path contains /web/
 files:
   - packages/web/src/components/CommentNode.tsx
   - packages/web/src/components/ContextEditor.tsx
   - packages/web/src/components/ContextViewer.tsx
   - packages/web/src/components/FeatureMap.tsx
   - packages/web/src/components/FeatureNode.tsx
+  - packages/web/src/components/GroupContainerNode.tsx
+  - packages/web/src/components/GroupDetailsPanel.tsx
   - packages/web/src/components/LeftToolbar.tsx
   - packages/web/src/components/MapControlsRow.tsx
   - packages/web/src/components/MapHeader.tsx
+  - packages/web/src/components/ProjectOverview.tsx
   - packages/web/src/components/SearchPalette.tsx
   - packages/web/src/components/Sidebar.tsx
+  - packages/web/src/components/StatusScreens.tsx
 exports:
+  - isDefault: false
+    name: CommentFlowNode
+    type: type
   - isDefault: false
     name: CommentNode
     type: variable
@@ -32,6 +39,12 @@ exports:
     name: ContextViewer
     type: function
   - isDefault: false
+    name: ErrorScreen
+    type: function
+  - isDefault: false
+    name: FeatureFlowNode
+    type: type
+  - isDefault: false
     name: FeatureMap
     type: function
   - isDefault: false
@@ -41,7 +54,16 @@ exports:
     name: FeatureNodeData
     type: interface
   - isDefault: false
+    name: GroupContainerNode
+    type: variable
+  - isDefault: false
+    name: GroupDetailsPanel
+    type: function
+  - isDefault: false
     name: LeftToolbar
+    type: function
+  - isDefault: false
+    name: LoadingScreen
     type: function
   - isDefault: false
     name: MapControlsRow
@@ -49,6 +71,12 @@ exports:
   - isDefault: false
     name: MapHeader
     type: function
+  - isDefault: false
+    name: ProjectOverview
+    type: function
+  - isDefault: false
+    name: ProjectStats
+    type: type
   - isDefault: false
     name: SearchPalette
     type: function
@@ -59,23 +87,30 @@ imports:
   external:
     - "@/components/ContextEditor"
     - "@/components/ContextViewer"
+    - "@/components/GroupDetailsPanel"
     - "@/components/MapControlsRow"
+    - "@/components/ProjectOverview"
     - "@/components/ui/badge"
     - "@/components/ui/button"
+    - "@/components/ui/card"
     - "@/components/ui/dialog"
     - "@/components/ui/scroll-area"
     - "@/components/ui/sheet"
     - "@/lib/commentsMode"
     - "@/lib/commentTypes"
     - "@/lib/contextTypes"
+    - "@/lib/graphLayout"
+    - "@/lib/groupContainers"
+    - "@/lib/groupDrag"
     - "@/lib/groupFilters"
+    - "@/lib/groupMembership"
     - "@/lib/layerFilters"
     - "@/lib/loadFeatureMap"
     - "@/lib/searchIndex"
     - "@/lib/types"
     - "@/lib/useContextApi"
+    - "@/lib/useGroupApi"
     - "@/lib/yamlParsing"
-    - "@dagrejs/dagre"
     - "@xyflow/react"
     - "@xyflow/react/dist/style.css"
     - lucide-react
@@ -84,7 +119,8 @@ imports:
   internal:
     - ./CommentNode
     - ./FeatureNode
-compositionHash: 816426ba0b2f6508
+    - ./GroupContainerNode
+compositionHash: 4d83e3e7d8772d3d
 metadata:
   createdAt: 2026-01-06T09:31:36.355Z
-  updatedAt: 2026-01-06T22:04:33.554Z
+  updatedAt: 2026-01-09T07:57:54.814Z

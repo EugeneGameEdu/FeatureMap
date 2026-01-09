@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-export const LayerSchema = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
+export const LayerSchema = z.enum([
+  'frontend',
+  'backend',
+  'shared',
+  'infrastructure',
+  'fullstack',
+  'smell',
+]);
 
 export type Layer = z.infer<typeof LayerSchema>;
 

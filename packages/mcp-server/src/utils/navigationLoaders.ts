@@ -19,9 +19,22 @@ export interface RawCluster {
   compositionHash?: string;
 }
 
-export type DerivedLayer = 'frontend' | 'backend' | 'shared' | 'infrastructure';
+export type DerivedLayer =
+  | 'frontend'
+  | 'backend'
+  | 'shared'
+  | 'infrastructure'
+  | 'fullstack'
+  | 'smell';
 
-const LAYER_ORDER: DerivedLayer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
+const LAYER_ORDER: DerivedLayer[] = [
+  'frontend',
+  'backend',
+  'fullstack',
+  'shared',
+  'infrastructure',
+  'smell',
+];
 
 export interface NavigationIndices {
   featuresById: Map<string, FeatureFile>;
@@ -137,6 +150,8 @@ function normalizeLayerValue(layer?: string | null): DerivedLayer | null {
   if (normalized === 'frontend') return 'frontend';
   if (normalized === 'backend') return 'backend';
   if (normalized === 'shared') return 'shared';
+  if (normalized === 'fullstack' || normalized === 'full-stack') return 'fullstack';
+  if (normalized === 'smell') return 'smell';
   if (normalized === 'infrastructure' || normalized === 'infra') return 'infrastructure';
   return null;
 }
@@ -146,9 +161,7 @@ function deriveLayersFromScope(scope?: string | null): DerivedLayer[] {
   if (normalized === 'frontend') return ['frontend'];
   if (normalized === 'backend') return ['backend'];
   if (normalized === 'shared') return ['shared'];
-  if (normalized === 'fullstack' || normalized === 'full-stack') {
-    return ['frontend', 'backend'];
-  }
+  if (normalized === 'fullstack' || normalized === 'full-stack') return ['fullstack'];
   return [];
 }
 

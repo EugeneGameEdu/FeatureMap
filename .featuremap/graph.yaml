@@ -1,7 +1,7 @@
 version: 1
-generatedAt: 2026-01-06T22:36:09.236Z
+generatedAt: 2026-01-09T07:57:54.848Z
 nodes:
-  - fileCount: 15
+  - fileCount: 18
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
@@ -21,11 +21,11 @@ nodes:
     id: cli-scripts
     label: Cli Scripts
     type: cluster
-  - fileCount: 5
+  - fileCount: 8
     id: cli-server
     label: Cli Server
     type: cluster
-  - fileCount: 2
+  - fileCount: 4
     id: cli-server-routes
     label: Cli Server Routes
     type: cluster
@@ -33,7 +33,7 @@ nodes:
     id: cli-types
     label: Cli Types
     type: cluster
-  - fileCount: 10
+  - fileCount: 11
     id: cli-utils
     label: Cli Utils
     type: cluster
@@ -41,7 +41,7 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 12
+  - fileCount: 13
     id: mcp-server-tools
     label: Mcp Server Tools
     type: cluster
@@ -49,11 +49,15 @@ nodes:
     id: mcp-server-types
     label: Mcp Server Types
     type: cluster
-  - fileCount: 12
+  - fileCount: 13
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 10
+  - fileCount: 1
+    id: packages-web
+    label: Packages Web
+    type: cluster
+  - fileCount: 14
     id: web-components
     label: Web Components
     type: cluster
@@ -65,34 +69,10 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 26
+  - fileCount: 37
     id: web-lib
     label: Web Lib
     type: cluster
-  - id: cli-command-interface
-    label: Command Line Tools
-    type: feature
-    fileCount: 7
-  - id: cli-demo-scripts
-    label: Demo Scripts
-    type: feature
-    fileCount: 1
-  - id: code-analysis-engine
-    label: Code Reader
-    type: feature
-    fileCount: 37
-  - id: featuremap-serve-server
-    label: Serve Web Server
-    type: feature
-    fileCount: 7
-  - id: mcp-server
-    label: AI Bridge Server
-    type: feature
-    fileCount: 28
-  - id: web-featuremap-viewer
-    label: Project Map Viewer
-    type: feature
-    fileCount: 44
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -144,60 +124,3 @@ edges:
     target: mcp-server-utils
   - source: mcp-server-utils
     target: mcp-server-types
-  - source: cli-command-interface
-    target: cli-commands
-    type: contains
-  - source: cli-command-interface
-    target: cli-core
-    type: contains
-  - source: cli-demo-scripts
-    target: cli-scripts
-    type: contains
-  - source: code-analysis-engine
-    target: cli-analyzer
-    type: contains
-  - source: code-analysis-engine
-    target: cli-constants
-    type: contains
-  - source: code-analysis-engine
-    target: cli-types
-    type: contains
-  - source: code-analysis-engine
-    target: cli-utils
-    type: contains
-  - source: featuremap-serve-server
-    target: cli-server
-    type: contains
-  - source: featuremap-serve-server
-    target: cli-server-routes
-    type: contains
-  - source: mcp-server
-    target: mcp-server-core
-    type: contains
-  - source: mcp-server
-    target: mcp-server-tools
-    type: contains
-  - source: mcp-server
-    target: mcp-server-types
-    type: contains
-  - source: mcp-server
-    target: mcp-server-utils
-    type: contains
-  - source: web-featuremap-viewer
-    target: web-components
-    type: contains
-  - source: web-featuremap-viewer
-    target: web-components-ui
-    type: contains
-  - source: web-featuremap-viewer
-    target: web-core
-    type: contains
-  - source: web-featuremap-viewer
-    target: web-lib
-    type: contains
-  - source: cli-command-interface
-    target: code-analysis-engine
-    type: feature_dep
-  - source: cli-demo-scripts
-    target: code-analysis-engine
-    type: feature_dep

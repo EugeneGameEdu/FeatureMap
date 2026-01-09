@@ -14,6 +14,7 @@ files:
   - packages/mcp-server/src/utils/featureYaml.ts
   - packages/mcp-server/src/utils/findFeaturemapDir.ts
   - packages/mcp-server/src/utils/graphBuilder.ts
+  - packages/mcp-server/src/utils/groupNotes.ts
   - packages/mcp-server/src/utils/groupYaml.ts
   - packages/mcp-server/src/utils/listUtils.ts
   - packages/mcp-server/src/utils/navigationLoaders.ts
@@ -22,6 +23,12 @@ files:
 exports:
   - isDefault: false
     name: buildFeatureOverlay
+    type: function
+  - isDefault: false
+    name: buildGroupNotePreviews
+    type: function
+  - isDefault: false
+    name: buildGroupSummaries
     type: function
   - isDefault: false
     name: buildGroupYaml
@@ -74,6 +81,9 @@ exports:
   - isDefault: false
     name: groupExists
     type: function
+  - isDefault: false
+    name: GroupNotePreview
+    type: interface
   - isDefault: false
     name: isKebabCase
     type: function
@@ -166,7 +176,7 @@ imports:
     - ./featureLoader.js
     - ./groupYaml.js
     - ./listUtils.js
-compositionHash: 8c5e14ea69e780f6
+compositionHash: 8a79cb037ef719c0
 metadata:
   createdAt: 2026-01-06T09:31:36.354Z
-  updatedAt: 2026-01-06T22:04:33.548Z
+  updatedAt: 2026-01-09T07:57:54.808Z

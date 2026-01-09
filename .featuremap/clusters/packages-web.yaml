@@ -1,0 +1,25 @@
+version: 1
+id: packages-web
+layer: infrastructure
+layerDetection:
+  confidence: medium
+  signals:
+    - file name starts with vite.config
+    - imports vite
+    - path contains /web/
+files:
+  - packages/web/vite.config.ts
+exports:
+  - isDefault: true
+    name: default
+    type: unknown
+imports:
+  external:
+    - "@vitejs/plugin-react"
+    - path
+    - vite
+  internal: []
+compositionHash: e8d91d82c7259277
+metadata:
+  createdAt: 2026-01-09T07:57:54.811Z
+  updatedAt: 2026-01-09T07:57:54.811Z

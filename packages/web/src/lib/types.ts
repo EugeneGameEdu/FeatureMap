@@ -7,7 +7,14 @@ import type { CommentNode as CommentNodeType } from './commentTypes';
 export type NodeType = 'cluster' | 'feature';
 export type ViewMode = 'clusters' | 'features';
 
-const LayerSchema = z.enum(['frontend', 'backend', 'shared', 'infrastructure']);
+const LayerSchema = z.enum([
+  'frontend',
+  'backend',
+  'shared',
+  'infrastructure',
+  'fullstack',
+  'smell',
+]);
 
 export type Layer = z.infer<typeof LayerSchema>;
 export type LayerFilter = Layer | 'all';

@@ -4,19 +4,27 @@ layer: backend
 layerDetection:
   confidence: high
   signals:
-    - path contains /server/
-    - path contains /routes/
-    - imports express
     - exports route handlers
+    - imports express
+    - path contains /routes/
+    - path contains /server/
 files:
   - packages/cli/src/server/routes/commentsRoutes.ts
   - packages/cli/src/server/routes/contextUpdate.ts
+  - packages/cli/src/server/routes/groupRoutes.ts
+  - packages/cli/src/server/routes/layoutRoutes.ts
 exports:
   - isDefault: false
     name: createCommentsRouter
     type: function
   - isDefault: false
     name: createContextUpdateHandler
+    type: function
+  - isDefault: false
+    name: createGroupRouter
+    type: function
+  - isDefault: false
+    name: createLayoutRouter
     type: function
 imports:
   external:
@@ -29,9 +37,12 @@ imports:
     - ../../types/index.js
     - ../../utils/yaml-loader.js
     - ../commentsStore.js
+    - ../featuremapDataMirror.js
+    - ../groupStore.js
+    - ../layoutStore.js
     - ../security.js
     - ../wsHub.js
-compositionHash: ce05799f90d8d7c1
+compositionHash: f62af32e9ce599a6
 metadata:
   createdAt: 2026-01-06T14:45:03.976Z
-  updatedAt: 2026-01-06T22:04:33.519Z
+  updatedAt: 2026-01-09T07:57:54.778Z

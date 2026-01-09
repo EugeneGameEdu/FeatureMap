@@ -1,6 +1,13 @@
 import type { FeatureDetails, GraphEdge, GraphNode, Layer, LayerFilter } from './types';
 
-const LAYER_ORDER: Layer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
+const LAYER_ORDER: Layer[] = [
+  'frontend',
+  'backend',
+  'fullstack',
+  'shared',
+  'infrastructure',
+  'smell',
+];
 
 export function deriveFeatureLayers(feature: FeatureDetails): Layer[] {
   const layers = new Set<Layer>();

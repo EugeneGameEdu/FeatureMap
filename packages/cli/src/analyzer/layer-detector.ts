@@ -1,4 +1,5 @@
-export type Layer = 'frontend' | 'backend' | 'shared' | 'infrastructure';
+export type Layer = 'frontend' | 'backend' | 'shared' | 'infrastructure' | 'fullstack' | 'smell';
+type SignalLayer = Exclude<Layer, 'fullstack' | 'smell'>;
 export type Confidence = 'high' | 'medium' | 'low';
 
 export interface LayerDetectionResult {
@@ -45,6 +46,16 @@ const BACKEND_IMPORTS = [
 const BACKEND_IMPORT_PREFIXES = ['@modelcontextprotocol/', '@nestjs/'];
 
 const INFRA_IMPORTS = ['vite', 'webpack', 'rollup', 'esbuild', 'tsup'];
+const SSR_FRAMEWORKS = [
+  'next',
+  '@remix-run/node',
+  '@remix-run/react',
+  'nuxt',
+  'nuxt3',
+  '@nuxt/kit',
+  'astro',
+  '@sveltejs/kit',
+];
 
 const GO_BACKEND_IMPORTS = [
   'github.com/gin-gonic/gin',
@@ -82,7 +93,7 @@ const FRONTEND_EXTENSIONS = ['.tsx', '.jsx', '.vue', '.svelte'];
 
 const INFRA_FILE_PREFIXES = ['vite.config', 'tsconfig', 'webpack', 'rollup', '.eslintrc'];
 
-const LAYERS: Layer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
+const LAYERS: SignalLayer[] = ['frontend', 'backend', 'shared', 'infrastructure'];
 
 const REACT_COMPONENT_NAME = /^[A-Z][A-Za-z0-9]*$/;
 const ROUTE_EXPORT_MATCHERS = [
@@ -101,13 +112,13 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
   const externalImports = normalizeExternalImports(input.imports.external);
   const internalImports = input.imports.internal.map((value) => normalizeImportPath(value));
 
-  const signalsByLayer: Record<Layer, string[]> = {
+  const signalsByLayer: Record<SignalLayer, string[]> = {
     frontend: [],
     backend: [],
     shared: [],
     infrastructure: [],
   };
-  const signalSets: Record<Layer, Set<string>> = {
+  const signalSets: Record<SignalLayer, Set<string>> = {
     frontend: new Set(),
     backend: new Set(),
     shared: new Set(),
@@ -116,11 +127,17 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
   const allSignals: string[] = [];
   const allSignalSet = new Set<string>();
 
-  const addSignal = (layer: Layer, message: string): void => {
+  const addSignal = (layer: SignalLayer, message: string): void => {
     if (!signalSets[layer].has(message)) {
       signalSets[layer].add(message);
       signalsByLayer[layer].push(message);
     }
+    if (!allSignalSet.has(message)) {
+      allSignalSet.add(message);
+      allSignals.push(message);
+    }
+  };
+  const addSummarySignal = (message: string): void => {
     if (!allSignalSet.has(message)) {
       allSignalSet.add(message);
       allSignals.push(message);
@@ -149,6 +166,9 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
       addSignal('frontend', `imports ${importName}`);
     }
     if (matchesImport(importName, BACKEND_IMPORTS, BACKEND_IMPORT_PREFIXES)) {
+      addSignal('backend', `imports ${importName}`);
+    }
+    if (SSR_FRAMEWORKS.includes(importName)) {
       addSignal('backend', `imports ${importName}`);
     }
     if (matchesImport(importName, INFRA_IMPORTS, [])) {
@@ -206,6 +226,32 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
     addSignal
   );
 
+  const hasFrontendSignals = signalsByLayer.frontend.length > 0;
+  const hasBackendSignals = signalsByLayer.backend.length > 0;
+
+  if (allSignals.length === 0) {
+    addSummarySignal('no layer signals detected');
+    return {
+      layer: 'smell',
+      confidence: 'low',
+      signals: sortSignals(allSignals),
+    };
+  }
+
+  if (hasFrontendSignals && hasBackendSignals) {
+    const hasSSR = hasSSRFramework(externalImports);
+    addSummarySignal(
+      hasSSR
+        ? 'mixed frontend+backend signals (SSR detected)'
+        : 'mixed frontend+backend signals (no SSR framework)'
+    );
+    return {
+      layer: hasSSR ? 'fullstack' : 'smell',
+      confidence: hasSSR ? 'medium' : 'low',
+      signals: sortSignals(allSignals),
+    };
+  }
+
   const layerCounts = LAYERS.map((layer) => ({
     layer,
     count: signalsByLayer[layer].length,
@@ -216,9 +262,9 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
 
   if (!top || top.count === 0) {
     return {
-      layer: 'shared',
+      layer: 'smell',
       confidence: 'low',
-      signals: allSignals,
+      signals: sortSignals(allSignals),
     };
   }
 
@@ -227,21 +273,21 @@ export function detectLayer(input: LayerDetectionInput): LayerDetectionResult {
       return {
         layer: 'shared',
         confidence: 'low',
-        signals: allSignals,
+        signals: sortSignals(allSignals),
       };
     }
 
     return {
       layer: top.layer,
       confidence: 'medium',
-      signals: allSignals,
+      signals: sortSignals(allSignals),
     };
   }
 
   return {
     layer: top.layer,
     confidence: calculateConfidence(signalsByLayer[top.layer]),
-    signals: allSignals,
+    signals: sortSignals(allSignals),
   };
 }
 
@@ -314,8 +360,8 @@ function getBaseName(filePath: string): string {
 function addPathSignals(
   files: string[],
   patterns: string[],
-  layer: Layer,
-  addSignal: (layer: Layer, message: string) => void
+  layer: SignalLayer,
+  addSignal: (layer: SignalLayer, message: string) => void
 ): void {
   const normalizedFiles = files.map((file) => `/${file.replace(/^\/+/, '')}/`);
 
@@ -350,7 +396,7 @@ function hasTypeOnlyExports(exportsList: Array<{ name: string; type: string }>):
 
 function addGoSignals(
   input: LayerDetectionInput,
-  addSignal: (layer: Layer, message: string) => void
+  addSignal: (layer: SignalLayer, message: string) => void
 ): void {
   const goImports = input.imports.external.map((entry) => entry.toLowerCase());
 
@@ -383,4 +429,12 @@ function addGoSignals(
   if (totalExports > 0 && structCount / totalExports > 0.7) {
     addSignal('shared', 'mostly struct definitions (models)');
   }
+}
+
+function hasSSRFramework(externalImports: string[]): boolean {
+  return externalImports.some((importName) => SSR_FRAMEWORKS.includes(importName));
+}
+
+function sortSignals(signals: string[]): string[] {
+  return [...signals].sort((left, right) => left.localeCompare(right));
 }

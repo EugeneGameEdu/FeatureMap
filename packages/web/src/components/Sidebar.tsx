@@ -53,8 +53,10 @@ export function Sidebar({
   const layerColors = {
     frontend: 'bg-blue-100 text-blue-700',
     backend: 'bg-amber-100 text-amber-700',
+    fullstack: 'bg-emerald-100 text-emerald-700',
     shared: 'bg-gray-100 text-gray-600',
     infrastructure: 'bg-indigo-100 text-indigo-700',
+    smell: 'bg-rose-100 text-rose-700',
   };
   const fileRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
   useEffect(() => {

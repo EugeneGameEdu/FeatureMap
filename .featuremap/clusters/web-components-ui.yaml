@@ -4,12 +4,12 @@ layer: frontend
 layerDetection:
   confidence: high
   signals:
-    - path contains /web/
-    - path contains /ui/
-    - path contains /components/
+    - exports React components
     - file extension .tsx
     - imports react
-    - exports React components
+    - path contains /components/
+    - path contains /ui/
+    - path contains /web/
 files:
   - packages/web/src/components/ui/badge.tsx
   - packages/web/src/components/ui/button.tsx
@@ -40,4 +40,4 @@ imports:
 compositionHash: 54e905d93f23df1c
 metadata:
   createdAt: 2026-01-06T09:31:36.357Z
-  updatedAt: 2026-01-06T22:04:33.556Z
+  updatedAt: 2026-01-09T07:57:54.817Z
