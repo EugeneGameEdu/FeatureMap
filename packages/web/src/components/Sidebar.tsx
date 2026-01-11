@@ -41,22 +41,22 @@ export function Sidebar({
   conventions,
 }: SidebarProps) {
   const sourceColors = {
-    auto: 'bg-gray-100 text-gray-700',
-    ai: 'bg-green-100 text-green-700',
-    user: 'bg-purple-100 text-purple-700',
+    auto: 'bg-muted text-muted-foreground',
+    ai: 'bg-emerald-500/20 text-emerald-200',
+    user: 'bg-purple-500/20 text-purple-200',
   };
   const statusColors = {
-    active: 'bg-blue-100 text-blue-700',
-    deprecated: 'bg-amber-100 text-amber-700',
-    ignored: 'bg-gray-100 text-gray-500',
+    active: 'bg-primary/20 text-primary',
+    deprecated: 'bg-amber-500/20 text-amber-200',
+    ignored: 'bg-muted text-muted-foreground/80',
   };
   const layerColors = {
-    frontend: 'bg-blue-100 text-blue-700',
-    backend: 'bg-amber-100 text-amber-700',
-    fullstack: 'bg-emerald-100 text-emerald-700',
-    shared: 'bg-gray-100 text-gray-600',
-    infrastructure: 'bg-indigo-100 text-indigo-700',
-    smell: 'bg-rose-100 text-rose-700',
+    frontend: 'bg-sky-500/20 text-sky-200',
+    backend: 'bg-amber-500/20 text-amber-200',
+    fullstack: 'bg-emerald-500/20 text-emerald-200',
+    shared: 'bg-slate-500/20 text-slate-200',
+    infrastructure: 'bg-indigo-500/20 text-indigo-200',
+    smell: 'bg-rose-500/20 text-rose-200',
   };
   const fileRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
   useEffect(() => {
@@ -84,9 +84,9 @@ export function Sidebar({
   }
   if (!node) {
     return (
-      <div className="w-[350px] border-l bg-white flex flex-col">
-        <div className="p-4 border-b">
-          <h2 className="font-semibold text-gray-900">Project Overview</h2>
+      <div className="w-[350px] border-l border-border bg-card flex flex-col">
+        <div className="p-4 border-b border-border">
+          <h2 className="font-semibold text-foreground">Project Overview</h2>
         </div>
         <ScrollArea className="flex-1">
           <ProjectOverview
@@ -122,11 +122,11 @@ export function Sidebar({
   const featureGroups = featureData ? getGroupsForFeature(groups, featureData.id) : [];
 
   return (
-    <div className="w-[350px] border-l bg-white flex flex-col">
-      <div className="p-4 border-b">
+    <div className="w-[350px] border-l border-border bg-card flex flex-col">
+      <div className="p-4 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-2">
-            <h2 className="font-semibold text-gray-900">{title}</h2>
+            <h2 className="font-semibold text-foreground">{title}</h2>
             <div className="flex gap-2 mt-2">
               {featureData ? (
                 <>
@@ -157,11 +157,11 @@ export function Sidebar({
         <div className="p-4 space-y-6">
           {description ? (
             <section>
-              <p className="text-sm text-gray-600">{description}</p>
+              <p className="text-sm text-muted-foreground">{description}</p>
             </section>
           ) : (
             <section>
-              <p className="text-sm text-gray-400 italic">
+              <p className="text-sm text-muted-foreground/80 italic">
                 No description yet.
               </p>
             </section>
@@ -169,7 +169,7 @@ export function Sidebar({
 
           {featureData ? (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <Layers size={16} />
                 Clusters ({featureData.clustersDetailed.length})
               </h3>
@@ -177,26 +177,26 @@ export function Sidebar({
                 {featureData.clustersDetailed.map((cluster) => (
                   <div
                     key={cluster.id}
-                    className="rounded border border-gray-100 bg-gray-50 px-2 py-2"
+                    className="rounded border border-border bg-muted px-2 py-2"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <button
                         onClick={() => onDependencyClick?.(cluster.id)}
-                        className="text-left text-sm text-blue-600 hover:text-blue-800"
+                        className="text-left text-sm text-primary hover:text-primary/80"
                       >
                         {cluster.id}
                       </button>
                       {cluster.missing && (
-                        <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200">
+                        <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/40">
                           <AlertTriangle size={12} className="mr-1" />
                           missing
                         </Badge>
                       )}
                     </div>
                     {!cluster.missing && (
-                      <div className="text-xs text-gray-500 mt-1 flex flex-wrap gap-2">
+                      <div className="text-xs text-muted-foreground mt-1 flex flex-wrap gap-2">
                         {cluster.layer && (
-                          <span className="capitalize text-gray-500">{cluster.layer}</span>
+                          <span className="capitalize text-muted-foreground">{cluster.layer}</span>
                         )}
                         {cluster.fileCount !== undefined && (
                           <span>{cluster.fileCount} files</span>
@@ -204,7 +204,7 @@ export function Sidebar({
                       </div>
                     )}
                     {cluster.purpose_hint && (
-                      <p className="text-xs text-gray-500 mt-1">{cluster.purpose_hint}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{cluster.purpose_hint}</p>
                     )}
                   </div>
                 ))}
@@ -212,7 +212,7 @@ export function Sidebar({
             </section>
           ) : (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <FileCode size={16} />
                 Files ({clusterData?.files.length ?? 0})
               </h3>
@@ -221,8 +221,8 @@ export function Sidebar({
                   <div
                     key={index}
                     ref={(element) => fileRowRefs.current.set(file, element)}
-                    className={`text-xs text-gray-600 py-1.5 px-2 bg-gray-50 rounded hover:bg-gray-100 font-mono ${
-                      focusedFilePath === file ? 'ring-1 ring-amber-200 bg-amber-50' : ''
+                    className={`text-xs text-foreground/90 py-1.5 px-2 bg-muted rounded hover:bg-muted/80 font-mono ${
+                      focusedFilePath === file ? 'ring-1 ring-primary/40 bg-primary/10' : ''
                     }`}
                     title={file}
                   >
@@ -235,7 +235,7 @@ export function Sidebar({
 
           {featureData && featureGroups.length > 0 && (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <Layers size={16} />
                 Groups ({featureGroups.length})
               </h3>
@@ -251,7 +251,7 @@ export function Sidebar({
 
           {!featureData && (clusterData?.exports.length ?? 0) > 0 && (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <Tag size={16} />
                 Exports ({clusterData?.exports.length ?? 0})
               </h3>
@@ -267,7 +267,7 @@ export function Sidebar({
 
           {featureData && featureData.dependsOn && featureData.dependsOn.length > 0 && (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <ArrowRight size={16} />
                 Depends On ({featureData.dependsOn.length})
               </h3>
@@ -276,7 +276,7 @@ export function Sidebar({
                   <button
                     key={dep}
                     onClick={() => onDependencyClick?.(dep)}
-                    className="w-full text-left text-sm text-blue-600 hover:text-blue-800 py-1.5 px-2 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                    className="w-full text-left text-sm text-primary hover:text-primary/80 py-1.5 px-2 bg-primary/10 rounded hover:bg-primary/20 transition-colors"
                   >
                     {'-> '}
                     {dep}
@@ -288,7 +288,7 @@ export function Sidebar({
 
           {!featureData && (clusterData?.imports.external.length ?? 0) > 0 && (
             <section>
-              <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <ArrowRight size={16} />
                 External Imports ({clusterData?.imports.external.length ?? 0})
               </h3>
@@ -302,15 +302,15 @@ export function Sidebar({
             </section>
           )}
 
-          <section className="pt-4 border-t">
-            <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+          <section className="pt-4 border-t border-border">
+            <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
               <Clock size={16} />
               Metadata
             </h3>
-            <div className="text-xs text-gray-500 space-y-1">
+            <div className="text-xs text-muted-foreground space-y-1">
               <p>Created: {formatDate(node.data.metadata.createdAt)}</p>
               <p>Updated: {formatDate(node.data.metadata.updatedAt)}</p>
-              <p className="font-mono text-gray-400">ID: {node.data.id}</p>
+              <p className="font-mono text-muted-foreground/80">ID: {node.data.id}</p>
             </div>
           </section>
         </div>

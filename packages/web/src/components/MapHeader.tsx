@@ -40,10 +40,10 @@ export function MapHeader({
   onRefresh,
 }: MapHeaderProps) {
   return (
-    <header className="bg-white border-b px-4 py-3 flex flex-col gap-3 shrink-0">
+    <header className="bg-card border-b border-border px-4 py-3 flex flex-col gap-3 shrink-0">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">FeatureMap</h1>
+          <h1 className="text-xl font-bold text-foreground">FeatureMap</h1>
         </div>
       </div>
       <MapControlsRow

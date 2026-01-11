@@ -14,7 +14,7 @@ export function LeftToolbar({
   onToggleAddMode,
 }: LeftToolbarProps) {
   return (
-    <div className="absolute left-4 top-20 z-20 flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white/95 p-2 shadow-md backdrop-blur">
+    <div className="absolute left-4 top-20 z-20 flex flex-col items-center gap-2 rounded-xl border border-border bg-card/95 p-2 shadow-md backdrop-blur">
       <Button
         variant="ghost"
         size="icon"
@@ -36,7 +36,7 @@ export function LeftToolbar({
           <MessageSquarePlus size={18} />
         </Button>
         {commentMode === 'place' && (
-          <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-amber-500" />
+          <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-primary" />
         )}
       </div>
     </div>

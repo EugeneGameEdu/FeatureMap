@@ -10,7 +10,7 @@ import {
 } from './commentTypes';
 
 const COMMENT_EDGE_STYLE = {
-  stroke: '#94a3b8',
+  stroke: 'hsl(var(--muted-foreground))',
   strokeDasharray: '6 4',
   strokeWidth: 2,
 };

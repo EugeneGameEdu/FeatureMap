@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 
 export function LoadingScreen() {
   return (
-    <div className="h-screen bg-gray-100 flex items-center justify-center">
-      <div className="flex items-center gap-2 text-gray-600">
+    <div className="h-screen bg-background flex items-center justify-center">
+      <div className="flex items-center gap-2 text-muted-foreground">
         <RefreshCw className="animate-spin" size={20} />
         <span>Loading feature map...</span>
       </div>
@@ -19,10 +19,10 @@ interface ErrorScreenProps {
 
 export function ErrorScreen({ message, onRetry }: ErrorScreenProps) {
   return (
-    <div className="h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-red-600 font-bold mb-2">Error</h2>
-        <p className="text-gray-600 mb-4">{message}</p>
+    <div className="h-screen bg-background flex items-center justify-center">
+      <div className="bg-card border border-border p-6 rounded-lg shadow">
+        <h2 className="text-destructive font-bold mb-2">Error</h2>
+        <p className="text-muted-foreground mb-4">{message}</p>
         <Button onClick={onRetry}>Retry</Button>
       </div>
     </div>

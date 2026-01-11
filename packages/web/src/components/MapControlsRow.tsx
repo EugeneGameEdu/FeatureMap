@@ -50,10 +50,10 @@ export function MapControlsRow({
 }: MapControlsRowProps) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center justify-start gap-3 text-sm text-gray-500">
+      <div className="flex flex-wrap items-center justify-start gap-3 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>View:</span>
-          <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
+          <div className="inline-flex rounded-md border border-border overflow-hidden">
             <Button
               variant={viewMode === 'clusters' ? 'secondary' : 'ghost'}
               size="sm"
@@ -72,7 +72,7 @@ export function MapControlsRow({
         </div>
         <div className="flex items-center gap-2">
           <span>Layer:</span>
-          <div className="inline-flex rounded-md border border-gray-200 overflow-hidden">
+          <div className="inline-flex rounded-md border border-border overflow-hidden">
             {LAYER_FILTERS.map((filter) => (
               <Button
                 key={filter.value}
@@ -88,7 +88,7 @@ export function MapControlsRow({
         <div className="flex items-center gap-2">
           <span>Group:</span>
           <select
-            className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm text-gray-700"
+            className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground"
             value={selectedGroupId}
             onChange={(event) => onGroupChange(event.target.value)}
             disabled={!hasGroups}
@@ -121,7 +121,7 @@ export function MapControlsRow({
         </Button>
       </div>
       {missingGroupFeatures.length > 0 && (
-        <div className="text-xs text-amber-600 text-left">
+        <div className="text-xs text-[var(--warning)] text-left">
           Missing features in group: {missingGroupFeatures.join(', ')}
         </div>
       )}
@@ -129,10 +129,10 @@ export function MapControlsRow({
         <div
           className={`text-xs text-left ${
             layoutMessage.type === 'success'
-              ? 'text-emerald-600'
+              ? 'text-[var(--success)]'
               : layoutMessage.type === 'error'
-              ? 'text-red-600'
-              : 'text-amber-600'
+              ? 'text-destructive'
+              : 'text-[var(--warning)]'
           }`}
         >
           {layoutMessage.text}

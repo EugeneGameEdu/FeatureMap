@@ -1,9 +1,10 @@
 version: 1
 id: cli-core
-layer: shared
+layer: smell
 layerDetection:
   confidence: low
-  signals: []
+  signals:
+    - no layer signals detected
 files:
   - packages/cli/src/index.ts
 exports: []
@@ -20,4 +21,4 @@ imports:
 compositionHash: 2fb448d11702324c
 metadata:
   createdAt: 2026-01-06T09:31:36.332Z
-  updatedAt: 2026-01-06T22:04:33.511Z
+  updatedAt: 2026-01-09T07:57:54.771Z

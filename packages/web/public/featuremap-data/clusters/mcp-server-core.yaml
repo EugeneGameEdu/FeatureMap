@@ -4,8 +4,8 @@ layer: backend
 layerDetection:
   confidence: medium
   signals:
-    - path contains /mcp-server/
     - imports @modelcontextprotocol/sdk
+    - path contains /mcp-server/
 files:
   - packages/mcp-server/src/index.ts
 exports: []
@@ -21,6 +21,7 @@ imports:
     - ./tools/getClusterFiles.js
     - ./tools/getCurrentFeatures.js
     - ./tools/getFeatureDetails.js
+    - ./tools/getGroupDetails.js
     - ./tools/getGroupingInput.js
     - ./tools/getNodeComments.js
     - ./tools/getProjectContext.js
@@ -29,4 +30,4 @@ imports:
 compositionHash: 0d61616d41c6fc88
 metadata:
   createdAt: 2026-01-06T09:31:36.348Z
-  updatedAt: 2026-01-06T22:04:33.534Z
+  updatedAt: 2026-01-09T07:57:54.793Z

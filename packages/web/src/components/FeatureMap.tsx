@@ -3,6 +3,7 @@ import {
   Background,
   BezierEdge,
   ConnectionMode,
+  ControlButton,
   Controls,
   Edge,
   type EdgeChange,
@@ -17,6 +18,7 @@ import {
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { Lock, Unlock } from 'lucide-react';
 import { FeatureNode, type FeatureNodeData } from './FeatureNode';
 import { CommentNode } from './CommentNode';
 import { GroupContainerNode } from './GroupContainerNode';
@@ -57,6 +59,8 @@ interface FeatureMapProps {
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
   onGroupDragStop?: (positions: Record<string, { x: number; y: number }>) => void;
+  readOnly?: boolean;
+  onToggleReadOnly?: () => void;
 }
 
 const nodeTypes: NodeTypes = {
@@ -93,7 +97,10 @@ export function FeatureMap({
   focusedNodeId,
   focusedUntil,
   onGroupDragStop,
+  readOnly = false,
+  onToggleReadOnly,
 }: FeatureMapProps) {
+  const isReadOnly = Boolean(readOnly);
   const dependencyCountById = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const edge of graph.edges) {
@@ -145,10 +152,10 @@ export function FeatureMap({
       type: 'bezier',
       animated: false,
       deletable: false,
-      style: { stroke: '#9ca3af', strokeWidth: 2 },
+      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
       markerEnd: {
         type: 'arrowclosed' as const,
-        color: '#9ca3af',
+        color: 'hsl(var(--border))',
       },
     }));
   }, [graph.edges]);
@@ -216,8 +223,13 @@ export function FeatureMap({
 
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      onEdgesChange(changes);
-      if (!onEdgeRemove) {
+      const nextChanges = isReadOnly
+        ? changes.filter((change) => change.type !== 'remove')
+        : changes;
+      if (nextChanges.length > 0) {
+        onEdgesChange(nextChanges);
+      }
+      if (isReadOnly || !onEdgeRemove) {
         return;
       }
       for (const change of changes) {
@@ -226,14 +238,17 @@ export function FeatureMap({
         }
       }
     },
-    [onEdgeRemove, onEdgesChange]
+    [isReadOnly, onEdgeRemove, onEdgesChange]
   );
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
       setNodes((currentNodes) => {
+        const nextChanges = isReadOnly
+          ? changes.filter((change) => change.type !== 'remove' && change.type !== 'position')
+          : changes;
         const nextNodes = applyGroupDragChanges(
-          changes,
+          nextChanges,
           currentNodes,
           groupMembership ?? new Map(),
           groupDragStateRef.current
@@ -241,7 +256,7 @@ export function FeatureMap({
         nodesRef.current = nextNodes;
         return nextNodes;
       });
-      if (!onNodeRemove) {
+      if (isReadOnly || !onNodeRemove) {
         return;
       }
       for (const change of changes) {
@@ -250,11 +265,14 @@ export function FeatureMap({
         }
       }
     },
-    [groupMembership, onNodeRemove, setNodes]
+    [groupMembership, isReadOnly, onNodeRemove, setNodes]
   );
 
   const handleNodeDragStop = useCallback(
     (_: React.MouseEvent, node: Node) => {
+      if (isReadOnly) {
+        return;
+      }
       if (node.type === GROUP_CONTAINER_NODE_TYPE) {
         const groupId = getGroupIdFromContainer(node.id);
         if (!groupId || !onGroupDragStop) {
@@ -268,8 +286,30 @@ export function FeatureMap({
       }
       onNodeDragStop?.(node);
     },
-    [groupMembership, onGroupDragStop, onNodeDragStop]
+    [groupMembership, isReadOnly, onGroupDragStop, onNodeDragStop]
   );
+
+  const handlePaneClick = useCallback(
+    (event: MouseEvent) => {
+      if (isReadOnly) {
+        return;
+      }
+      onPaneClick?.(event);
+    },
+    [isReadOnly, onPaneClick]
+  );
+
+  const handleConnect = useCallback(
+    (connection: Connection) => {
+      if (isReadOnly) {
+        return;
+      }
+      onConnect?.(connection);
+    },
+    [isReadOnly, onConnect]
+  );
+
+  const lockTitle = isReadOnly ? 'Unlock graph (edit mode)' : 'Lock graph (read-only)';
 
   return (
     <div className="w-full h-full">
@@ -281,23 +321,36 @@ export function FeatureMap({
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onNodeClick={handleNodeClick}
-        onPaneClick={onPaneClick}
-        onConnect={onConnect}
+        onPaneClick={handlePaneClick}
+        onConnect={handleConnect}
         onNodeDragStop={handleNodeDragStop}
         onInit={onInit}
         connectionMode={ConnectionMode.Loose}
-        deleteKeyCode={['Backspace', 'Delete']}
+        deleteKeyCode={isReadOnly ? null : ['Backspace', 'Delete']}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.3}
         maxZoom={2}
-        className={commentPlacementActive ? 'cursor-crosshair' : ''}
+        className={commentPlacementActive ? 'cursor-crosshair bg-background' : 'bg-background'}
         defaultEdgeOptions={{
           type: 'bezier',
         }}
+        nodesDraggable={!isReadOnly}
+        nodesConnectable={!isReadOnly}
+        edgesReconnectable={!isReadOnly}
+        elementsSelectable
       >
-        <Background color="#e5e7eb" gap={20} size={1} />
-        <Controls showInteractive={false} />
+        <Background color="hsl(var(--border))" gap={20} size={1} />
+        <Controls showInteractive={false}>
+          <ControlButton
+            onClick={onToggleReadOnly}
+            title={lockTitle}
+            aria-label={lockTitle}
+            aria-pressed={isReadOnly}
+          >
+            {isReadOnly ? <Lock size={16} /> : <Unlock size={16} />}
+          </ControlButton>
+        </Controls>
       </ReactFlow>
     </div>
   );

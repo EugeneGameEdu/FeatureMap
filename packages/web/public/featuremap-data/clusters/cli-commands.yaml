@@ -1,9 +1,10 @@
 version: 1
 id: cli-commands
-layer: shared
+layer: smell
 layerDetection:
   confidence: low
-  signals: []
+  signals:
+    - no layer signals detected
 files:
   - packages/cli/src/commands/context.ts
   - packages/cli/src/commands/init.ts
@@ -38,8 +39,6 @@ imports:
     - fast-glob
     - fs
     - path
-    - url
-    - yaml
     - zod
   internal:
     - ../analyzer/cluster-id-matching.js
@@ -55,6 +54,7 @@ imports:
     - ../utils/cluster-builder.js
     - ../utils/contextTemplates.js
     - ../utils/contextUtils.js
+    - ../utils/featuremapWebSync.js
     - ../utils/layout-builder.js
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
@@ -62,4 +62,4 @@ imports:
 compositionHash: 739e908fbe699880
 metadata:
   createdAt: 2026-01-06T09:31:36.327Z
-  updatedAt: 2026-01-06T22:04:33.506Z
+  updatedAt: 2026-01-09T07:57:54.766Z

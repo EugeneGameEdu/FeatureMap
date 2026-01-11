@@ -84,11 +84,11 @@ export function ContextEditor({
       <textarea
         value={draft}
         onChange={(event) => handleChange(event.target.value)}
-        className="min-h-[220px] w-full rounded-md border border-gray-200 bg-white p-3 font-mono text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="min-h-[220px] w-full rounded-md border border-border bg-background p-3 font-mono text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         placeholder="Paste YAML here..."
       />
       <div className="flex items-center justify-between gap-3">
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-muted-foreground">
           {token ? 'Token set' : 'Token not set'}
         </div>
         <Button size="sm" onClick={handleSave} disabled={saving}>
@@ -96,12 +96,12 @@ export function ContextEditor({
         </Button>
       </div>
       {validationError && (
-        <div className="text-xs text-red-600" role="alert">
+        <div className="text-xs text-destructive" role="alert">
           {validationError}
         </div>
       )}
       {saveError && (
-        <div className="text-xs text-red-600" role="alert">
+        <div className="text-xs text-destructive" role="alert">
           {saveError}
         </div>
       )}

@@ -1,226 +1,73 @@
 version: 1
 positions:
-  admin-dashboard:
+  cli-analyzer:
+    x: 815
+    y: 586
+  cli-command-interface:
     x: 40
-    y: 678
-  admin-sketch-adventure-management:
-    x: -15.56559008664965
-    y: 153.01268597744334
-  admin-sketch-catalog-management:
-    x: 244.43440991335035
-    y: 153.01268597744334
-  admin-sketch-shell-routing:
-    x: 234.43440991335035
-    y: -16.98731402255666
-  admin-sketch-state-core:
-    x: 169.43440991335035
-    y: 323.0126859774433
-  admin-sketch-ui-components:
-    x: 474.43440991335035
-    y: 323.0126859774433
-  admin-sketch-user-access:
-    x: 484.43440991335035
-    y: 153.01268597744334
-  backend-cmd:
-    x: 40
-    y: 1762
-  backend-cmd-jwt:
-    x: 300
-    y: 1762
-  backend-cmd-server:
-    x: 560
-    y: 1762
-  backend-cmd-unsplash:
-    x: 300
-    y: 960
-  backend-controllers-api:
-    x: 1080
-    y: 1762
-  backend-controllers-socket:
-    x: 1340
-    y: 1762
-  backend-controllers-web:
-    x: 1600
-    y: 1762
-  backend-helpers-imgur:
-    x: 1340
-    y: 960
-  backend-helpers-jwt:
-    x: 40
-    y: 1942
-  backend-helpers-timeago:
-    x: 300
-    y: 1942
-  backend-helpers-uniuri:
-    x: 560
-    y: 1942
-  backend-helpers-unsplash:
-    x: 300
-    y: 1140
-  backend-models:
-    x: 1080
-    y: 1942
-  backend-router:
-    x: 1340
-    y: 1942
-  backend-services-imagebank:
-    x: 1080
-    y: 1140
-  backend-store:
-    x: 1860
-    y: 1942
-  backend-store-sqlstore:
-    x: 40
-    y: 2122
-  backend-web:
-    x: 300
     y: 76
-  core-server-data:
-    x: 386
-    y: 1464
-  frontend-app:
-    x: 40
-    y: 518
-  frontend-app-(public):
-    x: 300
-    y: 518
-  frontend-app-redigera:
-    x: 1080
+  cli-commands:
+    x: 375
+    y: 246
+  cli-constants:
+    x: 795
+    y: 926
+  cli-core:
+    x: 375
     y: 76
-  frontend-app-spela:
-    x: 820
-    y: 518
-  frontend-app-testa:
-    x: 1080
-    y: 518
-  frontend-dev:
-    x: 1860
+  cli-demo-scripts:
+    x: 280
     y: 76
-  frontend-domain:
+  cli-scripts:
     x: 40
-    y: 256
-  frontend-features-editor:
-    x: 300
-    y: 256
-  frontend-features-media:
-    x: 40
-    y: 1500
-  frontend-features-player:
-    x: 300
-    y: 698
-  frontend-features-state:
-    x: 1080
-    y: 256
-  frontend-features-ui-core:
-    x: 820
-    y: 698
-  frontend-lib:
-    x: 1080
-    y: 698
-  frontend-tailwind.config.ts:
-    x: 1340
-    y: 698
-  media-library:
-    x: 40
-    y: 1464
-  public-site-ui:
-    x: 40
-    y: 1202
-  react-admin-components-contentcontainer:
-    x: 40
-    y: 2482
-  react-admin-components-datatable:
-    x: 300
-    y: 2482
-  react-admin-components-dropdown:
-    x: 560
-    y: 2482
-  react-admin-components-loadingindicator:
-    x: 820
-    y: 2482
-  react-admin-components-navigation:
-    x: 1080
-    y: 2482
-  react-admin-components-pagination:
-    x: 1340
-    y: 2482
-  react-admin-components-statisticModal:
-    x: 1600
-    y: 2482
-  react-admin-components-userModal:
-    x: 1860
-    y: 2482
-  react-admin-core:
-    x: 40
-    y: 2662
-  react-admin-pages-adventure:
-    x: 300
-    y: 2662
-  react-admin-pages-adventures:
-    x: 560
-    y: 2662
-  react-admin-pages-authentication:
-    x: 820
-    y: 2662
-  react-admin-pages-categories:
-    x: 1080
-    y: 2662
-  react-admin-pages-category:
-    x: 1340
-    y: 2662
-  react-admin-pages-coCreatorStartPage:
-    x: 1600
-    y: 2662
-  react-admin-pages-home:
-    x: 1860
-    y: 2662
-  react-admin-pages-list:
-    x: 40
-    y: 2842
-  react-admin-pages-lists:
-    x: 300
-    y: 2842
-  react-admin-pages-myAccount:
-    x: 560
-    y: 2842
-  react-admin-pages-users:
-    x: 820
-    y: 2842
-  react-admin-state:
-    x: 1080
-    y: 2842
-  react-admin-state-adventure:
-    x: 1340
-    y: 2842
-  react-admin-state-adventures:
-    x: 1600
-    y: 2842
-  react-admin-state-categories:
-    x: 1860
-    y: 2842
-  react-admin-state-category:
-    x: 40
-    y: 3022
-  react-admin-state-list:
-    x: 300
-    y: 3022
-  react-admin-state-lists:
-    x: 560
-    y: 3022
-  react-admin-state-user:
-    x: 820
-    y: 3022
-  react-admin-state-users:
-    x: 1080
-    y: 3022
-  shared-story-data:
+    y: 586
+  cli-server:
+    x: 450
+    y: 416
+  cli-server-routes:
+    x: 450
+    y: 586
+  cli-types:
+    x: 450
+    y: 926
+  cli-utils:
+    x: 320
+    y: 756
+  code-analysis-engine:
+    x: 160
+    y: 246
+  featuremap-serve-server:
     x: 520
-    y: 940
-  story-editor:
-    x: 760
-    y: 940
-  story-player:
-    x: 760
-    y: 1202
+    y: 76
+  mcp-server:
+    x: 40
+    y: 508
+  mcp-server-core:
+    x: 1419.1028746038933
+    y: 381.6186905839745
+  mcp-server-tools:
+    x: 1419.1028746038933
+    y: 551.6186905839745
+  mcp-server-types:
+    x: 1419.1028746038933
+    y: 891.6186905839745
+  mcp-server-utils:
+    x: 1354.1028746038933
+    y: 721.6186905839745
+  web-components:
+    x: 1135.1056639161823
+    y: -17.337528753852766
+  web-components-ui:
+    x: 1375.1056639161823
+    y: -17.337528753852766
+  web-core:
+    x: 1615.1056639161823
+    y: -17.337528753852766
+  web-featuremap-viewer:
+    x: 401
+    y: 508
+  web-lib:
+    x: 1855.1056639161823
+    y: -17.337528753852766
 metadata:
-  updatedAt: 2026-01-09T19:19:06.240Z
+  updatedAt: 2026-01-07T15:24:59.911Z

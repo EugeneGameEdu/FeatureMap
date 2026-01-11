@@ -4,11 +4,11 @@ layer: frontend
 layerDetection:
   confidence: medium
   signals:
-    - path contains /web/
-    - path contains /lib/
+    - exports React components
     - imports @xyflow/react
     - imports react
-    - exports React components
+    - path contains /lib/
+    - path contains /web/
 files:
   - packages/web/src/lib/commentLoader.ts
   - packages/web/src/lib/commentSchema.ts
@@ -17,9 +17,15 @@ files:
   - packages/web/src/lib/commentVisibility.ts
   - packages/web/src/lib/contextLoader.ts
   - packages/web/src/lib/contextTypes.ts
+  - packages/web/src/lib/featureMapLoaders.ts
   - packages/web/src/lib/focusHelpers.ts
+  - packages/web/src/lib/graphLayout.ts
+  - packages/web/src/lib/groupContainers.ts
+  - packages/web/src/lib/groupDrag.ts
   - packages/web/src/lib/groupFilters.ts
   - packages/web/src/lib/groupLoader.ts
+  - packages/web/src/lib/groupMembership.ts
+  - packages/web/src/lib/groupPacking.ts
   - packages/web/src/lib/layerFilters.ts
   - packages/web/src/lib/loadFeatureMap.ts
   - packages/web/src/lib/searchIndex.ts
@@ -31,6 +37,11 @@ files:
   - packages/web/src/lib/useCommentsApi.ts
   - packages/web/src/lib/useCommentsTool.ts
   - packages/web/src/lib/useContextApi.ts
+  - packages/web/src/lib/useFeatureMapData.ts
+  - packages/web/src/lib/useGroupApi.ts
+  - packages/web/src/lib/useGroupLayoutActions.ts
+  - packages/web/src/lib/useGroupSelection.ts
+  - packages/web/src/lib/useLayoutApi.ts
   - packages/web/src/lib/useOrphanedComments.ts
   - packages/web/src/lib/useSearchNavigation.ts
   - packages/web/src/lib/utils.ts
@@ -41,10 +52,16 @@ exports:
     name: addCommentLink
     type: function
   - isDefault: false
+    name: applyGroupDragChanges
+    type: function
+  - isDefault: false
     name: applyGroupFilter
     type: function
   - isDefault: false
     name: applyLayerFilter
+    type: function
+  - isDefault: false
+    name: applyLayoutPositions
     type: function
   - isDefault: false
     name: buildCommentElements
@@ -54,6 +71,21 @@ exports:
     type: function
   - isDefault: false
     name: buildFocusState
+    type: function
+  - isDefault: false
+    name: buildGroupContainerNodes
+    type: function
+  - isDefault: false
+    name: buildGroupMembers
+    type: function
+  - isDefault: false
+    name: buildGroupMembership
+    type: function
+  - isDefault: false
+    name: buildGroupRectangles
+    type: function
+  - isDefault: false
+    name: buildPrimaryGroupMembership
     type: function
   - isDefault: false
     name: buildSearchIndex
@@ -72,6 +104,9 @@ exports:
     type: variable
   - isDefault: false
     name: cn
+    type: function
+  - isDefault: false
+    name: collectMemberPositions
     type: function
   - isDefault: false
     name: COMMENT_EDGE_TYPE
@@ -212,10 +247,16 @@ exports:
     name: formatDate
     type: function
   - isDefault: false
+    name: getGroupIdFromContainer
+    type: function
+  - isDefault: false
     name: getGroupsForFeature
     type: function
   - isDefault: false
     name: getLayerOrder
+    type: function
+  - isDefault: false
+    name: getLayoutedElements
     type: function
   - isDefault: false
     name: getVisibleCommentIds
@@ -242,8 +283,50 @@ exports:
     name: Group
     type: type
   - isDefault: false
+    name: GROUP_CONTAINER_ID_PREFIX
+    type: variable
+  - isDefault: false
+    name: GROUP_CONTAINER_NODE_TYPE
+    type: variable
+  - isDefault: false
+    name: GROUP_CONTAINER_PADDING
+    type: variable
+  - isDefault: false
+    name: GROUP_HEADER_HEIGHT
+    type: variable
+  - isDefault: false
+    name: GROUP_NOTE_HEIGHT
+    type: variable
+  - isDefault: false
+    name: GROUP_PACK_MARGIN
+    type: variable
+  - isDefault: false
+    name: GroupApiError
+    type: class
+  - isDefault: false
+    name: GroupApiErrorType
+    type: type
+  - isDefault: false
+    name: GroupContainerData
+    type: interface
+  - isDefault: false
+    name: GroupContainerNode
+    type: type
+  - isDefault: false
+    name: GroupDragStateEntry
+    type: interface
+  - isDefault: false
     name: GroupIndexSchema
     type: variable
+  - isDefault: false
+    name: GroupMember
+    type: interface
+  - isDefault: false
+    name: GroupNoteUpdateResult
+    type: interface
+  - isDefault: false
+    name: GroupRectangle
+    type: interface
   - isDefault: false
     name: GroupSchema
     type: variable
@@ -272,6 +355,27 @@ exports:
     name: LayerFilter
     type: type
   - isDefault: false
+    name: Layout
+    type: type
+  - isDefault: false
+    name: LayoutApiError
+    type: class
+  - isDefault: false
+    name: LayoutApiErrorType
+    type: type
+  - isDefault: false
+    name: LayoutSchema
+    type: variable
+  - isDefault: false
+    name: LayoutUpdateResult
+    type: interface
+  - isDefault: false
+    name: loadClustersById
+    type: function
+  - isDefault: false
+    name: loadClusterYamlSafe
+    type: function
+  - isDefault: false
     name: loadComments
     type: function
   - isDefault: false
@@ -281,7 +385,19 @@ exports:
     name: loadFeatureMap
     type: function
   - isDefault: false
+    name: loadFeaturesById
+    type: function
+  - isDefault: false
+    name: loadFeatureYamlSafe
+    type: function
+  - isDefault: false
+    name: loadGraphYaml
+    type: function
+  - isDefault: false
     name: loadGroups
+    type: function
+  - isDefault: false
+    name: loadLayoutYaml
     type: function
   - isDefault: false
     name: MapEntity
@@ -302,8 +418,14 @@ exports:
     name: OverviewSchema
     type: variable
   - isDefault: false
+    name: packGroupRectangles
+    type: function
+  - isDefault: false
     name: parseYamlWithSchema
     type: function
+  - isDefault: false
+    name: PrimaryGroupMembership
+    type: interface
   - isDefault: false
     name: rankSearchResults
     type: function
@@ -362,6 +484,21 @@ exports:
     name: useContextApi
     type: function
   - isDefault: false
+    name: useFeatureMapData
+    type: function
+  - isDefault: false
+    name: useGroupApi
+    type: function
+  - isDefault: false
+    name: useGroupLayoutActions
+    type: function
+  - isDefault: false
+    name: useGroupSelection
+    type: function
+  - isDefault: false
+    name: useLayoutApi
+    type: function
+  - isDefault: false
     name: useOrphanedComments
     type: function
   - isDefault: false
@@ -375,6 +512,7 @@ exports:
     type: interface
 imports:
   external:
+    - "@dagrejs/dagre"
     - "@xyflow/react"
     - clsx
     - js-yaml
@@ -389,10 +527,15 @@ imports:
     - ./commentVisibility
     - ./contextLoader
     - ./contextTypes
+    - ./featureMapLoaders
     - ./focusHelpers
+    - ./groupContainers
     - ./groupFilters
     - ./groupLoader
+    - ./groupMembership
+    - ./groupPacking
     - ./layerFilters
+    - ./loadFeatureMap
     - ./searchIndex
     - ./searchScoring
     - ./searchVisibility
@@ -400,9 +543,11 @@ imports:
     - ./useCommentDeletion
     - ./useCommentPersistence
     - ./useCommentsApi
+    - ./useLayoutApi
     - ./useOrphanedComments
+    - ./wsClient
     - ./yamlParsing
-compositionHash: e13155e60b28c5bd
+compositionHash: 75739f31364387af
 metadata:
   createdAt: 2026-01-06T09:31:36.359Z
-  updatedAt: 2026-01-06T22:04:33.569Z
+  updatedAt: 2026-01-09T07:57:54.832Z

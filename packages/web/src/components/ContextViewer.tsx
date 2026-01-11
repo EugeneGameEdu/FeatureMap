@@ -114,14 +114,14 @@ export function ContextViewer({
           <SheetTitle>Project Context</SheetTitle>
         </SheetHeader>
         {toastMessage && (
-          <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          <div className="mt-3 rounded-md border border-emerald-500/40 bg-emerald-500/20 px-3 py-2 text-sm text-emerald-200">
             {toastMessage}
           </div>
         )}
         <div className="mt-4 flex flex-col gap-4">
-          <div className="rounded-lg border bg-white p-3 shadow-sm">
+          <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-gray-800">Session token</div>
+              <div className="text-sm font-semibold text-foreground">Session token</div>
               <Badge variant={token ? 'secondary' : 'outline'}>
                 {token ? 'Token set' : 'Token not set'}
               </Badge>
@@ -131,9 +131,9 @@ export function ContextViewer({
               value={token}
               onChange={(event) => setToken(event.target.value)}
               placeholder="Paste session token"
-              className="mt-2 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-muted-foreground">
               Paste the token from the serve console to enable saving.
             </div>
           </div>
@@ -195,11 +195,11 @@ function ContextSection({
     file.status === 'present' ? 'secondary' : file.status === 'missing' ? 'outline' : 'destructive';
 
   return (
-    <div className="rounded-lg border bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold text-gray-800">{section.label}</div>
-          <div className="text-xs text-gray-500">{section.filename}</div>
+          <div className="text-sm font-semibold text-foreground">{section.label}</div>
+          <div className="text-xs text-muted-foreground">{section.filename}</div>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant={badgeVariant}>{statusLabel}</Badge>
@@ -220,11 +220,11 @@ function ContextSection({
       </div>
 
       {file.status === 'missing' && (
-        <div className="mt-3 text-sm text-gray-500">Missing file.</div>
+        <div className="mt-3 text-sm text-muted-foreground">Missing file.</div>
       )}
 
       {file.status === 'invalid' && (
-        <div className="mt-3 text-sm text-red-600">{file.error ?? 'Invalid YAML.'}</div>
+        <div className="mt-3 text-sm text-destructive">{file.error ?? 'Invalid YAML.'}</div>
       )}
 
       {isEditing && editable && schema && (
@@ -240,7 +240,7 @@ function ContextSection({
       )}
 
       {!isEditing && file.raw && (
-        <pre className="mt-3 max-h-56 overflow-auto rounded-md bg-gray-50 p-3 text-xs text-gray-700 whitespace-pre-wrap">
+        <pre className="mt-3 max-h-56 overflow-auto rounded-md bg-muted p-3 text-xs text-foreground whitespace-pre-wrap">
           {file.raw}
         </pre>
       )}

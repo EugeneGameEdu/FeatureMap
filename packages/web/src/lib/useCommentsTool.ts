@@ -24,6 +24,7 @@ interface UseCommentsToolInput {
   selectedCommentId?: string | null;
   showComments: boolean;
   reactFlowInstance: ReactFlowInstance | null;
+  readOnly?: boolean;
 }
 export interface UseCommentsToolResult {
   commentElements: { nodes: Node[]; edges: Edge[] };
@@ -45,6 +46,7 @@ export function useCommentsTool({
   selectedCommentId,
   showComments,
   reactFlowInstance,
+  readOnly = false,
 }: UseCommentsToolInput): UseCommentsToolResult {
   const [commentToolMode, setCommentToolMode] = useState<CommentToolMode>('off');
   const [comments, setComments] = useState<UiComment[]>([]);
@@ -55,6 +57,19 @@ export function useCommentsTool({
     }
     setComments((prev) => mergeSavedComments(data.comments, prev));
   }, [data]);
+
+  useEffect(() => {
+    if (!readOnly) {
+      return;
+    }
+    setCommentToolMode('off');
+    setComments((prev) =>
+      prev.map((comment) => ({
+        ...comment,
+        isEditing: false,
+      }))
+    );
+  }, [readOnly]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -89,9 +104,12 @@ export function useCommentsTool({
     handleDelete,
   });
 
-  const handlers: CommentNodeHandlers = useMemo(
+  const handlers = useMemo<CommentNodeHandlers | undefined>(
     () => ({
       onStartEdit: (id) => {
+        if (readOnly) {
+          return;
+        }
         updateComment(id, (comment) => ({
           ...comment,
           isEditing: true,
@@ -99,6 +117,9 @@ export function useCommentsTool({
         }));
       },
       onCommitEdit: (id, value) => {
+        if (readOnly) {
+          return;
+        }
         const comment = comments.find((entry) => entry.id === id);
         if (!comment) {
           return;
@@ -118,6 +139,9 @@ export function useCommentsTool({
         persistComment(nextComment, { content: nextContent });
       },
       onCancelEdit: (id) => {
+        if (readOnly) {
+          return;
+        }
         updateComment(id, (comment) => ({
           ...comment,
           isEditing: false,
@@ -125,6 +149,9 @@ export function useCommentsTool({
         }));
       },
       onTogglePin: (id) => {
+        if (readOnly) {
+          return;
+        }
         const comment = comments.find((entry) => entry.id === id);
         if (!comment) {
           return;
@@ -145,7 +172,7 @@ export function useCommentsTool({
         }
       },
     }),
-    [canPersist, comments, persistComment, promptOrphan, updateComment]
+    [canPersist, comments, persistComment, promptOrphan, readOnly, updateComment]
   );
 
   const commentElements = useMemo(() => {
@@ -168,6 +195,9 @@ export function useCommentsTool({
 
   const handlePaneClick = useCallback(
     (event: MouseEvent) => {
+      if (readOnly) {
+        return;
+      }
       if (commentToolMode !== 'place' || !reactFlowInstance) {
         return;
       }
@@ -179,11 +209,14 @@ export function useCommentsTool({
       setComments((prev) => [...prev, draft]);
       setCommentToolMode('off');
     },
-    [commentToolMode, currentView, reactFlowInstance]
+    [commentToolMode, currentView, reactFlowInstance, readOnly]
   );
 
   const handleConnect = useCallback(
     (connection: Connection) => {
+      if (readOnly) {
+        return;
+      }
       if (!connection.source || !connection.target) {
         return;
       }
@@ -209,11 +242,14 @@ export function useCommentsTool({
       }
       persistComment(next, { links: next.links }, false);
     },
-    [canPersist, comments, data, persistComment, updateComment]
+    [canPersist, comments, data, persistComment, readOnly, updateComment]
   );
 
   const handleEdgeRemove = useCallback(
     (edgeId: string) => {
+      if (readOnly) {
+        return;
+      }
       if (!edgeId.startsWith('comment-link:')) {
         return;
       }
@@ -242,11 +278,14 @@ export function useCommentsTool({
         persistComment(next, { links: next.links }, false);
       }
     },
-    [canPersist, comments, persistComment, promptOrphan, updateComment]
+    [canPersist, comments, persistComment, promptOrphan, readOnly, updateComment]
   );
 
   const handleNodeDragStop = useCallback(
     (node: Node) => {
+      if (readOnly) {
+        return;
+      }
       if (!isCommentNodeId(node.id)) {
         return;
       }
@@ -263,23 +302,29 @@ export function useCommentsTool({
       }
       persistComment(next, { position }, false);
     },
-    [canPersist, comments, persistComment, updateComment]
+    [canPersist, comments, persistComment, readOnly, updateComment]
   );
 
   const handleNodeRemove = useCallback(
     (nodeId: string) => {
+      if (readOnly) {
+        return;
+      }
       if (!isCommentNodeId(nodeId)) {
         return;
       }
       const commentId = nodeId.slice(COMMENT_NODE_PREFIX.length);
       handleDelete(commentId);
     },
-    [handleDelete]
+    [handleDelete, readOnly]
   );
 
   const togglePlacementMode = useCallback(() => {
+    if (readOnly) {
+      return;
+    }
     setCommentToolMode((mode) => toggleAddMode(mode));
-  }, []);
+  }, [readOnly]);
 
   return {
     commentElements,

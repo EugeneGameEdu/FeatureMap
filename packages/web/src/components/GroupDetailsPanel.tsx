@@ -63,11 +63,11 @@ export function GroupDetailsPanel({
   };
 
   return (
-    <div className="w-[350px] border-l bg-white flex flex-col">
-      <div className="p-4 border-b">
+    <div className="w-[350px] border-l border-border bg-card flex flex-col">
+      <div className="p-4 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-2">
-            <h2 className="font-semibold text-gray-900">{group.name}</h2>
+            <h2 className="font-semibold text-foreground">{group.name}</h2>
             <div className="flex gap-2 mt-2">
               <Badge variant="outline" className="text-xs">
                 group
@@ -84,27 +84,27 @@ export function GroupDetailsPanel({
         <div className="p-4 space-y-6">
           {group.description ? (
             <section>
-              <p className="text-sm text-gray-600">{group.description}</p>
+              <p className="text-sm text-muted-foreground">{group.description}</p>
             </section>
           ) : (
             <section>
-              <p className="text-sm text-gray-400 italic">
+              <p className="text-sm text-muted-foreground/80 italic">
                 No description yet.
               </p>
             </section>
           )}
 
           <section>
-            <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
               <Tag size={16} />
               Note
             </h3>
             {!isEditing ? (
               <div className="space-y-2">
                 {group.note ? (
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap">{group.note}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{group.note}</p>
                 ) : (
-                  <p className="text-sm text-gray-400 italic">No note yet.</p>
+                  <p className="text-sm text-muted-foreground/80 italic">No note yet.</p>
                 )}
                 <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
                   Edit note
@@ -113,11 +113,11 @@ export function GroupDetailsPanel({
             ) : (
               <div className="space-y-2">
                 <textarea
-                  className="w-full min-h-[120px] rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full min-h-[120px] rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   value={noteDraft}
                   onChange={(event) => setNoteDraft(event.target.value)}
                 />
-                {saveError && <div className="text-xs text-red-600">{saveError}</div>}
+                {saveError && <div className="text-xs text-destructive">{saveError}</div>}
                 <div className="flex items-center gap-2">
                   <Button size="sm" onClick={handleSave} disabled={saving}>
                     {saving ? 'Saving...' : 'Save'}
@@ -131,26 +131,26 @@ export function GroupDetailsPanel({
           </section>
 
           <section>
-            <h3 className="text-sm font-medium text-gray-900 mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
               <Layers size={16} />
               {memberLabel} ({groupMembers.length})
             </h3>
             {groupMembers.length === 0 ? (
-              <p className="text-sm text-gray-400 italic">No members visible.</p>
+              <p className="text-sm text-muted-foreground/80 italic">No members visible.</p>
             ) : (
               <div className="space-y-2">
                 {groupMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="rounded border border-gray-100 bg-gray-50 px-2 py-2"
+                    className="rounded border border-border bg-muted px-2 py-2"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="text-sm text-gray-800">
+                      <div className="text-sm text-foreground">
                         {member.label}
-                        <div className="text-xs text-gray-500 font-mono">{member.id}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{member.id}</div>
                       </div>
                       {member.missing && (
-                        <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200">
+                        <Badge variant="outline" className="bg-destructive/15 text-destructive border-destructive/40">
                           <AlertTriangle size={12} className="mr-1" />
                           missing
                         </Badge>

@@ -41,19 +41,19 @@ export function SearchPalette({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 max-w-xl">
-        <div className="flex items-center gap-2 border-b px-4 py-3">
-          <Search size={16} className="text-gray-400" />
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+          <Search size={16} className="text-muted-foreground" />
           <input
             ref={inputRef}
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Search features, clusters, files..."
-            className="flex-1 bg-transparent text-sm text-gray-800 placeholder:text-gray-400 outline-none"
+            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
         </div>
 
         {warning && (
-          <div className="flex items-center justify-between gap-3 border-b bg-amber-50 px-4 py-2 text-xs text-amber-700">
+          <div className="flex items-center justify-between gap-3 border-b border-border bg-amber-500/10 px-4 py-2 text-xs text-amber-200">
             <span>{warning.message}</span>
             {warning.actionLabel && warning.onAction && (
               <Button variant="ghost" size="sm" onClick={warning.onAction}>
@@ -65,12 +65,12 @@ export function SearchPalette({
 
         <div className="max-h-72 overflow-y-auto">
           {!showResults && (
-            <div className="px-4 py-6 text-sm text-gray-400">
+            <div className="px-4 py-6 text-sm text-muted-foreground">
               Type at least 2 characters to search.
             </div>
           )}
           {showResults && results.length === 0 && (
-            <div className="px-4 py-6 text-sm text-gray-400">No matches.</div>
+            <div className="px-4 py-6 text-sm text-muted-foreground">No matches.</div>
           )}
           {showResults && results.length > 0 && (
             <div className="py-1">
@@ -78,20 +78,20 @@ export function SearchPalette({
                 <button
                   key={`${result.type}-${result.id}`}
                   onClick={() => onSelectResult(result)}
-                  className="w-full px-4 py-2 text-left transition-colors hover:bg-gray-50"
+                  className="w-full px-4 py-2 text-left transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-sm font-medium text-gray-900 truncate">
+                      <div className="text-sm font-medium text-foreground truncate">
                         {result.title}
                       </div>
                       {result.subtitle && (
-                        <div className="text-xs text-gray-500 truncate">
+                        <div className="text-xs text-muted-foreground truncate">
                           {result.subtitle}
                         </div>
                       )}
                     </div>
-                    <span className="text-[10px] uppercase text-gray-400">
+                    <span className="text-[10px] uppercase text-muted-foreground/80">
                       {result.type}
                     </span>
                   </div>

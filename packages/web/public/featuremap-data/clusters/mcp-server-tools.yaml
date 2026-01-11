@@ -12,6 +12,7 @@ files:
   - packages/mcp-server/src/tools/getClusterFiles.ts
   - packages/mcp-server/src/tools/getCurrentFeatures.ts
   - packages/mcp-server/src/tools/getFeatureDetails.ts
+  - packages/mcp-server/src/tools/getGroupDetails.ts
   - packages/mcp-server/src/tools/getGroupingInput.ts
   - packages/mcp-server/src/tools/getGroupingInputUtils.ts
   - packages/mcp-server/src/tools/getNodeComments.ts
@@ -48,6 +49,9 @@ exports:
     type: function
   - isDefault: false
     name: getFeatureDetailsTool
+    type: variable
+  - isDefault: false
+    name: getGroupDetailsTool
     type: variable
   - isDefault: false
     name: getGroupingInputTool
@@ -95,13 +99,14 @@ imports:
     - ../utils/featureYaml.js
     - ../utils/findFeaturemapDir.js
     - ../utils/graphBuilder.js
+    - ../utils/groupNotes.js
     - ../utils/groupYaml.js
     - ../utils/listUtils.js
     - ../utils/navigationLoaders.js
     - ../utils/searchScoring.js
     - ../utils/slugify.js
     - ./getGroupingInputUtils.js
-compositionHash: 9c1d41bfc27eedde
+compositionHash: a1599d598f9d2477
 metadata:
   createdAt: 2026-01-06T09:31:36.350Z
-  updatedAt: 2026-01-06T22:04:33.538Z
+  updatedAt: 2026-01-09T07:57:54.798Z

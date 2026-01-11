@@ -10,6 +10,7 @@ files:
   - packages/cli/src/utils/composition-hash.ts
   - packages/cli/src/utils/contextTemplates.ts
   - packages/cli/src/utils/contextUtils.ts
+  - packages/cli/src/utils/featuremapWebSync.ts
   - packages/cli/src/utils/file-categories.ts
   - packages/cli/src/utils/layout-builder.ts
   - packages/cli/src/utils/scanCompare.ts
@@ -48,7 +49,13 @@ exports:
     name: ContextTemplateDefinition
     type: interface
   - isDefault: false
+    name: copyFeatureMapData
+    type: function
+  - isDefault: false
     name: findPackageJsonPaths
+    type: function
+  - isDefault: false
+    name: findWebPackagePath
     type: function
   - isDefault: false
     name: generateCompositionHash
@@ -97,7 +104,9 @@ imports:
     - crypto
     - fast-glob
     - fs
+    - module
     - path
+    - url
     - yaml
     - zod
   internal:
@@ -112,7 +121,7 @@ imports:
     - ./version-checker.js
     - ./yaml-key-order.js
     - ./yaml-loader.js
-compositionHash: 5e84d4004748abec
+compositionHash: 0d3cb36682abdb4b
 metadata:
   createdAt: 2026-01-06T09:31:36.345Z
-  updatedAt: 2026-01-06T22:04:33.531Z
+  updatedAt: 2026-01-09T07:57:54.790Z

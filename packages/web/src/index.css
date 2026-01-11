@@ -4,61 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
-  }
-}
+    --background: 220 16% 22%;
+    --foreground: 218 27% 94%;
+    --card: 220 17% 28%;
+    --card-foreground: 218 27% 94%;
+    --popover: 220 17% 28%;
+    --popover-foreground: 218 27% 94%;
+    --primary: 14 51% 63%;
+    --primary-foreground: 218 27% 94%;
+    --secondary: 220 16% 32%;
+    --secondary-foreground: 218 27% 94%;
+    --muted: 220 16% 32%;
+    --muted-foreground: 220 13% 60%;
+    --accent: 14 51% 63%;
+    --accent-foreground: 218 27% 94%;
+    --destructive: 354 42% 56%;
+    --destructive-foreground: 218 27% 94%;
+    --border: 220 16% 36%;
+    --input: 220 16% 36%;
+    --ring: 14 51% 63%;
+    --chart-1: 14 51% 63%;
+    --chart-2: 92 28% 65%;
+    --chart-3: 40 71% 73%;
+    --chart-4: 220 16% 36%;
+    --chart-5: 354 42% 56%;
+    --radius: 0.5rem;
 
-@layer base {
+    --bg: #2e3440;
+    --bg-secondary: #3b4252;
+    --bg-tertiary: #434c5e;
+    --bg-hover: #4c566a;
+    --border-light: #5c6678;
+    --text: #eceff4;
+    --text-secondary: #d8dee9;
+    --text-muted: #7b88a1;
+    --accent-hex: #d08770;
+    --accent-hover: #e09980;
+    --accent-muted: rgba(208, 135, 112, 0.2);
+    --success: #a3be8c;
+    --warning: #ebcb8b;
+    --danger: #bf616a;
+  }
+
   * {
     @apply border-border;
   }
@@ -67,6 +54,100 @@
   }
 }
 
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium;
+    @apply transition-colors duration-150;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-muted)];
+    @apply disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-[var(--accent-hex)] text-white hover:bg-[var(--accent-hover)];
+  }
+
+  .btn-danger {
+    @apply bg-[var(--danger)] text-white hover:opacity-90;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-sm font-medium transition-colors duration-150;
+    @apply text-[var(--text-secondary)] hover:text-[var(--text)];
+    @apply border-b-2 border-transparent;
+  }
+
+  .tab.active {
+    @apply text-[var(--text)] border-[var(--accent-hex)];
+  }
+
+  .section-header {
+    @apply flex items-center gap-2 px-4 py-2 text-sm font-semibold;
+    @apply bg-[var(--bg-tertiary)] text-[var(--text)];
+    @apply border-b border-[var(--border-light)];
+  }
+
+  .section-content {
+    @apply p-4;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded px-2 py-0.5 text-xs font-medium;
+  }
+
+  .badge-media {
+    @apply bg-cyan-100 text-cyan-700;
+  }
+
+  .badge-flag {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+}
+
 .react-flow__edge.comment-link.selected .react-flow__edge-path {
-  stroke: #2563eb !important;
+  stroke: var(--accent-hex) !important;
+}
+
+.react-flow {
+  --xy-controls-button-background-color: hsl(var(--card));
+  --xy-controls-button-background-color-hover: hsl(var(--secondary));
+  --xy-controls-button-color: hsl(var(--foreground));
+  --xy-controls-button-color-hover: hsl(var(--foreground));
+  --xy-controls-button-border-color: hsl(var(--border));
+  --xy-controls-box-shadow: 0 6px 16px hsl(var(--background) / 0.45);
+}
+
+.react-flow__controls {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  background: hsl(var(--card));
+  box-shadow: 0 6px 16px hsl(var(--background) / 0.45);
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  height: 32px;
+  width: 32px;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.react-flow__controls-button:hover {
+  background: hsl(var(--secondary));
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: 0;
+}
+
+.react-flow__controls-button svg {
+  height: 16px;
+  width: 16px;
+}
+
+.react-flow__controls-button[aria-pressed='true'] {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary));
 }

@@ -52,7 +52,7 @@ export function ProjectOverview({ stats, techStack, conventions }: ProjectOvervi
             Statistics
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-gray-600">
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
           <div className="flex flex-wrap gap-3">
             <span>{stats.clusters} clusters</span>
             <span>{stats.features} features</span>
@@ -61,7 +61,7 @@ export function ProjectOverview({ stats, techStack, conventions }: ProjectOvervi
             <span>{stats.files} files</span>
             <span>{stats.connections} connections</span>
           </div>
-          <div className="text-xs text-gray-500">Updated {updatedLabel}</div>
+          <div className="text-xs text-muted-foreground/80">Updated {updatedLabel}</div>
         </CardContent>
       </Card>
 
@@ -72,7 +72,7 @@ export function ProjectOverview({ stats, techStack, conventions }: ProjectOvervi
             Tech Stack
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-gray-700">
+        <CardContent className="space-y-4 text-sm text-foreground">
           <StackSection icon={Package} label="Frameworks">
             {renderBadgeList(frameworkLabels, techFallback)}
           </StackSection>
@@ -95,9 +95,9 @@ export function ProjectOverview({ stats, techStack, conventions }: ProjectOvervi
             Conventions
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm text-gray-700">
+        <CardContent className="space-y-3 text-sm text-foreground">
           <div className="space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Naming patterns
             </div>
             <div className="space-y-1">
@@ -107,26 +107,26 @@ export function ProjectOverview({ stats, techStack, conventions }: ProjectOvervi
             </div>
           </div>
           <div className="space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Import style
             </div>
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-foreground">
               {conventionsData?.imports?.style ?? conventionsFallback}
             </div>
           </div>
           <div className="space-y-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               File structure
             </div>
             {fileOrganization?.pattern ? (
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-foreground">
                 <div>{fileOrganization.pattern}</div>
                 {fileOrganization.description && (
-                  <div className="text-xs text-gray-500">{fileOrganization.description}</div>
+                  <div className="text-xs text-muted-foreground/80">{fileOrganization.description}</div>
                 )}
               </div>
             ) : (
-              <div className="text-sm text-gray-700">{conventionsFallback}</div>
+              <div className="text-sm text-foreground">{conventionsFallback}</div>
             )}
           </div>
         </CardContent>
@@ -146,7 +146,7 @@ function StackSection({
 }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         <Icon size={14} />
         {label}
       </div>
@@ -157,7 +157,7 @@ function StackSection({
 
 function renderBadgeList(items: string[], fallback: string) {
   if (items.length === 0) {
-    return <div className="text-xs text-gray-500">{fallback}</div>;
+    return <div className="text-xs text-muted-foreground/80">{fallback}</div>;
   }
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -173,8 +173,8 @@ function renderBadgeList(items: string[], fallback: string) {
 function KeyValue({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-xs text-gray-500">{label}</span>
-      <span className="text-sm text-gray-700">{value}</span>
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-sm text-foreground">{value}</span>
     </div>
   );
 }

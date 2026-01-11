@@ -25,6 +25,7 @@ function App() {
   const [selectedLayer, setSelectedLayer] = useState<LayerFilter>('all');
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [showComments, setShowComments] = useState(true);
+  const [readOnly, setReadOnly] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
   const activeGraph = data ? (viewMode === 'clusters' ? data.clusterGraph : data.featureGraph) : null;
@@ -113,6 +114,7 @@ function App() {
     selectedCommentId,
     showComments,
     reactFlowInstance,
+    readOnly,
   });
   const {
     searchOpen,
@@ -205,6 +207,9 @@ function App() {
     setSelectedNodeId(null);
     clearGroupSelection();
   };
+  const handleToggleReadOnly = useCallback(() => {
+    setReadOnly((current) => !current);
+  }, []);
   if (loading) {
     return <LoadingScreen />;
   }
@@ -231,7 +236,7 @@ function App() {
   const missingGroupFeatures = selectedGroup?.missingFeatureIds ?? [];
   const hasGroups = data.groups.length > 0;
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-background">
       <SearchPalette
         open={searchOpen}
         query={searchQuery}
@@ -288,6 +293,8 @@ function App() {
             selectedNodeId={selectedNodeId}
             focusedNodeId={focusedNodeId}
             focusedUntil={focusedUntil}
+            readOnly={readOnly}
+            onToggleReadOnly={handleToggleReadOnly}
           />
         </main>
         <Sidebar

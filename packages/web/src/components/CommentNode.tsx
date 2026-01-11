@@ -52,20 +52,20 @@ function CommentNodeComponent({ data, selected }: NodeProps<CommentFlowNode>) {
 
   return (
     <div
-      className={`rounded-lg border-2 bg-white shadow-sm px-4 py-3 min-w-[200px] max-w-[260px] ${
-        isDraft ? 'border-dashed border-gray-300' : 'border-gray-300'
-      } ${selected ? 'border-blue-500 ring-2 ring-blue-200 shadow-md' : ''}`}
+      className={`rounded-lg border-2 bg-card shadow-sm px-4 py-3 min-w-[200px] max-w-[260px] ${
+        isDraft ? 'border-dashed border-border' : 'border-border'
+      } ${selected ? 'border-primary ring-2 ring-primary/30 shadow-md' : ''}`}
       onDoubleClick={() => onStartEdit?.()}
     >
       <div className="flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-wide text-gray-400 font-semibold">
+        <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
           COMMENT
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             className={`nodrag nopan ${
-              isPinned ? 'text-amber-500 hover:text-amber-600' : 'text-gray-400 hover:text-gray-600'
+              isPinned ? 'text-primary hover:text-primary/80' : 'text-muted-foreground hover:text-foreground'
             }`}
             onPointerDown={(event) => event.stopPropagation()}
             onMouseDown={(event) => event.stopPropagation()}
@@ -79,18 +79,18 @@ function CommentNodeComponent({ data, selected }: NodeProps<CommentFlowNode>) {
             {isPinned ? <Pin size={14} /> : <PinOff size={14} />}
           </button>
           {isDraft && (
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary">
               Draft
             </span>
           )}
         </div>
       </div>
 
-      <div className="mt-2 rounded-md border border-gray-200 bg-gray-50/80 px-2 py-1">
+      <div className="mt-2 rounded-md border border-border bg-muted/70 px-2 py-1">
         {isEditing ? (
           <textarea
             ref={textareaRef}
-            className="w-full min-h-[80px] max-h-[160px] resize-none bg-transparent text-sm text-gray-700 focus:outline-none"
+            className="w-full min-h-[80px] max-h-[160px] resize-none bg-transparent text-sm text-foreground focus:outline-none"
             value={draftValue}
             onChange={(event) => setDraftValue(event.target.value)}
             onBlur={() => {
@@ -106,7 +106,7 @@ function CommentNodeComponent({ data, selected }: NodeProps<CommentFlowNode>) {
         ) : (
           <div
             className={`text-sm whitespace-pre-wrap ${
-              displayContent.trim().length === 0 ? 'text-gray-400 italic' : 'text-gray-700'
+              displayContent.trim().length === 0 ? 'text-muted-foreground italic' : 'text-foreground'
             }`}
           >
             {displayContent.trim().length === 0 ? 'Double-click to edit' : displayContent}
@@ -115,16 +115,16 @@ function CommentNodeComponent({ data, selected }: NodeProps<CommentFlowNode>) {
       </div>
 
       {showOrphanWarning && (
-        <div className="mt-2 text-[10px] text-amber-600">
+        <div className="mt-2 text-[10px] text-[var(--warning)]">
           Unlinked note will be deleted unless pinned.
         </div>
       )}
 
       {saveState === 'error' && saveError && (
-        <div className="mt-1 text-[10px] text-red-600">{saveError}</div>
+        <div className="mt-1 text-[10px] text-destructive">{saveError}</div>
       )}
 
-      <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-gray-400" />
+      <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-muted-foreground" />
     </div>
   );
 }

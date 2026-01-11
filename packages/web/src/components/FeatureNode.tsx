@@ -23,22 +23,22 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
   const Icon = fileCount > 5 ? Layers : fileCount > 1 ? Folder : Box;
 
   const borderColor = selected
-    ? 'border-blue-500'
+    ? 'border-primary'
     : source === 'ai'
-    ? 'border-green-400'
+    ? 'border-emerald-400'
     : source === 'user'
     ? 'border-purple-400'
-    : 'border-gray-300';
+    : 'border-border';
 
   const bgColor =
     status === 'deprecated'
-      ? 'bg-amber-50'
-      : status === 'ignored'
-      ? 'bg-gray-100'
-      : 'bg-white';
+      ? 'bg-muted'
+    : status === 'ignored'
+      ? 'bg-secondary/60'
+      : 'bg-card';
 
   const focusRing = isFocused
-    ? 'ring-2 ring-amber-300 ring-offset-2 ring-offset-white animate-pulse'
+    ? 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background animate-pulse'
     : '';
 
   return (
@@ -47,11 +47,11 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
         px-4 py-3 rounded-lg border-2 shadow-sm min-w-[160px]
         transition-all duration-150
         ${borderColor} ${bgColor}
-        ${selected ? 'shadow-md ring-2 ring-blue-200' : 'hover:shadow-md'}
+        ${selected ? 'shadow-md ring-2 ring-primary/30' : 'hover:shadow-md'}
         ${focusRing}
       `}
     >
-      <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-gray-400" />
+      <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-muted-foreground" />
 
       <div className="flex items-start gap-3">
         <div className="mt-0.5">
@@ -59,27 +59,27 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
             size={18}
             className={
               source === 'ai'
-                ? 'text-green-500'
+                ? 'text-emerald-400'
                 : source === 'user'
-                ? 'text-purple-500'
-                : 'text-gray-400'
+                ? 'text-purple-400'
+                : 'text-muted-foreground'
             }
           />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm text-gray-800 truncate">{label}</div>
+          <div className="font-medium text-sm text-foreground truncate">{label}</div>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {fileCount} {fileCount === 1 ? 'file' : 'files'}
             </span>
             {dependencyCount > 0 && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-muted-foreground/80">
                 {'-> '}
                 {dependencyCount}
               </span>
             )}
-            <span className="text-[10px] uppercase text-gray-400">{kind}</span>
+            <span className="text-[10px] uppercase text-muted-foreground/80">{kind}</span>
           </div>
         </div>
 
@@ -87,8 +87,8 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
           <div
             className={`
               text-[10px] px-1.5 py-0.5 rounded font-medium
-              ${source === 'ai' ? 'bg-green-100 text-green-700' : ''}
-              ${source === 'user' ? 'bg-purple-100 text-purple-700' : ''}
+              ${source === 'ai' ? 'bg-emerald-500/20 text-emerald-200' : ''}
+              ${source === 'user' ? 'bg-purple-500/20 text-purple-200' : ''}
             `}
           >
             {source === 'ai' ? 'AI' : 'User'}
@@ -96,7 +96,7 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
         )}
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-gray-400" />
+      <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-muted-foreground" />
     </div>
   );
 }
