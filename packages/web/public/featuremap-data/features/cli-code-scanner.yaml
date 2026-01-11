@@ -1,0 +1,16 @@
+version: 1
+id: cli-code-scanner
+name: Code Scanning Engine
+description: "Reads source files, detects structure, and builds the cluster and dependency data. Example: it walks your project and figures out what belongs together."
+source: ai
+status: active
+scope: backend
+clusters:
+  - cli-analyzer
+composition:
+  hash: 10812ad9d4e9e053
+metadata:
+  createdAt: 2026-01-11T15:24:32.847Z
+  updatedAt: 2026-01-11T15:24:32.847Z
+  lastModifiedBy: ai
+  version: 1

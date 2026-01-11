@@ -6,6 +6,7 @@ layerDetection:
   signals:
     - no layer signals detected
 files:
+  - packages/cli/src/api.ts
   - packages/cli/src/index.ts
 exports: []
 imports:
@@ -18,7 +19,7 @@ imports:
     - ./commands/serve.js
     - ./commands/validate.js
     - ./commands/web.js
-compositionHash: 2fb448d11702324c
+compositionHash: 6697022cf94640df
 metadata:
-  createdAt: 2026-01-06T09:31:36.332Z
-  updatedAt: 2026-01-09T07:57:54.771Z
+  createdAt: 2026-01-11T15:14:54.283Z
+  updatedAt: 2026-01-11T15:14:54.283Z

@@ -1,10 +1,10 @@
 version: 1
 id: cli-commands
-layer: smell
+layer: backend
 layerDetection:
-  confidence: low
+  confidence: medium
   signals:
-    - no layer signals detected
+    - imports @modelcontextprotocol/sdk
 files:
   - packages/cli/src/commands/context.ts
   - packages/cli/src/commands/init.ts
@@ -33,12 +33,16 @@ exports:
     type: function
 imports:
   external:
+    - "@modelcontextprotocol/sdk/client/index.js"
+    - "@modelcontextprotocol/sdk/client/stdio.js"
     - child_process
     - commander
     - crypto
     - fast-glob
     - fs
     - path
+    - readline
+    - yaml
     - zod
   internal:
     - ../analyzer/cluster-id-matching.js
@@ -47,6 +51,7 @@ imports:
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
     - ../analyzer/scanner.js
+    - ../analyzer/structure-scanner.js
     - ../analyzer/tech-stack-detector.js
     - ../constants/versions.js
     - ../server/createServer.js
@@ -61,5 +66,5 @@ imports:
     - ../utils/yaml-loader.js
 compositionHash: 739e908fbe699880
 metadata:
-  createdAt: 2026-01-06T09:31:36.327Z
-  updatedAt: 2026-01-09T07:57:54.766Z
+  createdAt: 2026-01-11T15:14:54.279Z
+  updatedAt: 2026-01-11T15:14:54.279Z

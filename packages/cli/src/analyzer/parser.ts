@@ -1,4 +1,5 @@
 import { Project, SourceFile, SyntaxKind } from 'ts-morph';
+import type { AliasResolver } from './tsconfig.js';
 
 export interface FileExport {
   name: string;
@@ -31,7 +32,10 @@ function getProject(): Project {
   return project;
 }
 
-export function parseFile(filePath: string): ParsedFile {
+export function parseFile(
+  filePath: string,
+  options?: { aliasResolver?: AliasResolver }
+): ParsedFile {
   const proj = getProject();
   
   // Добавляем файл в проект (или получаем существующий)
@@ -44,7 +48,7 @@ export function parseFile(filePath: string): ParsedFile {
   }
 
   const exports = extractExports(sourceFile);
-  const imports = extractImports(sourceFile);
+  const imports = extractImports(sourceFile, filePath, options?.aliasResolver);
   const linesOfCode = sourceFile.getEndLineNumber();
 
   // Удаляем файл из проекта чтобы не накапливать память
@@ -142,7 +146,11 @@ function extractExports(sourceFile: SourceFile): FileExport[] {
   return exports;
 }
 
-function extractImports(sourceFile: SourceFile): FileImports {
+function extractImports(
+  sourceFile: SourceFile,
+  filePath: string,
+  aliasResolver?: AliasResolver
+): FileImports {
   const internal: string[] = [];
   const external: string[] = [];
 
@@ -152,9 +160,21 @@ function extractImports(sourceFile: SourceFile): FileImports {
     // Относительные импорты начинаются с . или ..
     if (moduleSpecifier.startsWith('.')) {
       internal.push(moduleSpecifier);
-    } else {
-      external.push(moduleSpecifier);
+      continue;
     }
+
+    const resolvedAlias = aliasResolver?.resolveAliasImport(moduleSpecifier, filePath) ?? null;
+    if (resolvedAlias) {
+      internal.push(resolvedAlias);
+      continue;
+    }
+
+    if (aliasResolver?.isAliasImport(moduleSpecifier, filePath)) {
+      internal.push(moduleSpecifier);
+      continue;
+    }
+
+    external.push(moduleSpecifier);
   }
 
   // Убираем дубликаты

@@ -8,6 +8,8 @@ layerDetection:
     - imports vite
     - path contains /web/
 files:
+  - packages/web/postcss.config.js
+  - packages/web/tailwind.config.js
   - packages/web/vite.config.ts
 exports:
   - isDefault: true
@@ -19,7 +21,7 @@ imports:
     - path
     - vite
   internal: []
-compositionHash: e8d91d82c7259277
+compositionHash: 0606b46a07a7b820
 metadata:
-  createdAt: 2026-01-09T07:57:54.811Z
-  updatedAt: 2026-01-09T07:57:54.811Z
+  createdAt: 2026-01-11T15:14:54.304Z
+  updatedAt: 2026-01-11T15:14:54.304Z

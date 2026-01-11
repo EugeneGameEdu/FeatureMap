@@ -1,0 +1,19 @@
+version: 1
+id: mcp-integration-server
+name: MCP Integration Server
+description: "Lets AI tools ask for FeatureMap data using the MCP protocol. Example: a chat assistant requests the feature list and gets a reply."
+source: ai
+status: active
+scope: backend
+clusters:
+  - mcp-server-core
+  - mcp-server-tools
+  - mcp-server-types
+  - mcp-server-utils
+composition:
+  hash: fd74fc7313a6698f
+metadata:
+  createdAt: 2026-01-11T15:24:32.847Z
+  updatedAt: 2026-01-11T15:24:32.847Z
+  lastModifiedBy: ai
+  version: 1

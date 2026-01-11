@@ -6,6 +6,7 @@ layerDetection:
   signals:
     - path contains /mcp-server/
 files:
+  - packages/mcp-server/src/tools/analyzeProjectStructure.ts
   - packages/mcp-server/src/tools/createGroup.ts
   - packages/mcp-server/src/tools/findRelevantFeatures.ts
   - packages/mcp-server/src/tools/getArchitectureOverview.ts
@@ -17,9 +18,15 @@ files:
   - packages/mcp-server/src/tools/getGroupingInputUtils.ts
   - packages/mcp-server/src/tools/getNodeComments.ts
   - packages/mcp-server/src/tools/getProjectContext.ts
+  - packages/mcp-server/src/tools/runScan.ts
   - packages/mcp-server/src/tools/saveFeaturesFromGrouping.ts
+  - packages/mcp-server/src/tools/saveProjectConfig.ts
+  - packages/mcp-server/src/tools/setupFeaturemap.ts
   - packages/mcp-server/src/tools/updateFeature.ts
 exports:
+  - isDefault: false
+    name: analyzeProjectStructureTool
+    type: variable
   - isDefault: false
     name: applyLimits
     type: function
@@ -69,7 +76,16 @@ exports:
     name: loadDependencies
     type: function
   - isDefault: false
+    name: runScanTool
+    type: variable
+  - isDefault: false
     name: saveFeaturesFromGroupingTool
+    type: variable
+  - isDefault: false
+    name: saveProjectConfigTool
+    type: variable
+  - isDefault: false
+    name: setupFeaturemapTool
     type: variable
   - isDefault: false
     name: summarizeCluster
@@ -85,6 +101,8 @@ exports:
     type: interface
 imports:
   external:
+    - "@featuremap/cli/dist/analyzer/structure-scanner.js"
+    - "@featuremap/cli/dist/api.js"
     - fs
     - path
     - yaml
@@ -103,10 +121,13 @@ imports:
     - ../utils/groupYaml.js
     - ../utils/listUtils.js
     - ../utils/navigationLoaders.js
+    - ../utils/scanExecutor.js
     - ../utils/searchScoring.js
+    - ../utils/setupFeaturemapAnalysis.js
+    - ../utils/setupFeaturemapState.js
     - ../utils/slugify.js
     - ./getGroupingInputUtils.js
-compositionHash: a1599d598f9d2477
+compositionHash: befb21c2adb1a62e
 metadata:
-  createdAt: 2026-01-06T09:31:36.350Z
-  updatedAt: 2026-01-09T07:57:54.798Z
+  createdAt: 2026-01-11T15:14:54.297Z
+  updatedAt: 2026-01-11T15:14:54.297Z

@@ -3,16 +3,25 @@ project:
   name: FeatureMap
   root: .
 scan:
+  include:
+    - packages/cli/**/*.{js,jsx}
+    - packages/cli/**/*.{ts,tsx}
+    - packages/cli/**/*.go
+    - packages/mcp-server/**/*.{js,jsx}
+    - packages/mcp-server/**/*.{ts,tsx}
+    - packages/mcp-server/**/*.go
+    - packages/web/**/*.{js,jsx}
+    - packages/web/**/*.{ts,tsx}
+    - packages/web/**/*.go
   exclude:
-    - "**/*.test.ts"
-    - "**/*.spec.ts"
-    - "**/*.d.ts"
     - "**/node_modules/**"
     - "**/dist/**"
-  include:
-    - src/**/*.ts
-    - src/**/*.tsx
-    - packages/*/src/**/*.ts
-    - packages/*/src/**/*.tsx
+    - "**/build/**"
+    - "**/vendor/**"
+    - "**/*.test.{ts,tsx,js,jsx}"
+    - "**/*.spec.{ts,tsx,js,jsx}"
+    - "**/*.d.ts"
+    - "**/*_test.go"
+    - "**/testdata/**"
 features:
   hints: []

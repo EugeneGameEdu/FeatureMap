@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-09T07:57:54.854Z
+detectedAt: 2026-01-11T15:14:54.326Z
 naming:
   files:
     components: PascalCase.tsx
@@ -11,4 +11,4 @@ naming:
     functions: camelCase
     constants: PascalCase
 imports:
-  style: mixed
+  style: relative

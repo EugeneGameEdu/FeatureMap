@@ -18,9 +18,17 @@ files:
   - packages/mcp-server/src/utils/groupYaml.ts
   - packages/mcp-server/src/utils/listUtils.ts
   - packages/mcp-server/src/utils/navigationLoaders.ts
+  - packages/mcp-server/src/utils/scanExecutor.ts
   - packages/mcp-server/src/utils/searchScoring.ts
+  - packages/mcp-server/src/utils/setupFeaturemapAnalysis.ts
+  - packages/mcp-server/src/utils/setupFeaturemapLegacy.ts
+  - packages/mcp-server/src/utils/setupFeaturemapMarkers.ts
+  - packages/mcp-server/src/utils/setupFeaturemapState.ts
   - packages/mcp-server/src/utils/slugify.ts
 exports:
+  - isDefault: false
+    name: analyzeStructureForSetup
+    type: function
   - isDefault: false
     name: buildFeatureOverlay
     type: function
@@ -35,6 +43,9 @@ exports:
     type: function
   - isDefault: false
     name: buildIndices
+    type: function
+  - isDefault: false
+    name: checkProjectState
     type: function
   - isDefault: false
     name: CommentHomeView
@@ -62,6 +73,15 @@ exports:
     type: type
   - isDefault: false
     name: deriveFeatureLayers
+    type: function
+  - isDefault: false
+    name: detectLegacyNote
+    type: function
+  - isDefault: false
+    name: detectMarkerNotes
+    type: function
+  - isDefault: false
+    name: executeScan
     type: function
   - isDefault: false
     name: filterCommentsForNode
@@ -124,6 +144,15 @@ exports:
     name: ProjectContext
     type: interface
   - isDefault: false
+    name: ProjectPart
+    type: interface
+  - isDefault: false
+    name: ProjectPartType
+    type: type
+  - isDefault: false
+    name: ProjectState
+    type: interface
+  - isDefault: false
     name: RankedFeature
     type: interface
   - isDefault: false
@@ -145,10 +174,16 @@ exports:
     name: readGroupYaml
     type: function
   - isDefault: false
+    name: ScanExecutionResult
+    type: interface
+  - isDefault: false
     name: SearchCluster
     type: interface
   - isDefault: false
     name: SearchFeature
+    type: interface
+  - isDefault: false
+    name: SetupAnalysis
     type: interface
   - isDefault: false
     name: slugifyToKebab
@@ -164,6 +199,8 @@ exports:
     type: function
 imports:
   external:
+    - "@featuremap/cli/dist/analyzer/structure-scanner.js"
+    - "@featuremap/cli/dist/api.js"
     - crypto
     - fs
     - path
@@ -176,7 +213,9 @@ imports:
     - ./featureLoader.js
     - ./groupYaml.js
     - ./listUtils.js
-compositionHash: 8a79cb037ef719c0
+    - ./setupFeaturemapLegacy.js
+    - ./setupFeaturemapMarkers.js
+compositionHash: 80cc1f9571339efa
 metadata:
-  createdAt: 2026-01-06T09:31:36.354Z
-  updatedAt: 2026-01-09T07:57:54.808Z
+  createdAt: 2026-01-11T15:14:54.301Z
+  updatedAt: 2026-01-11T15:14:54.301Z

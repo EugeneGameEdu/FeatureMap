@@ -1,0 +1,18 @@
+version: 1
+id: cli-commands
+name: CLI Commands
+description: "The commands people run in the terminal. Example: `featuremap init` creates the config and `featuremap scan` runs the scan."
+source: ai
+status: active
+scope: backend
+clusters:
+  - cli-commands
+  - cli-core
+  - cli-scripts
+composition:
+  hash: df434139d1608411
+metadata:
+  createdAt: 2026-01-11T15:24:32.847Z
+  updatedAt: 2026-01-11T15:24:32.847Z
+  lastModifiedBy: ai
+  version: 1

@@ -85,32 +85,6 @@ exports:
     type: function
 imports:
   external:
-    - "@/components/ContextEditor"
-    - "@/components/ContextViewer"
-    - "@/components/GroupDetailsPanel"
-    - "@/components/MapControlsRow"
-    - "@/components/ProjectOverview"
-    - "@/components/ui/badge"
-    - "@/components/ui/button"
-    - "@/components/ui/card"
-    - "@/components/ui/dialog"
-    - "@/components/ui/scroll-area"
-    - "@/components/ui/sheet"
-    - "@/lib/commentsMode"
-    - "@/lib/commentTypes"
-    - "@/lib/contextTypes"
-    - "@/lib/graphLayout"
-    - "@/lib/groupContainers"
-    - "@/lib/groupDrag"
-    - "@/lib/groupFilters"
-    - "@/lib/groupMembership"
-    - "@/lib/layerFilters"
-    - "@/lib/loadFeatureMap"
-    - "@/lib/searchIndex"
-    - "@/lib/types"
-    - "@/lib/useContextApi"
-    - "@/lib/useGroupApi"
-    - "@/lib/yamlParsing"
     - "@xyflow/react"
     - "@xyflow/react/dist/style.css"
     - lucide-react
@@ -120,7 +94,33 @@ imports:
     - ./CommentNode
     - ./FeatureNode
     - ./GroupContainerNode
+    - packages/web/src/components/ContextEditor.tsx
+    - packages/web/src/components/ContextViewer.tsx
+    - packages/web/src/components/GroupDetailsPanel.tsx
+    - packages/web/src/components/MapControlsRow.tsx
+    - packages/web/src/components/ProjectOverview.tsx
+    - packages/web/src/components/ui/badge.tsx
+    - packages/web/src/components/ui/button.tsx
+    - packages/web/src/components/ui/card.tsx
+    - packages/web/src/components/ui/dialog.tsx
+    - packages/web/src/components/ui/scroll-area.tsx
+    - packages/web/src/components/ui/sheet.tsx
+    - packages/web/src/lib/commentsMode.ts
+    - packages/web/src/lib/commentTypes.ts
+    - packages/web/src/lib/contextTypes.ts
+    - packages/web/src/lib/graphLayout.ts
+    - packages/web/src/lib/groupContainers.ts
+    - packages/web/src/lib/groupDrag.ts
+    - packages/web/src/lib/groupFilters.ts
+    - packages/web/src/lib/groupMembership.ts
+    - packages/web/src/lib/layerFilters.ts
+    - packages/web/src/lib/loadFeatureMap.ts
+    - packages/web/src/lib/searchIndex.ts
+    - packages/web/src/lib/types.ts
+    - packages/web/src/lib/useContextApi.ts
+    - packages/web/src/lib/useGroupApi.ts
+    - packages/web/src/lib/yamlParsing.ts
 compositionHash: 4d83e3e7d8772d3d
 metadata:
-  createdAt: 2026-01-06T09:31:36.355Z
-  updatedAt: 2026-01-09T07:57:54.814Z
+  createdAt: 2026-01-11T15:14:54.305Z
+  updatedAt: 2026-01-11T15:14:54.305Z

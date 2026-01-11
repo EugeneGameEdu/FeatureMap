@@ -1,9 +1,9 @@
 version: 1
 source: auto
-detectedAt: 2026-01-09T07:57:31.649Z
+detectedAt: 2026-01-11T15:14:33.004Z
 frameworks:
   - name: "@modelcontextprotocol/sdk"
-    version: ^1.0.0
+    version: ^1.25.2
     usage: ai/mcp
   - name: express
     version: ^4.21.2
@@ -16,9 +16,9 @@ buildTools:
   - vite
 languages:
   - name: TypeScript
-    percentage: 98.7
+    percentage: 98.8
   - name: JavaScript
-    percentage: 1.3
+    percentage: 1.2
 structure:
   type: monorepo
   packages:

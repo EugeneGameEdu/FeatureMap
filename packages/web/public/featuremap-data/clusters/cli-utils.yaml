@@ -12,6 +12,7 @@ files:
   - packages/cli/src/utils/contextUtils.ts
   - packages/cli/src/utils/featuremapWebSync.ts
   - packages/cli/src/utils/file-categories.ts
+  - packages/cli/src/utils/jsonc.ts
   - packages/cli/src/utils/layout-builder.ts
   - packages/cli/src/utils/scanCompare.ts
   - packages/cli/src/utils/version-checker.ts
@@ -82,6 +83,9 @@ exports:
     name: LoadYAMLOptions
     type: interface
   - isDefault: false
+    name: parseJsonWithComments
+    type: function
+  - isDefault: false
     name: saveAutoContext
     type: function
   - isDefault: false
@@ -121,7 +125,7 @@ imports:
     - ./version-checker.js
     - ./yaml-key-order.js
     - ./yaml-loader.js
-compositionHash: 0d3cb36682abdb4b
+compositionHash: 86afa0f3091d10f6
 metadata:
-  createdAt: 2026-01-06T09:31:36.345Z
-  updatedAt: 2026-01-09T07:57:54.790Z
+  createdAt: 2026-01-11T15:14:54.292Z
+  updatedAt: 2026-01-11T15:14:54.292Z

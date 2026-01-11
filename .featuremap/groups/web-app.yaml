@@ -1,0 +1,13 @@
+version: 1
+id: web-app
+name: Web App
+description: Frontend application and reusable UI components for the FeatureMap interface.
+featureIds:
+  - web-app-shell
+  - web-ui-components
+source: ai
+metadata:
+  createdAt: 2026-01-11T15:25:31.335Z
+  updatedAt: 2026-01-11T15:25:31.335Z
+  lastModifiedBy: ai
+  version: 1

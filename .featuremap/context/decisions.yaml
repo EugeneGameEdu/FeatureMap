@@ -1,32 +1,14 @@
+# Project decisions tracked for humans and AI.
+# Keep entries stable; update status when superseded.
 version: 1
 source: manual
-updatedAt: 2026-01-06T00:00:00Z
+updatedAt: "2026-01-11T15:14:31.536Z"
+
 decisions:
-  - id: file-based-contract
-    title: File-based contract under .featuremap/
-    description: |
-      Persist project analysis and curation under .featuremap/ with a strict split between derived and authored files.
-    rationale: |
-      Derived files enable reproducible scans; authored files preserve human/AI curation safely.
-    status: active
-  - id: mixed-graph-layers
-    title: graph.yaml contains both clusters and features
-    description: |
-      graph.yaml may include cluster-level and feature-level nodes/edges. The web chooses which layer to render.
-    rationale: |
-      Enables an overview (features) without losing technical detail (clusters).
-    status: active
-  - id: mcp-navigation-first
-    title: MCP tools are the primary navigation API for AI
-    description: |
-      AI should prefer MCP tools (context, grouping input, navigation) over direct file reading.
-    rationale: |
-      Provides safer, deterministic and bounded project access.
-    status: active
-  - id: serve-token-security
-    title: Token-gated local editing via featuremap serve
-    description: |
-      UI edits go through a localhost-only server with a session token for write operations and WS for refresh events.
-    rationale: |
-      Enables safe browser-based editing without direct filesystem access.
-    status: active
+  # - id: use-react
+  #   title: "Use React for frontend"
+  #   description: "Chose React as the primary frontend framework."
+  #   rationale: "Team expertise, ecosystem, hiring pool."
+  #   date: "2024-01-01"
+  #   status: active
+  []

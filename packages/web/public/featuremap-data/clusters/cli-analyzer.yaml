@@ -1,10 +1,10 @@
 version: 1
 id: cli-analyzer
-layer: smell
+layer: infrastructure
 layerDetection:
-  confidence: low
+  confidence: medium
   signals:
-    - no layer signals detected
+    - file name starts with tsconfig
 files:
   - packages/cli/src/analyzer/cluster-id-matching.ts
   - packages/cli/src/analyzer/cluster-loader.ts
@@ -17,14 +17,22 @@ files:
   - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
   - packages/cli/src/analyzer/scanner.ts
+  - packages/cli/src/analyzer/structure-scanner.ts
   - packages/cli/src/analyzer/tech-stack-detector.ts
   - packages/cli/src/analyzer/techStackHelpers.ts
   - packages/cli/src/analyzer/test-graph.ts
   - packages/cli/src/analyzer/test-grouper.ts
-  - packages/cli/src/analyzer/test-layer-refactor.ts
   - packages/cli/src/analyzer/test-parser.ts
   - packages/cli/src/analyzer/test-scanner.ts
+  - packages/cli/src/analyzer/tsconfig.ts
+  - packages/cli/src/analyzer/tsconfigLoader.ts
 exports:
+  - isDefault: false
+    name: AliasEntry
+    type: interface
+  - isDefault: false
+    name: AliasResolver
+    type: interface
   - isDefault: false
     name: applyClusterMatching
     type: function
@@ -53,14 +61,14 @@ exports:
     name: ConventionsDetectionInput
     type: interface
   - isDefault: false
+    name: createAliasResolver
+    type: function
+  - isDefault: false
     name: DependencyGraph
     type: interface
   - isDefault: false
     name: detectConventions
     type: function
-  - isDefault: false
-    name: DetectedSubproject
-    type: interface
   - isDefault: false
     name: detectLanguagesAndPatterns
     type: function
@@ -69,9 +77,6 @@ exports:
     type: function
   - isDefault: false
     name: detectStructure
-    type: function
-  - isDefault: false
-    name: detectSubprojects
     type: function
   - isDefault: false
     name: detectTechStack
@@ -91,6 +96,15 @@ exports:
   - isDefault: false
     name: FileNode
     type: interface
+  - isDefault: false
+    name: findNearestTsConfig
+    type: function
+  - isDefault: false
+    name: FolderInfo
+    type: interface
+  - isDefault: false
+    name: formatStructureForAI
+    type: function
   - isDefault: false
     name: getClusterStats
     type: function
@@ -128,6 +142,9 @@ exports:
     name: LayerDetectionResult
     type: interface
   - isDefault: false
+    name: loadAliasEntries
+    type: function
+  - isDefault: false
     name: loadConfig
     type: function
   - isDefault: false
@@ -161,6 +178,9 @@ exports:
     name: parseGoFile
     type: function
   - isDefault: false
+    name: ProjectStructure
+    type: interface
+  - isDefault: false
     name: readGoMod
     type: function
   - isDefault: false
@@ -173,10 +193,16 @@ exports:
     name: scanProject
     type: function
   - isDefault: false
+    name: scanProjectStructure
+    type: function
+  - isDefault: false
     name: ScanResult
     type: interface
   - isDefault: false
     name: TechStackDetectionInput
+    type: interface
+  - isDefault: false
+    name: TsConfigData
     type: interface
 imports:
   external:
@@ -192,6 +218,7 @@ imports:
     - ../types/config.js
     - ../types/context.js
     - ../types/index.js
+    - ../utils/jsonc.js
     - ../utils/yaml-loader.js
     - ./cluster-loader.js
     - ./cluster-matcher.js
@@ -199,11 +226,12 @@ imports:
     - ./go-parser.js
     - ./graph.js
     - ./grouper.js
-    - ./layer-detector.js
     - ./parser.js
     - ./scanner.js
     - ./techStackHelpers.js
-compositionHash: b70b823b9f1c765f
+    - ./tsconfig.js
+    - ./tsconfigLoader.js
+compositionHash: 4ee37aec38f1e940
 metadata:
-  createdAt: 2026-01-06T09:31:36.321Z
-  updatedAt: 2026-01-09T07:57:54.758Z
+  createdAt: 2026-01-11T15:14:54.273Z
+  updatedAt: 2026-01-11T15:14:54.273Z

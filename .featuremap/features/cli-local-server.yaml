@@ -1,0 +1,17 @@
+version: 1
+id: cli-local-server
+name: Local Data Server
+description: "Runs a small local server so the web app can fetch map data. Example: open the UI and it loads data from this server."
+source: ai
+status: active
+scope: backend
+clusters:
+  - cli-server
+  - cli-server-routes
+composition:
+  hash: eea0bae40953d22f
+metadata:
+  createdAt: 2026-01-11T15:24:32.847Z
+  updatedAt: 2026-01-11T15:24:32.847Z
+  lastModifiedBy: ai
+  version: 1

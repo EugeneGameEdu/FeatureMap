@@ -1,7 +1,7 @@
 version: 1
-generatedAt: 2026-01-09T07:57:54.848Z
+generatedAt: 2026-01-11T15:24:32.847Z
 nodes:
-  - fileCount: 18
+  - fileCount: 20
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
@@ -13,7 +13,7 @@ nodes:
     id: cli-constants
     label: Cli Constants
     type: cluster
-  - fileCount: 1
+  - fileCount: 2
     id: cli-core
     label: Cli Core
     type: cluster
@@ -33,7 +33,7 @@ nodes:
     id: cli-types
     label: Cli Types
     type: cluster
-  - fileCount: 11
+  - fileCount: 12
     id: cli-utils
     label: Cli Utils
     type: cluster
@@ -41,7 +41,7 @@ nodes:
     id: mcp-server-core
     label: Mcp Server Core
     type: cluster
-  - fileCount: 13
+  - fileCount: 17
     id: mcp-server-tools
     label: Mcp Server Tools
     type: cluster
@@ -49,11 +49,11 @@ nodes:
     id: mcp-server-types
     label: Mcp Server Types
     type: cluster
-  - fileCount: 13
+  - fileCount: 18
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 1
+  - fileCount: 3
     id: packages-web
     label: Packages Web
     type: cluster
@@ -73,6 +73,34 @@ nodes:
     id: web-lib
     label: Web Lib
     type: cluster
+  - id: cli-code-scanner
+    label: Code Scanning Engine
+    type: feature
+    fileCount: 20
+  - id: cli-commands
+    label: CLI Commands
+    type: feature
+    fileCount: 9
+  - id: cli-foundation
+    label: CLI Foundation & Helpers
+    type: feature
+    fileCount: 24
+  - id: cli-local-server
+    label: Local Data Server
+    type: feature
+    fileCount: 12
+  - id: mcp-integration-server
+    label: MCP Integration Server
+    type: feature
+    fileCount: 39
+  - id: web-app-shell
+    label: Web App Shell
+    type: feature
+    fileCount: 42
+  - id: web-ui-components
+    label: Web UI Components
+    type: feature
+    fileCount: 20
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -124,3 +152,67 @@ edges:
     target: mcp-server-utils
   - source: mcp-server-utils
     target: mcp-server-types
+  - source: web-components
+    target: web-components-ui
+  - source: web-components
+    target: web-lib
+  - source: web-components-ui
+    target: web-lib
+  - source: web-core
+    target: web-components
+  - source: web-core
+    target: web-lib
+  - source: cli-code-scanner
+    target: cli-analyzer
+    type: contains
+  - source: cli-commands
+    target: cli-commands
+    type: contains
+  - source: cli-commands
+    target: cli-core
+    type: contains
+  - source: cli-commands
+    target: cli-scripts
+    type: contains
+  - source: cli-foundation
+    target: cli-constants
+    type: contains
+  - source: cli-foundation
+    target: cli-types
+    type: contains
+  - source: cli-foundation
+    target: cli-utils
+    type: contains
+  - source: cli-local-server
+    target: cli-server
+    type: contains
+  - source: cli-local-server
+    target: cli-server-routes
+    type: contains
+  - source: mcp-integration-server
+    target: mcp-server-core
+    type: contains
+  - source: mcp-integration-server
+    target: mcp-server-tools
+    type: contains
+  - source: mcp-integration-server
+    target: mcp-server-types
+    type: contains
+  - source: mcp-integration-server
+    target: mcp-server-utils
+    type: contains
+  - source: web-app-shell
+    target: packages-web
+    type: contains
+  - source: web-app-shell
+    target: web-core
+    type: contains
+  - source: web-app-shell
+    target: web-lib
+    type: contains
+  - source: web-ui-components
+    target: web-components
+    type: contains
+  - source: web-ui-components
+    target: web-components-ui
+    type: contains

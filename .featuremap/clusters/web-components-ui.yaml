@@ -29,15 +29,15 @@ exports:
     type: interface
 imports:
   external:
-    - "@/lib/utils"
     - "@radix-ui/react-dialog"
     - "@radix-ui/react-scroll-area"
     - "@radix-ui/react-slot"
     - class-variance-authority
     - lucide-react
     - react
-  internal: []
+  internal:
+    - packages/web/src/lib/utils.ts
 compositionHash: 54e905d93f23df1c
 metadata:
-  createdAt: 2026-01-06T09:31:36.357Z
-  updatedAt: 2026-01-09T07:57:54.817Z
+  createdAt: 2026-01-11T15:14:54.309Z
+  updatedAt: 2026-01-11T15:14:54.309Z

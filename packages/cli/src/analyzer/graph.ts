@@ -1,10 +1,11 @@
 import * as path from 'path';
 import { parseFile } from './parser.js';
 import { ScanResult, getRelativePath } from './scanner.js';
+import { createAliasResolver } from './tsconfig.js';
 import type { ExportSymbol, ImportList } from '../types/index.js';
 
 export interface FileNode {
-  path: string;           // относительный путь
+  path: string;           // РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Р№ РїСѓС‚СЊ
   exports: ExportSymbol[];
   imports: ImportList;
   linesOfCode: number;
@@ -20,6 +21,8 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
   const { files, projectRoot } = scanResult;
   const goFiles = scanResult.goFiles ?? [];
   const goImportIndex = buildGoImportIndex(goFiles);
+  const relativePaths = files.map((absolutePath) => getRelativePath(absolutePath, projectRoot));
+  const aliasResolver = createAliasResolver({ projectRoot, filePaths: relativePaths });
   
   const graph: DependencyGraph = {
     files: {},
@@ -27,12 +30,13 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
     dependents: {},
   };
 
-  // Шаг 1: Парсим все файлы
+  // РЁР°Рі 1: РџР°СЂСЃРёРј РІСЃРµ С„Р°Р№Р»С‹
   const parsedFiles: Map<string, ParsedCodeFile> = new Map();
   
-  for (const absolutePath of files) {
-    const relativePath = getRelativePath(absolutePath, projectRoot);
-    const parsed = parseFile(absolutePath);
+  for (let index = 0; index < files.length; index += 1) {
+    const absolutePath = files[index];
+    const relativePath = relativePaths[index] ?? getRelativePath(absolutePath, projectRoot);
+    const parsed = parseFile(absolutePath, { aliasResolver });
     parsedFiles.set(relativePath, parsed);
     
     graph.files[relativePath] = {
@@ -93,10 +97,10 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
       const resolvedPath = resolveImport(importPath, fileDir, parsedFiles);
 
       if (resolvedPath) {
-        // filePath úø±±  resolvedPath
+        // filePath ВђГєВђГёВђВџВђВ±В‘ВЏВ‘В±В‘ВЊ ВђВџВ‘ВЊ resolvedPath
         graph.dependencies[filePath].push(resolvedPath);
 
-        // resolvedPath ¿¿ úø±± filePath
+        // resolvedPath В‘ВЃВђВїВђВїВ‘ВЊ ВђГєВђГёВђВџВђВ±В‘ВЏВ‘В±ВђВџВђВџВђВџВђВџ filePath
         if (graph.dependents[resolvedPath]) {
           graph.dependents[resolvedPath].push(filePath);
         }
@@ -108,19 +112,25 @@ export async function buildGraph(scanResult: ScanResult): Promise<DependencyGrap
 }
 
 /**
- * Резолвит относительный импорт в реальный путь файла
+ * Р РµР·РѕР»РІРёС‚ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Р№ РёРјРїРѕСЂС‚ РІ СЂРµР°Р»СЊРЅС‹Р№ РїСѓС‚СЊ С„Р°Р№Р»Р°
  */
 function resolveImport(
   importPath: string,
   fromDir: string,
   existingFiles: Map<string, ParsedCodeFile>
 ): string | null {
-  // Нормализуем путь
+  if (existingFiles.has(importPath)) {
+    return importPath;
+  }
+  if (!importPath.startsWith('.')) {
+    return null;
+  }
+  // РќРѕСЂРјР°Р»РёР·СѓРµРј РїСѓС‚СЊ
   const resolved = path.join(fromDir, importPath).replace(/\\/g, '/');
   
-  // Возможные расширения
+  // Р’РѕР·РјРѕР¶РЅС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ
   const extensions = ['.ts', '.tsx', '.js', '.jsx', ''];
-  // Возможные варианты (с index)
+  // Р’РѕР·РјРѕР¶РЅС‹Рµ РІР°СЂРёР°РЅС‚С‹ (СЃ index)
   const variants = [
     resolved,
     `${resolved}/index`,
@@ -135,7 +145,7 @@ function resolveImport(
     }
   }
 
-  // Попробуем без .js расширения (для импортов типа './parser.js')
+  // РџРѕРїСЂРѕР±СѓРµРј Р±РµР· .js СЂР°СЃС€РёСЂРµРЅРёСЏ (РґР»СЏ РёРјРїРѕСЂС‚РѕРІ С‚РёРїР° './parser.js')
   const withoutExt = resolved.replace(/\.(js|jsx)$/, '');
   for (const ext of ['.ts', '.tsx']) {
     const candidate = withoutExt + ext;
@@ -186,7 +196,7 @@ function normalizeFilePath(filePath: string): string {
 
 
 /**
- * Подсчитывает статистику графа
+ * РџРѕРґСЃС‡РёС‚С‹РІР°РµС‚ СЃС‚Р°С‚РёСЃС‚РёРєСѓ РіСЂР°С„Р°
  */
 export function getGraphStats(graph: DependencyGraph): {
   totalFiles: number;

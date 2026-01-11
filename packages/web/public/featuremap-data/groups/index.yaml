@@ -1,5 +1,5 @@
 version: 1
 groups:
-  - cli-core
-  - mcp-integration
-  - web-viewer
+  - ai-mcp-integration
+  - cli-tools
+  - web-app
