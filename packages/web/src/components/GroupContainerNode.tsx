@@ -7,23 +7,30 @@ function GroupContainerNodeComponent({ data }: NodeProps<GroupContainerFlowNode>
     data;
   const hasNote = Boolean(note);
 
+  const headerClassName = `group-container__header pointer-events-auto w-full text-left px-4 py-2 border-b border-border bg-card/80 rounded-t-xl whitespace-normal break-words ${
+    isSelected ? 'ring-1 ring-primary/60 cursor-grab active:cursor-grabbing' : 'cursor-default'
+  }`;
+
   return (
-    <div className="w-full h-full rounded-xl border border-border bg-secondary/40 shadow-sm relative">
+    <div className="pointer-events-none w-full h-full rounded-xl border border-border bg-secondary/40 shadow-sm relative">
       <button
         type="button"
         onClick={(event) => {
           event.stopPropagation();
           onSelectGroup?.(groupId);
         }}
-        className={`w-full text-left px-4 py-2 border-b border-border bg-card/80 rounded-t-xl ${
-          isSelected ? 'ring-1 ring-primary/60' : ''
-        }`}
-        style={{ height: headerHeight }}
+        className={headerClassName}
+        style={{ minHeight: headerHeight }}
       >
-        <div className="text-sm font-semibold text-foreground truncate">{name}</div>
-        {description && (
-          <div className="text-xs text-muted-foreground truncate">{description}</div>
-        )}
+        <div className="text-sm leading-snug text-foreground">
+          <span className="font-semibold">{name}</span>
+          {description && (
+            <>
+              <span className="text-muted-foreground font-normal"> | </span>
+              <span className="text-muted-foreground font-normal">{description}</span>
+            </>
+          )}
+        </div>
       </button>
 
       {hasNote && (

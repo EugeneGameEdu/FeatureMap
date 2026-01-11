@@ -12,6 +12,7 @@ files:
   - packages/cli/src/utils/contextUtils.ts
   - packages/cli/src/utils/featuremapWebSync.ts
   - packages/cli/src/utils/file-categories.ts
+  - packages/cli/src/utils/graphYaml.ts
   - packages/cli/src/utils/jsonc.ts
   - packages/cli/src/utils/layout-builder.ts
   - packages/cli/src/utils/scanCompare.ts
@@ -89,6 +90,9 @@ exports:
     name: saveAutoContext
     type: function
   - isDefault: false
+    name: saveGraphYaml
+    type: function
+  - isDefault: false
     name: saveYAML
     type: function
   - isDefault: false
@@ -122,10 +126,11 @@ imports:
     - ../types/index.js
     - ../types/layout.js
     - ./composition-hash.js
+    - ./scanCompare.js
     - ./version-checker.js
     - ./yaml-key-order.js
     - ./yaml-loader.js
-compositionHash: 86afa0f3091d10f6
+compositionHash: e618131c64d6ca13
 metadata:
   createdAt: 2026-01-11T15:14:54.292Z
-  updatedAt: 2026-01-11T15:14:54.292Z
+  updatedAt: 2026-01-11T18:20:13.217Z

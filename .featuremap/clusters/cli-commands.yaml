@@ -60,6 +60,7 @@ imports:
     - ../utils/contextTemplates.js
     - ../utils/contextUtils.js
     - ../utils/featuremapWebSync.js
+    - ../utils/graphYaml.js
     - ../utils/layout-builder.js
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
@@ -67,4 +68,4 @@ imports:
 compositionHash: 739e908fbe699880
 metadata:
   createdAt: 2026-01-11T15:14:54.279Z
-  updatedAt: 2026-01-11T15:14:54.279Z
+  updatedAt: 2026-01-11T18:20:13.194Z

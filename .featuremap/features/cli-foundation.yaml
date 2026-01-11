@@ -10,9 +10,9 @@ clusters:
   - cli-types
   - cli-utils
 composition:
-  hash: c2a416090bee087e
+  hash: de5c0d2e91241849
 metadata:
   createdAt: 2026-01-11T15:24:32.847Z
-  updatedAt: 2026-01-11T15:24:32.847Z
+  updatedAt: 2026-01-11T18:27:42.790Z
   lastModifiedBy: ai
-  version: 1
+  version: 2

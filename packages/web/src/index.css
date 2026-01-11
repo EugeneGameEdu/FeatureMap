@@ -108,6 +108,38 @@
   stroke: var(--accent-hex) !important;
 }
 
+.react-flow__edge.edge-base {
+  --xy-edge-stroke: hsl(var(--border));
+  --xy-edge-stroke-width: 2px;
+}
+
+.react-flow__edge.edge-selected {
+  --xy-edge-stroke: hsl(var(--primary));
+  --xy-edge-stroke-width: 3px;
+  opacity: 1;
+}
+
+.react-flow__edge.edge-connected {
+  --xy-edge-stroke: hsl(var(--primary));
+  opacity: 0.55;
+}
+
+.react-flow__edge.edge-dimmed {
+  opacity: 0.3;
+}
+
+.react-flow__edge:hover {
+  --xy-edge-stroke-width: 2.5px;
+}
+
+.react-flow__node.group-container {
+  pointer-events: none !important;
+}
+
+.react-flow__node.group-container .group-container__header {
+  pointer-events: auto !important;
+}
+
 .react-flow {
   --xy-controls-button-background-color: hsl(var(--card));
   --xy-controls-button-background-color-hover: hsl(var(--secondary));

@@ -14,6 +14,7 @@ files:
   - packages/web/src/components/CommentNode.tsx
   - packages/web/src/components/ContextEditor.tsx
   - packages/web/src/components/ContextViewer.tsx
+  - packages/web/src/components/EdgeDetailsPanel.tsx
   - packages/web/src/components/FeatureMap.tsx
   - packages/web/src/components/FeatureNode.tsx
   - packages/web/src/components/GroupContainerNode.tsx
@@ -37,6 +38,9 @@ exports:
     type: function
   - isDefault: false
     name: ContextViewer
+    type: function
+  - isDefault: false
+    name: EdgeDetailsPanel
     type: function
   - isDefault: false
     name: ErrorScreen
@@ -108,6 +112,7 @@ imports:
     - packages/web/src/lib/commentsMode.ts
     - packages/web/src/lib/commentTypes.ts
     - packages/web/src/lib/contextTypes.ts
+    - packages/web/src/lib/featureMapElements.ts
     - packages/web/src/lib/graphLayout.ts
     - packages/web/src/lib/groupContainers.ts
     - packages/web/src/lib/groupDrag.ts
@@ -119,8 +124,9 @@ imports:
     - packages/web/src/lib/types.ts
     - packages/web/src/lib/useContextApi.ts
     - packages/web/src/lib/useGroupApi.ts
+    - packages/web/src/lib/utils.ts
     - packages/web/src/lib/yamlParsing.ts
-compositionHash: 4d83e3e7d8772d3d
+compositionHash: aab3d3774f698476
 metadata:
   createdAt: 2026-01-11T15:14:54.305Z
-  updatedAt: 2026-01-11T15:14:54.305Z
+  updatedAt: 2026-01-11T18:20:13.245Z

@@ -6,6 +6,7 @@ import type { CommentNode as CommentNodeType } from './commentTypes';
 
 export type NodeType = 'cluster' | 'feature';
 export type ViewMode = 'clusters' | 'features';
+export type EdgeStyle = 'bezier' | 'straight' | 'step' | 'smoothstep';
 
 const LayerSchema = z.enum([
   'frontend',
@@ -68,11 +69,18 @@ export const GraphNodeSchema = z
   })
   .passthrough();
 
+const EdgeImportDetailSchema = z.object({
+  symbol: z.string(),
+  sourceFiles: z.array(z.string()),
+  targetFile: z.string().optional(),
+});
+
 export const GraphEdgeSchema = z
   .object({
     source: z.string(),
     target: z.string(),
     type: z.string().optional(),
+    imports: z.array(EdgeImportDetailSchema).optional(),
   })
   .passthrough();
 
@@ -86,6 +94,7 @@ export const GraphSchema = z.object({
 export type GraphNode = z.infer<typeof GraphNodeSchema>;
 export type GraphEdge = z.infer<typeof GraphEdgeSchema>;
 export type GraphData = z.infer<typeof GraphSchema>;
+export type EdgeImportDetail = z.infer<typeof EdgeImportDetailSchema>;
 
 const LayoutPositionSchema = z.object({
   x: z.number(),

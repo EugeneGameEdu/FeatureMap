@@ -76,11 +76,30 @@ function normalizeGraphForComparison(graph: Graph): Omit<Graph, 'generatedAt'> {
   const normalized: Omit<Graph, 'generatedAt'> = { ...rest };
 
   normalized.nodes = [...normalized.nodes].sort((a, b) => a.id.localeCompare(b.id));
-  normalized.edges = [...normalized.edges].sort((a, b) => {
-    const leftKey = `${a.source}->${a.target}`;
-    const rightKey = `${b.source}->${b.target}`;
-    return leftKey.localeCompare(rightKey);
-  });
+  normalized.edges = [...normalized.edges]
+    .map((edge) => {
+      if (!edge.imports) {
+        return edge;
+      }
+      const imports = edge.imports
+        .map((detail) => ({
+          ...detail,
+          sourceFiles: [...detail.sourceFiles].sort((a, b) => a.localeCompare(b)),
+        }))
+        .sort((left, right) => {
+          const symbolCompare = left.symbol.localeCompare(right.symbol);
+          if (symbolCompare !== 0) {
+            return symbolCompare;
+          }
+          return (left.targetFile ?? '').localeCompare(right.targetFile ?? '');
+        });
+      return { ...edge, imports };
+    })
+    .sort((a, b) => {
+      const leftKey = `${a.source}->${a.target}`;
+      const rightKey = `${b.source}->${b.target}`;
+      return leftKey.localeCompare(rightKey);
+    });
 
   return normalized;
 }

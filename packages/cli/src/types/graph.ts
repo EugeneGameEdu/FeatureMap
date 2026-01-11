@@ -8,9 +8,17 @@ const GraphNodeSchema = z.object({
   clusterCount: z.number().optional(),
 }).describe('React Flow node');
 
+const EdgeImportDetailSchema = z.object({
+  symbol: z.string(),
+  sourceFiles: z.array(z.string()),
+  targetFile: z.string().optional(),
+});
+
 const GraphEdgeSchema = z.object({
   source: z.string(),
   target: z.string(),
+  type: z.string().optional(),
+  imports: z.array(EdgeImportDetailSchema).optional(),
 }).describe('React Flow edge');
 
 export const GraphSchema = z.object({
@@ -21,3 +29,4 @@ export const GraphSchema = z.object({
 });
 
 export type Graph = z.infer<typeof GraphSchema>;
+export type EdgeImportDetail = z.infer<typeof EdgeImportDetailSchema>;

@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-11T15:14:33.004Z
+detectedAt: 2026-01-11T18:19:48.371Z
 frameworks:
   - name: "@modelcontextprotocol/sdk"
     version: ^1.25.2

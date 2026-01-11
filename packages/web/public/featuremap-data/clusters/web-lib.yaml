@@ -17,6 +17,7 @@ files:
   - packages/web/src/lib/commentVisibility.ts
   - packages/web/src/lib/contextLoader.ts
   - packages/web/src/lib/contextTypes.ts
+  - packages/web/src/lib/featureMapElements.ts
   - packages/web/src/lib/featureMapLoaders.ts
   - packages/web/src/lib/focusHelpers.ts
   - packages/web/src/lib/graphLayout.ts
@@ -70,7 +71,19 @@ exports:
     name: buildCommentNodeId
     type: function
   - isDefault: false
+    name: buildDependencyCountById
+    type: function
+  - isDefault: false
+    name: buildEdgeId
+    type: function
+  - isDefault: false
     name: buildFocusState
+    type: function
+  - isDefault: false
+    name: buildGraphEdges
+    type: function
+  - isDefault: false
+    name: buildGraphNodes
     type: function
   - isDefault: false
     name: buildGroupContainerNodes
@@ -216,6 +229,9 @@ exports:
   - isDefault: false
     name: DesignSystemSchema
     type: variable
+  - isDefault: false
+    name: EdgeImportDetail
+    type: type
   - isDefault: false
     name: Feature
     type: type
@@ -547,7 +563,7 @@ imports:
     - ./useOrphanedComments
     - ./wsClient
     - ./yamlParsing
-compositionHash: 75739f31364387af
+compositionHash: 9a51928c4bfdd9f4
 metadata:
   createdAt: 2026-01-11T15:14:54.313Z
-  updatedAt: 2026-01-11T15:14:54.313Z
+  updatedAt: 2026-01-11T18:20:13.265Z

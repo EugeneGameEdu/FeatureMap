@@ -13,6 +13,7 @@ export {
   areGraphsEquivalent,
 } from './utils/scanCompare.js';
 export { buildDefaultLayout } from './utils/layout-builder.js';
+export { saveGraphYaml } from './utils/graphYaml.js';
 export {
   buildConventionsInput,
   findPackageJsonPaths,

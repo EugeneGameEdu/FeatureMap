@@ -1,4 +1,4 @@
-import { Project, SourceFile, SyntaxKind } from 'ts-morph';
+import { Project, SourceFile } from 'ts-morph';
 import type { AliasResolver } from './tsconfig.js';
 
 export interface FileExport {
@@ -7,9 +7,16 @@ export interface FileExport {
   isDefault: boolean;
 }
 
+export interface FileImportDetail {
+  from: string;
+  symbols: string[];
+  isTypeOnly: boolean;
+}
+
 export interface FileImports {
   internal: string[];  // относительные импорты (./foo, ../bar)
   external: string[];  // пакеты (react, commander)
+  internalDetails?: FileImportDetail[];
 }
 
 export interface ParsedFile {
@@ -153,35 +160,76 @@ function extractImports(
 ): FileImports {
   const internal: string[] = [];
   const external: string[] = [];
+  const internalDetails: FileImportDetail[] = [];
 
   for (const importDecl of sourceFile.getImportDeclarations()) {
     const moduleSpecifier = importDecl.getModuleSpecifierValue();
+    const symbols = collectImportSymbols(importDecl);
+    const isTypeOnly = importDecl.isTypeOnly();
+    const pushInternalDetail = (from: string) => {
+      if (symbols.length === 0) {
+        return;
+      }
+      internalDetails.push({
+        from,
+        symbols: [...new Set(symbols)],
+        isTypeOnly,
+      });
+    };
     
-    // Относительные импорты начинаются с . или ..
+    // ???'?????????'???>?????<?? ???????????'?< ???????????????'???? ?? . ???>?? ..
     if (moduleSpecifier.startsWith('.')) {
       internal.push(moduleSpecifier);
+      pushInternalDetail(moduleSpecifier);
       continue;
     }
 
     const resolvedAlias = aliasResolver?.resolveAliasImport(moduleSpecifier, filePath) ?? null;
     if (resolvedAlias) {
       internal.push(resolvedAlias);
+      pushInternalDetail(resolvedAlias);
       continue;
     }
 
     if (aliasResolver?.isAliasImport(moduleSpecifier, filePath)) {
       internal.push(moduleSpecifier);
+      pushInternalDetail(moduleSpecifier);
       continue;
     }
 
     external.push(moduleSpecifier);
   }
 
-  // Убираем дубликаты
-  return {
+  // ???+?????????? ?????+?>???u???'?<
+  const result: FileImports = {
     internal: [...new Set(internal)],
     external: [...new Set(external)],
   };
+  if (internalDetails.length > 0) {
+    result.internalDetails = internalDetails;
+  }
+  return result;
+}
+
+function collectImportSymbols(
+  importDecl: ReturnType<SourceFile['getImportDeclarations']>[number]
+): string[] {
+  const symbols: string[] = [];
+  const defaultImport = importDecl.getDefaultImport();
+  if (defaultImport) {
+    symbols.push(defaultImport.getText());
+  }
+
+  const namespaceImport = importDecl.getNamespaceImport();
+  if (namespaceImport) {
+    symbols.push(namespaceImport.getText());
+  }
+
+  for (const named of importDecl.getNamedImports()) {
+    symbols.push(named.getName());
+  }
+
+  return symbols;
 }
 
 // Утилита для очистки проекта (если нужно освободить память)

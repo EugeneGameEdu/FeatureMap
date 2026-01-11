@@ -49,6 +49,8 @@ export function buildGroupContainerNodes({
       id: `${GROUP_CONTAINER_ID_PREFIX}${rect.id}`,
       type: GROUP_CONTAINER_NODE_TYPE,
       position: { x: rect.x, y: rect.y },
+      className: 'group-container pointer-events-none',
+      dragHandle: '.group-container__header',
       data: {
         groupId: rect.id,
         name: group.name,
@@ -60,13 +62,14 @@ export function buildGroupContainerNodes({
         onSelectGroup,
       },
       selectable: false,
-      draggable: true,
+      draggable: rect.id === selectedGroupId,
       deletable: false,
       connectable: false,
       focusable: false,
       style: {
         width: rect.width,
         height: rect.height,
+        pointerEvents: 'none',
         zIndex: 0,
       },
     });

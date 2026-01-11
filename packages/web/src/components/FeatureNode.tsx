@@ -13,19 +13,20 @@ export interface FeatureNodeData extends Record<string, unknown> {
   layer?: Layer;
   layers?: Layer[];
   isFocused?: boolean;
+  isConnected?: boolean;
 }
 
 export type FeatureFlowNode = Node<FeatureNodeData, 'feature' | 'cluster'>;
 
 function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
-  const { label, kind, fileCount, source, status, dependencyCount, isFocused } = data;
+  const { label, kind, fileCount, source, status, dependencyCount, isFocused, isConnected } = data;
 
   const Icon = fileCount > 5 ? Layers : fileCount > 1 ? Folder : Box;
 
   const borderColor = selected
     ? 'border-primary'
-    : source === 'ai'
-    ? 'border-emerald-400'
+    : isConnected
+    ? 'border-primary/50'
     : source === 'user'
     ? 'border-purple-400'
     : 'border-border';
@@ -47,7 +48,7 @@ function FeatureNodeComponent({ data, selected }: NodeProps<FeatureFlowNode>) {
         px-4 py-3 rounded-lg border-2 shadow-sm min-w-[160px]
         transition-all duration-150
         ${borderColor} ${bgColor}
-        ${selected ? 'shadow-md ring-2 ring-primary/30' : 'hover:shadow-md'}
+        ${selected ? 'shadow-lg outline outline-1 outline-primary' : 'hover:shadow-md'}
         ${focusRing}
       `}
     >

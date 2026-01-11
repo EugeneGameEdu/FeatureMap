@@ -1,40 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, type MouseEvent } from 'react';
 import {
-  Background,
-  BezierEdge,
-  ConnectionMode,
-  ControlButton,
-  Controls,
-  Edge,
-  type EdgeChange,
-  type Connection,
-  type NodeChange,
-  Node,
-  ReactFlow,
-  type ReactFlowInstance,
-  useEdgesState,
-  useNodesState,
-  type EdgeTypes,
-  type NodeTypes,
+  Background, BezierEdge, ConnectionMode, ControlButton, Controls, Edge,
+  type Connection, type EdgeChange, type NodeChange, Node, ReactFlow, type ReactFlowInstance,
+  useEdgesState, useNodesState, type EdgeTypes, type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Lock, Unlock } from 'lucide-react';
-import { FeatureNode, type FeatureNodeData } from './FeatureNode';
+import { FeatureNode } from './FeatureNode';
 import { CommentNode } from './CommentNode';
 import { GroupContainerNode } from './GroupContainerNode';
 import { COMMENT_EDGE_TYPE } from '@/lib/commentTypes';
-import {
-  buildGroupContainerNodes,
-  GROUP_CONTAINER_NODE_TYPE,
-} from '@/lib/groupContainers';
-import {
-  applyGroupDragChanges,
-  collectMemberPositions,
-  getGroupIdFromContainer,
-  type GroupDragStateEntry,
-} from '@/lib/groupDrag';
+import { buildDependencyCountById, buildGraphEdges, buildGraphNodes } from '@/lib/featureMapElements';
+import { buildGroupContainerNodes, GROUP_CONTAINER_NODE_TYPE } from '@/lib/groupContainers';
+import { applyGroupDragChanges, collectMemberPositions, getGroupIdFromContainer, type GroupDragStateEntry } from '@/lib/groupDrag';
 import { applyLayoutPositions, getLayoutedElements } from '@/lib/graphLayout';
-import type { GraphData, GroupSummary, MapEntity, NodeType } from '@/lib/types';
+import type { EdgeStyle, GraphData, GroupSummary, MapEntity } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface FeatureMapProps {
   graph: GraphData;
@@ -49,6 +30,7 @@ interface FeatureMapProps {
   commentEdges?: Edge[];
   onNodeClick?: (featureId: string) => void;
   onPaneClick?: (event: MouseEvent) => void;
+  onEdgeClick?: (event: MouseEvent, edge: Edge) => void;
   onConnect?: (connection: Connection) => void;
   onEdgeRemove?: (edgeId: string) => void;
   onNodeDragStop?: (node: Node) => void;
@@ -56,11 +38,15 @@ interface FeatureMapProps {
   commentPlacementActive?: boolean;
   onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
+  selectedEdgeId?: string | null;
+  connectedEdgeIds?: Set<string>;
+  connectedNodeIds?: Set<string>;
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
   onGroupDragStop?: (positions: Record<string, { x: number; y: number }>) => void;
   readOnly?: boolean;
   onToggleReadOnly?: () => void;
+  edgeStyle?: EdgeStyle;
 }
 
 const nodeTypes: NodeTypes = {
@@ -87,6 +73,7 @@ export function FeatureMap({
   commentEdges = [],
   onNodeClick,
   onPaneClick,
+  onEdgeClick,
   onConnect,
   onEdgeRemove,
   onNodeDragStop,
@@ -94,71 +81,28 @@ export function FeatureMap({
   commentPlacementActive = false,
   onInit,
   selectedNodeId,
+  selectedEdgeId,
+  connectedEdgeIds,
+  connectedNodeIds,
   focusedNodeId,
   focusedUntil,
   onGroupDragStop,
   readOnly = false,
   onToggleReadOnly,
+  edgeStyle = 'bezier',
 }: FeatureMapProps) {
   const isReadOnly = Boolean(readOnly);
-  const dependencyCountById = useMemo(() => {
-    const counts: Record<string, number> = {};
-    for (const edge of graph.edges) {
-      counts[edge.source] = (counts[edge.source] ?? 0) + 1;
-    }
-    return counts;
-  }, [graph.edges]);
+  const dependencyCountById = useMemo(() => buildDependencyCountById(graph.edges), [graph.edges]);
 
-  const graphNodes: Node[] = useMemo(() => {
-    return graph.nodes.map((node) => {
-      const entity = entities[node.id];
-      const source = resolveSource(entity);
-      const status = entity?.kind === 'feature' ? entity.data.status : 'active';
-      const fileCount = node.fileCount ?? node.clusterCount ?? 0;
-      const nodeType = (node.type ?? 'cluster') as NodeType;
-      const nodeLayer = nodeType === 'cluster' ? node.layer : undefined;
-      const nodeLayers = nodeType === 'feature' ? node.layers : undefined;
-      const isFocused =
-        focusedNodeId === node.id &&
-        typeof focusedUntil === 'number' &&
-        focusedUntil > Date.now();
-      return {
-        id: node.id,
-        type: nodeType,
-        data: {
-          label: node.label ?? node.id,
-          kind: nodeType,
-          fileCount,
-          source,
-          status,
-          dependencyCount: dependencyCountById[node.id] ?? 0,
-          layer: nodeLayer,
-          layers: nodeLayers,
-          isFocused,
-        },
-        position: { x: 0, y: 0 },
-        selected: node.id === selectedNodeId,
-        deletable: false,
-        zIndex: 2,
-      };
-    });
-  }, [graph.nodes, entities, dependencyCountById, selectedNodeId, focusedNodeId, focusedUntil]);
+  const graphNodes: Node[] = useMemo(
+    () => buildGraphNodes({ nodes: graph.nodes, entities, dependencyCountById, connectedNodeIds, selectedNodeId, focusedNodeId, focusedUntil }),
+    [graph.nodes, entities, dependencyCountById, connectedNodeIds, selectedNodeId, focusedNodeId, focusedUntil]
+  );
 
-  const graphEdges: Edge[] = useMemo(() => {
-    return graph.edges.map((edge, index) => ({
-      id: `e${index}-${edge.source}-${edge.target}`,
-      source: edge.source,
-      target: edge.target,
-      type: 'bezier',
-      animated: false,
-      deletable: false,
-      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
-      markerEnd: {
-        type: 'arrowclosed' as const,
-        color: 'hsl(var(--border))',
-      },
-    }));
-  }, [graph.edges]);
+  const graphEdges: Edge[] = useMemo(
+    () => buildGraphEdges(graph.edges, edgeStyle),
+    [graph.edges, edgeStyle]
+  );
 
   const { nodes: layoutedGraphNodes, edges: layoutedGraphEdges } = useMemo(() => {
     const layouted = getLayoutedElements(graphNodes, graphEdges, 'TB');
@@ -169,11 +113,8 @@ export function FeatureMap({
   }, [graphEdges, graphNodes, layoutPositions]);
 
   const groupContainerNodes = useMemo(() => {
-    if (groups.length === 0) {
-      return [];
-    }
-    const activeGroups =
-      selectedGroupId === 'all' ? groups : groups.filter((group) => group.id === selectedGroupId);
+    if (groups.length === 0) return [];
+    const activeGroups = selectedGroupId === 'all' ? groups : groups.filter((group) => group.id === selectedGroupId);
     return buildGroupContainerNodes({
       visibleNodes: layoutedGraphNodes,
       groups: activeGroups,
@@ -182,23 +123,10 @@ export function FeatureMap({
       selectedGroupId: selectedGroupDetailsId ?? null,
       onSelectGroup: onGroupSelect,
     });
-  }, [
-    groups,
-    groupMembership,
-    layoutedGraphNodes,
-    onGroupSelect,
-    selectedGroupDetailsId,
-    selectedGroupId,
-  ]);
+  }, [groups, groupMembership, layoutedGraphNodes, onGroupSelect, selectedGroupDetailsId, selectedGroupId]);
 
-  const layoutedNodes = useMemo(
-    () => [...groupContainerNodes, ...layoutedGraphNodes, ...commentNodes],
-    [commentNodes, groupContainerNodes, layoutedGraphNodes]
-  );
-  const layoutedEdges = useMemo(
-    () => [...layoutedGraphEdges, ...commentEdges],
-    [commentEdges, layoutedGraphEdges]
-  );
+  const layoutedNodes = useMemo(() => [...groupContainerNodes, ...layoutedGraphNodes, ...commentNodes], [commentNodes, groupContainerNodes, layoutedGraphNodes]);
+  const layoutedEdges = useMemo(() => [...layoutedGraphEdges, ...commentEdges], [commentEdges, layoutedGraphEdges]);
 
   const [nodes, setNodes] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
@@ -210,6 +138,48 @@ export function FeatureMap({
     setEdges(layoutedEdges);
     nodesRef.current = layoutedNodes;
   }, [layoutedNodes, layoutedEdges, setNodes, setEdges]);
+
+  const styledEdges = useMemo(() => {
+    if (edges.length === 0) {
+      return edges;
+    }
+    return edges.map((edge) => {
+      if (edge.type === COMMENT_EDGE_TYPE) {
+        return edge;
+      }
+      const isSelected = selectedEdgeId === edge.id;
+      const isConnected = connectedEdgeIds?.has(edge.id) ?? false;
+      const hasNodeSelection = Boolean(selectedNodeId);
+      const isDimmed = hasNodeSelection && !isConnected && !isSelected;
+
+      const markerColor = isSelected
+        ? 'hsl(var(--primary))'
+        : hasNodeSelection && isConnected
+        ? 'hsl(var(--primary) / 0.55)'
+        : isDimmed
+        ? 'hsl(var(--border) / 0.3)'
+        : 'hsl(var(--border))';
+      const zIndex = isSelected ? 3 : hasNodeSelection && isConnected ? 2 : hasNodeSelection ? 1 : edge.zIndex;
+      const markerEnd = edge.markerEnd;
+      const nextMarkerEnd =
+        markerEnd && typeof markerEnd === 'object'
+          ? { ...markerEnd, color: markerColor }
+          : markerEnd ?? { type: 'arrowclosed' as const, color: markerColor };
+
+      return {
+        ...edge,
+        zIndex,
+        markerEnd: nextMarkerEnd,
+        className: cn(
+          edge.className,
+          'edge-base transition-all duration-200',
+          isSelected && 'edge-selected',
+          !isSelected && hasNodeSelection && isConnected && 'edge-connected',
+          isDimmed && 'edge-dimmed'
+        ),
+      };
+    });
+  }, [edges, selectedEdgeId, selectedNodeId, connectedEdgeIds]);
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: Node) => {
@@ -315,12 +285,13 @@ export function FeatureMap({
     <div className="w-full h-full">
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={styledEdges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onNodeClick={handleNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={handlePaneClick}
         onConnect={handleConnect}
         onNodeDragStop={handleNodeDragStop}
@@ -332,9 +303,7 @@ export function FeatureMap({
         minZoom={0.3}
         maxZoom={2}
         className={commentPlacementActive ? 'cursor-crosshair bg-background' : 'bg-background'}
-        defaultEdgeOptions={{
-          type: 'bezier',
-        }}
+        defaultEdgeOptions={{ type: edgeStyle }}
         nodesDraggable={!isReadOnly}
         nodesConnectable={!isReadOnly}
         edgesReconnectable={!isReadOnly}
@@ -354,16 +323,4 @@ export function FeatureMap({
       </ReactFlow>
     </div>
   );
-}
-
-function resolveSource(entity: MapEntity | undefined): FeatureNodeData['source'] {
-  if (!entity || entity.kind !== 'feature') {
-    return 'auto';
-  }
-
-  if (entity.data.metadata.lastModifiedBy === 'ai' || entity.data.source === 'ai') {
-    return 'ai';
-  }
-
-  return entity.data.source === 'user' ? 'user' : 'auto';
 }

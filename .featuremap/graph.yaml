@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-11T15:24:32.847Z
+generatedAt: 2026-01-11T18:27:42.790Z
 nodes:
   - fileCount: 20
     id: cli-analyzer
@@ -33,7 +33,7 @@ nodes:
     id: cli-types
     label: Cli Types
     type: cluster
-  - fileCount: 12
+  - fileCount: 13
     id: cli-utils
     label: Cli Utils
     type: cluster
@@ -57,7 +57,7 @@ nodes:
     id: packages-web
     label: Packages Web
     type: cluster
-  - fileCount: 14
+  - fileCount: 15
     id: web-components
     label: Web Components
     type: cluster
@@ -69,7 +69,7 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 37
+  - fileCount: 38
     id: web-lib
     label: Web Lib
     type: cluster
@@ -84,7 +84,7 @@ nodes:
   - id: cli-foundation
     label: CLI Foundation & Helpers
     type: feature
-    fileCount: 24
+    fileCount: 25
   - id: cli-local-server
     label: Local Data Server
     type: feature
@@ -96,11 +96,11 @@ nodes:
   - id: web-app-shell
     label: Web App Shell
     type: feature
-    fileCount: 42
+    fileCount: 43
   - id: web-ui-components
     label: Web UI Components
     type: feature
-    fileCount: 20
+    fileCount: 21
 edges:
   - source: cli-analyzer
     target: cli-constants

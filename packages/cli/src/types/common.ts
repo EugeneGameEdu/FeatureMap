@@ -32,9 +32,16 @@ export const ExportSchema = z.object({
 
 export type ExportSymbol = z.infer<typeof ExportSchema>;
 
+const ImportDetailSchema = z.object({
+  from: z.string().describe('Import module specifier or resolved internal path'),
+  symbols: z.array(z.string()).describe('Imported symbols'),
+  isTypeOnly: z.boolean().describe('Type-only import declaration'),
+});
+
 export const ImportListSchema = z.object({
   internal: z.array(z.string()).describe('Relative imports within the project'),
   external: z.array(z.string()).describe('Package imports'),
+  internalDetails: z.array(ImportDetailSchema).optional(),
 });
 
 export type ImportList = z.infer<typeof ImportListSchema>;

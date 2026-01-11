@@ -25,6 +25,7 @@ imports:
   internal:
     - ./App.js
     - ./index.css
+    - packages/web/src/components/EdgeDetailsPanel.tsx
     - packages/web/src/components/FeatureMap.tsx
     - packages/web/src/components/LeftToolbar.tsx
     - packages/web/src/components/MapHeader.tsx
@@ -32,6 +33,7 @@ imports:
     - packages/web/src/components/Sidebar.tsx
     - packages/web/src/components/StatusScreens.tsx
     - packages/web/src/lib/commentTypes.ts
+    - packages/web/src/lib/featureMapElements.ts
     - packages/web/src/lib/groupFilters.ts
     - packages/web/src/lib/groupMembership.ts
     - packages/web/src/lib/layerFilters.ts
@@ -44,4 +46,4 @@ imports:
 compositionHash: 3f5c50ccf093e648
 metadata:
   createdAt: 2026-01-11T15:14:54.310Z
-  updatedAt: 2026-01-11T15:14:54.310Z
+  updatedAt: 2026-01-11T18:20:13.251Z

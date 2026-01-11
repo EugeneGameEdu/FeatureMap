@@ -3,7 +3,6 @@ import { join } from 'path';
 import {
   applyClusterMatching,
   areClustersEquivalent,
-  areGraphsEquivalent,
   buildClusterFile,
   buildConventionsInput,
   buildDefaultLayout,
@@ -18,20 +17,18 @@ import {
   loadYAML,
   saveAutoContext,
   saveYAML,
+  saveGraphYaml,
   scanProject,
   scanProjectStructure,
   ClusterSchema,
   ConventionsSchema,
-  GraphSchema,
   LayoutSchema,
-  SUPPORTED_VERSIONS,
   TechStackSchema,
 } from '@featuremap/cli/dist/api.js';
 import type {
   ClusterFile,
   DependencyGraph,
   FolderCluster,
-  Graph,
   Layer,
 } from '@featuremap/cli/dist/api.js';
 
@@ -91,7 +88,7 @@ export async function executeScan(projectRoot: string): Promise<ScanExecutionRes
   }
 
   const clusterSave = saveClusters(featuremapDir, clusters, graph);
-  saveGraphYaml(featuremapDir, clusters);
+  saveGraphYaml(featuremapDir, clusters, graph);
 
   const conventionsInput = buildConventionsInput(graph);
   const conventions = detectConventions(conventionsInput);
@@ -206,49 +203,6 @@ function saveClusters(
   }
 
   return { created, layerSummary };
-}
-
-function buildGraphData(nodes: Graph['nodes'], edges: Graph['edges'], version: number): Graph {
-  return {
-    version,
-    generatedAt: new Date().toISOString(),
-    nodes,
-    edges,
-  };
-}
-
-function saveGraphYaml(featuremapDir: string, clusters: FolderCluster[]): void {
-  const nodes: Graph['nodes'] = clusters.map((cluster) => ({
-    id: cluster.id,
-    label: cluster.name,
-    type: 'cluster',
-    fileCount: cluster.files.length,
-  }));
-
-  const edges: Array<{ source: string; target: string }> = [];
-  for (const cluster of clusters) {
-    for (const dep of cluster.externalDependencies) {
-      edges.push({ source: cluster.id, target: dep });
-    }
-  }
-
-  const filePath = join(featuremapDir, 'graph.yaml');
-  if (existsSync(filePath)) {
-    try {
-      const existing = loadYAML(filePath, GraphSchema, { fileType: 'graph' });
-      const nextGraph = buildGraphData(nodes, edges, existing.version);
-      if (areGraphsEquivalent(existing, nextGraph)) {
-        return;
-      }
-    } catch {
-      // Fall through to regenerate graph with the latest schema.
-    }
-  }
-
-  const graphYaml = buildGraphData(nodes, edges, SUPPORTED_VERSIONS.graph);
-  saveYAML(filePath, graphYaml, GraphSchema, {
-    sortArrayFields: ['nodes', 'edges'],
-  });
 }
 
 function ensureLayout(featuremapDir: string, clusters: FolderCluster[]): void {
