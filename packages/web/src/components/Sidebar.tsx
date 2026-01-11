@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { AlertTriangle, ArrowRight, Clock, FileCode, Layers, Tag, X } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Clock, Layers, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { GroupDetailsPanel } from '@/components/GroupDetailsPanel';
 import { ProjectOverview, type ProjectStats } from '@/components/ProjectOverview';
+import { SidebarClusterDetails } from '@/components/SidebarClusterDetails';
 import type { Cluster, FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
@@ -24,6 +24,8 @@ interface SidebarProps {
   stats?: ProjectStats;
   techStack?: ContextFile<TechStack>;
   conventions?: ContextFile<Conventions>;
+  internalDependencies?: string[];
+  entities?: Record<string, MapEntity>;
 }
 
 export function Sidebar({
@@ -39,6 +41,8 @@ export function Sidebar({
   stats,
   techStack,
   conventions,
+  internalDependencies,
+  entities,
 }: SidebarProps) {
   const sourceColors = {
     auto: 'bg-muted text-muted-foreground',
@@ -58,18 +62,6 @@ export function Sidebar({
     infrastructure: 'bg-indigo-500/20 text-indigo-200',
     smell: 'bg-rose-500/20 text-rose-200',
   };
-  const fileRowRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
-  useEffect(() => {
-    fileRowRefs.current.clear();
-  }, [node?.data.id]);
-
-  useEffect(() => {
-    if (!focusedFilePath || !node || node.kind !== 'cluster') {
-      return;
-    }
-    const row = fileRowRefs.current.get(focusedFilePath);
-    row?.scrollIntoView({ block: 'center' });
-  }, [focusedFilePath, node]);
 
   if (group) {
     return (
@@ -211,26 +203,15 @@ export function Sidebar({
               </div>
             </section>
           ) : (
-            <section>
-              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                <FileCode size={16} />
-                Files ({clusterData?.files.length ?? 0})
-              </h3>
-              <div className="space-y-1">
-                {(clusterData?.files ?? []).map((file, index) => (
-                  <div
-                    key={index}
-                    ref={(element) => fileRowRefs.current.set(file, element)}
-                    className={`text-xs text-foreground/90 py-1.5 px-2 bg-muted rounded hover:bg-muted/80 font-mono ${
-                      focusedFilePath === file ? 'ring-1 ring-primary/40 bg-primary/10' : ''
-                    }`}
-                    title={file}
-                  >
-                    {file.split('/').slice(-2).join('/')}
-                  </div>
-                ))}
-              </div>
-            </section>
+            clusterData && (
+              <SidebarClusterDetails
+                cluster={clusterData}
+                focusedFilePath={focusedFilePath}
+                internalDependencies={internalDependencies}
+                entities={entities}
+                onDependencyClick={onDependencyClick}
+              />
+            )
           )}
 
           {featureData && featureGroups.length > 0 && (
@@ -243,22 +224,6 @@ export function Sidebar({
                 {featureGroups.map((group) => (
                   <Badge key={group.id} variant="secondary" className="text-xs">
                     {group.name}
-                  </Badge>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {!featureData && (clusterData?.exports.length ?? 0) > 0 && (
-            <section>
-              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                <Tag size={16} />
-                Exports ({clusterData?.exports.length ?? 0})
-              </h3>
-              <div className="flex flex-wrap gap-1">
-                {(clusterData?.exports ?? []).map((exp, index) => (
-                  <Badge key={`${exp.name}-${index}`} variant="secondary" className="font-mono text-xs">
-                    {exp.name}
                   </Badge>
                 ))}
               </div>
@@ -281,22 +246,6 @@ export function Sidebar({
                     {'-> '}
                     {dep}
                   </button>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {!featureData && (clusterData?.imports.external.length ?? 0) > 0 && (
-            <section>
-              <h3 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                <ArrowRight size={16} />
-                External Imports ({clusterData?.imports.external.length ?? 0})
-              </h3>
-              <div className="flex flex-wrap gap-1">
-                {(clusterData?.imports.external ?? []).map((imp) => (
-                  <Badge key={imp} variant="secondary" className="font-mono text-xs">
-                    {imp}
-                  </Badge>
                 ))}
               </div>
             </section>

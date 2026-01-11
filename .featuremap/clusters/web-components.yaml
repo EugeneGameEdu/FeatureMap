@@ -25,6 +25,7 @@ files:
   - packages/web/src/components/ProjectOverview.tsx
   - packages/web/src/components/SearchPalette.tsx
   - packages/web/src/components/Sidebar.tsx
+  - packages/web/src/components/SidebarClusterDetails.tsx
   - packages/web/src/components/StatusScreens.tsx
 exports:
   - isDefault: false
@@ -87,6 +88,9 @@ exports:
   - isDefault: false
     name: Sidebar
     type: function
+  - isDefault: false
+    name: SidebarClusterDetails
+    type: function
 imports:
   external:
     - "@xyflow/react"
@@ -103,6 +107,7 @@ imports:
     - packages/web/src/components/GroupDetailsPanel.tsx
     - packages/web/src/components/MapControlsRow.tsx
     - packages/web/src/components/ProjectOverview.tsx
+    - packages/web/src/components/SidebarClusterDetails.tsx
     - packages/web/src/components/ui/badge.tsx
     - packages/web/src/components/ui/button.tsx
     - packages/web/src/components/ui/card.tsx
@@ -126,7 +131,7 @@ imports:
     - packages/web/src/lib/useGroupApi.ts
     - packages/web/src/lib/utils.ts
     - packages/web/src/lib/yamlParsing.ts
-compositionHash: aab3d3774f698476
+compositionHash: da4287e5f049c686
 metadata:
   createdAt: 2026-01-11T15:14:54.305Z
-  updatedAt: 2026-01-11T20:27:52.424Z
+  updatedAt: 2026-01-11T21:20:12.456Z

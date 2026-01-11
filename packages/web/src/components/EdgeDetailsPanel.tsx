@@ -1,5 +1,5 @@
-import { ArrowRight, FileCode, X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
+import { ArrowRight, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { EdgeImportDetail } from '@/lib/types';
@@ -23,6 +23,19 @@ export function EdgeDetailsPanel({
   onViewTarget,
 }: EdgeDetailsPanelProps) {
   const totalSourceFiles = imports.reduce((sum, detail) => sum + detail.sourceFiles.length, 0);
+  const [expandedImports, setExpandedImports] = useState<Set<string>>(() => new Set());
+
+  const toggleImport = (key: string) => {
+    setExpandedImports((current) => {
+      const next = new Set(current);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="w-[400px] border-l border-border bg-card flex flex-col">
@@ -72,37 +85,50 @@ export function EdgeDetailsPanel({
                 <h3 className="text-sm font-medium text-foreground mb-2">
                   Imports ({imports.length})
                 </h3>
-                <div className="space-y-3">
-                  {imports.map((detail, index) => (
-                    <div key={`${detail.symbol}-${index}`} className="border border-border rounded-lg p-3 bg-background/40">
-                      <Badge variant="secondary" className="font-mono text-xs mb-2">
-                        {detail.symbol}
-                      </Badge>
+                <div className="space-y-2">
+                  {imports.map((detail, index) => {
+                    const key = `${detail.symbol}|${detail.targetFile ?? ''}|${index}`;
+                    const isExpanded = expandedImports.has(key);
+                    const ChevronIcon = isExpanded ? ChevronDown : ChevronRight;
 
-                      {detail.targetFile && (
-                        <div className="text-xs text-muted-foreground mb-2">
-                          <span>Exported from:</span>
-                          <div className="font-mono text-foreground/90 mt-1" title={detail.targetFile}>
-                            {formatFilePath(detail.targetFile)}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="text-xs text-muted-foreground">
-                        <span>Used in:</span>
-                        <div className="mt-1 space-y-1">
-                          {detail.sourceFiles.map((file, fileIndex) => (
-                            <div key={`${file}-${fileIndex}`} className="flex items-start gap-1">
-                              <FileCode size={12} className="text-muted-foreground mt-0.5" />
-                              <span className="font-mono text-foreground/90" title={file}>
-                                {formatFilePath(file)}
-                              </span>
+                    return (
+                      <div key={key} className="space-y-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleImport(key)}
+                          className="flex items-center gap-2 text-left w-full"
+                          aria-expanded={isExpanded}
+                        >
+                          <ChevronIcon size={16} className="text-muted-foreground" />
+                          <span className="text-sm font-semibold text-primary">
+                            {detail.symbol}
+                          </span>
+                        </button>
+                        {isExpanded && (
+                          <div className="pl-6 space-y-2">
+                            {detail.targetFile && (
+                              <div className="text-xs text-muted-foreground">
+                                <div>Exported from:</div>
+                                <div className="font-mono" title={detail.targetFile}>
+                                  {formatFilePath(detail.targetFile)}
+                                </div>
+                              </div>
+                            )}
+                            <div className="text-xs text-muted-foreground">
+                              <div>Used in:</div>
+                              <div className="space-y-1">
+                                {detail.sourceFiles.map((file, fileIndex) => (
+                                  <div key={`${file}-${fileIndex}`} className="font-mono" title={file}>
+                                    {formatFilePath(file)}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

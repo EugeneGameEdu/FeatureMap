@@ -152,18 +152,28 @@ function resolveImportPath(
   fromFile: string,
   graphFiles: Set<string>
 ): string | null {
-  if (graphFiles.has(importPath)) {
-    return importPath;
+  const normalized = importPath.replace(/\\/g, '/');
+  const resolvedDirect = resolveImportCandidate(normalized, graphFiles);
+  if (resolvedDirect) {
+    return resolvedDirect;
   }
-  if (!importPath.startsWith('.')) {
+  if (!normalized.startsWith('.')) {
     return null;
   }
 
   const fromDir = path.posix.dirname(fromFile);
-  const resolved = path.posix.normalize(path.posix.join(fromDir, importPath));
+  const resolved = path.posix.normalize(path.posix.join(fromDir, normalized));
+
+  return resolveImportCandidate(resolved, graphFiles);
+}
+
+function resolveImportCandidate(candidatePath: string, graphFiles: Set<string>): string | null {
+  if (graphFiles.has(candidatePath)) {
+    return candidatePath;
+  }
 
   const extensions = ['.ts', '.tsx', '.js', '.jsx', ''];
-  const variants = [resolved, `${resolved}/index`];
+  const variants = [candidatePath, `${candidatePath}/index`];
 
   for (const variant of variants) {
     for (const ext of extensions) {
@@ -174,7 +184,7 @@ function resolveImportPath(
     }
   }
 
-  const withoutExt = resolved.replace(/\.(js|jsx)$/, '');
+  const withoutExt = candidatePath.replace(/\.(js|jsx)$/, '');
   for (const ext of ['.ts', '.tsx']) {
     const candidate = `${withoutExt}${ext}`;
     if (graphFiles.has(candidate)) {

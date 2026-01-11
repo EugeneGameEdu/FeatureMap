@@ -126,6 +126,12 @@ function App() {
     });
     return connected;
   }, [hiddenNodeIds, selectedNodeId, visibleGraph]);
+  const selectedNodeDependencies = useMemo(() => {
+    if (!selectedNodeId || !visibleGraph) return [];
+    return visibleGraph.edges
+      .filter((edge) => edge.source === selectedNodeId)
+      .map((edge) => edge.target);
+  }, [selectedNodeId, visibleGraph]);
   const selectedEdge = useMemo(() => {
     if (!selectedEdgeId || !visibleGraph) return null;
     return (
@@ -266,7 +272,7 @@ function App() {
             onViewTarget={handleViewEdgeTarget}
           />
         ) : (
-          <Sidebar node={selectedNode} group={selectedGroupDetails} groupMembers={selectedGroupMembers} viewMode={viewMode} onClose={handleCloseSidebar} onGroupUpdated={handleGroupUpdated} onDependencyClick={handleDependencyClick} groups={data.groups} focusedFilePath={focusedFilePath} stats={projectStats} techStack={data.context.techStack} conventions={data.context.conventions} />
+          <Sidebar node={selectedNode} group={selectedGroupDetails} groupMembers={selectedGroupMembers} viewMode={viewMode} onClose={handleCloseSidebar} onGroupUpdated={handleGroupUpdated} onDependencyClick={handleDependencyClick} groups={data.groups} focusedFilePath={focusedFilePath} stats={projectStats} techStack={data.context.techStack} conventions={data.context.conventions} internalDependencies={selectedNodeDependencies} entities={data.entities} />
         )}
       </div>
     </div>
