@@ -41,12 +41,15 @@ interface FeatureMapProps {
   selectedEdgeId?: string | null;
   connectedEdgeIds?: Set<string>;
   connectedNodeIds?: Set<string>;
+  hiddenNodeIds?: Set<string>;
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
   onGroupDragStop?: (positions: Record<string, { x: number; y: number }>) => void;
   readOnly?: boolean;
   onToggleReadOnly?: () => void;
   edgeStyle?: EdgeStyle;
+  collapsedGroupIds?: Set<string>;
+  onGroupCollapseToggle?: (groupId: string) => void;
 }
 
 const nodeTypes: NodeTypes = {
@@ -84,12 +87,15 @@ export function FeatureMap({
   selectedEdgeId,
   connectedEdgeIds,
   connectedNodeIds,
+  hiddenNodeIds,
   focusedNodeId,
   focusedUntil,
   onGroupDragStop,
   readOnly = false,
   onToggleReadOnly,
   edgeStyle = 'bezier',
+  collapsedGroupIds,
+  onGroupCollapseToggle,
 }: FeatureMapProps) {
   const isReadOnly = Boolean(readOnly);
   const dependencyCountById = useMemo(() => buildDependencyCountById(graph.edges), [graph.edges]);
@@ -112,6 +118,26 @@ export function FeatureMap({
     };
   }, [graphEdges, graphNodes, layoutPositions]);
 
+  const visibleGraphNodes = useMemo(() => {
+    if (!hiddenNodeIds || hiddenNodeIds.size === 0) {
+      return layoutedGraphNodes;
+    }
+    return layoutedGraphNodes.filter((node) => !hiddenNodeIds.has(node.id));
+  }, [hiddenNodeIds, layoutedGraphNodes]);
+
+  const visibleNodeIds = useMemo(() => {
+    return new Set(visibleGraphNodes.map((node) => node.id));
+  }, [visibleGraphNodes]);
+
+  const visibleGraphEdges = useMemo(() => {
+    if (!hiddenNodeIds || hiddenNodeIds.size === 0) {
+      return layoutedGraphEdges;
+    }
+    return layoutedGraphEdges.filter(
+      (edge) => visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)
+    );
+  }, [hiddenNodeIds, layoutedGraphEdges, visibleNodeIds]);
+
   const groupContainerNodes = useMemo(() => {
     if (groups.length === 0) return [];
     const activeGroups = selectedGroupId === 'all' ? groups : groups.filter((group) => group.id === selectedGroupId);
@@ -122,11 +148,25 @@ export function FeatureMap({
       padding: 40,
       selectedGroupId: selectedGroupDetailsId ?? null,
       onSelectGroup: onGroupSelect,
+      collapsedGroupIds,
+      onToggleCollapsed: onGroupCollapseToggle,
     });
-  }, [groups, groupMembership, layoutedGraphNodes, onGroupSelect, selectedGroupDetailsId, selectedGroupId]);
+  }, [collapsedGroupIds, groupMembership, groups, layoutedGraphNodes, onGroupCollapseToggle, onGroupSelect, selectedGroupDetailsId, selectedGroupId]);
 
-  const layoutedNodes = useMemo(() => [...groupContainerNodes, ...layoutedGraphNodes, ...commentNodes], [commentNodes, groupContainerNodes, layoutedGraphNodes]);
-  const layoutedEdges = useMemo(() => [...layoutedGraphEdges, ...commentEdges], [commentEdges, layoutedGraphEdges]);
+  const layoutedNodes = useMemo(
+    () => [...groupContainerNodes, ...visibleGraphNodes, ...commentNodes],
+    [commentNodes, groupContainerNodes, visibleGraphNodes]
+  );
+  const layoutedEdges = useMemo(() => {
+    if (commentEdges.length === 0) {
+      return visibleGraphEdges;
+    }
+    const allNodeIds = new Set([...visibleNodeIds, ...commentNodes.map((node) => node.id)]);
+    const filteredComments = commentEdges.filter(
+      (edge) => allNodeIds.has(edge.source) && allNodeIds.has(edge.target)
+    );
+    return [...visibleGraphEdges, ...filteredComments];
+  }, [commentEdges, commentNodes, visibleGraphEdges, visibleNodeIds]);
 
   const [nodes, setNodes] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);

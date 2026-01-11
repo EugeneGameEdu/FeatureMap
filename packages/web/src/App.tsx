@@ -9,7 +9,7 @@ import { ErrorScreen, LoadingScreen } from '@/components/StatusScreens';
 import { COMMENT_EDGE_TYPE, COMMENT_NODE_PREFIX } from '@/lib/commentTypes';
 import { EdgeDetailsPanel } from '@/components/EdgeDetailsPanel';
 import { applyGroupFilter } from '@/lib/groupFilters';
-import { buildPrimaryGroupMembership } from '@/lib/groupMembership';
+import { buildGroupMembership, buildPrimaryGroupMembership } from '@/lib/groupMembership';
 import { applyLayerFilter } from '@/lib/layerFilters';
 import { useCommentsTool } from '@/lib/useCommentsTool';
 import { useFeatureMapData } from '@/lib/useFeatureMapData';
@@ -29,6 +29,7 @@ function App() {
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [showComments, setShowComments] = useState(true);
   const [edgeStyle, setEdgeStyle] = useState<EdgeStyle>('bezier');
+  const [collapsedGroupIds, setCollapsedGroupIds] = useState<Set<string>>(new Set());
   const [readOnly, setReadOnly] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
@@ -41,6 +42,21 @@ function App() {
         : { membership: new Map<string, string[]>(), multiGroupNodeIds: [] },
     [data, viewMode]
   );
+  const fullGroupMembership = useMemo(
+    () => (data ? buildGroupMembership(data.groups, data.entities, viewMode) : new Map<string, string[]>()),
+    [data, viewMode]
+  );
+  const hiddenNodeIds = useMemo(() => {
+    if (!data || collapsedGroupIds.size === 0) {
+      return new Set<string>();
+    }
+    const hidden = new Set<string>();
+    for (const groupId of collapsedGroupIds) {
+      const members = fullGroupMembership.get(groupId) ?? [];
+      members.forEach((memberId) => hidden.add(memberId));
+    }
+    return hidden;
+  }, [collapsedGroupIds, data, fullGroupMembership]);
   const visibleGraph = useMemo(() => {
     if (!activeGraph || !data) return null;
     const layerFiltered = applyLayerFilter(activeGraph.nodes, activeGraph.edges, selectedLayer);
@@ -55,7 +71,10 @@ function App() {
     );
     return { ...activeGraph, nodes: groupFiltered.nodes, edges: groupFiltered.edges };
   }, [activeGraph, data?.entities, data?.groupsById, primaryGroupMembership.membership, selectedGroupId, selectedLayer, viewMode]);
-  const visibleNodeIds = useMemo(() => new Set(visibleGraph?.nodes.map((node) => node.id) ?? []), [visibleGraph]);
+  const visibleNodeIds = useMemo(() => {
+    if (!visibleGraph) return new Set<string>();
+    return new Set(visibleGraph.nodes.filter((node) => !hiddenNodeIds.has(node.id)).map((node) => node.id));
+  }, [hiddenNodeIds, visibleGraph]);
   const { clearGroupSelection, selectGroup, selectedGroupDetails, selectedGroupDetailsId, selectedGroupMembers, groupMembership, multiGroupNodeIds } = useGroupSelection({
     data, viewMode, selectedGroupId, visibleNodeIds,
     groupMembership: primaryGroupMembership.membership, multiGroupNodeIds: primaryGroupMembership.multiGroupNodeIds,
@@ -83,16 +102,22 @@ function App() {
     if (!selectedNodeId || !visibleGraph) return new Set<string>();
     const connected = new Set<string>();
     visibleGraph.edges.forEach((edge, index) => {
+      if (hiddenNodeIds.has(edge.source) || hiddenNodeIds.has(edge.target)) {
+        return;
+      }
       if (edge.source === selectedNodeId || edge.target === selectedNodeId) {
         connected.add(buildEdgeId(edge, index));
       }
     });
     return connected;
-  }, [selectedNodeId, visibleGraph]);
+  }, [hiddenNodeIds, selectedNodeId, visibleGraph]);
   const connectedNodeIds = useMemo(() => {
     if (!selectedNodeId || !visibleGraph) return new Set<string>();
     const connected = new Set<string>();
     visibleGraph.edges.forEach((edge) => {
+      if (hiddenNodeIds.has(edge.source) || hiddenNodeIds.has(edge.target)) {
+        return;
+      }
       if (edge.source === selectedNodeId) {
         connected.add(edge.target);
       } else if (edge.target === selectedNodeId) {
@@ -100,7 +125,7 @@ function App() {
       }
     });
     return connected;
-  }, [selectedNodeId, visibleGraph]);
+  }, [hiddenNodeIds, selectedNodeId, visibleGraph]);
   const selectedEdge = useMemo(() => {
     if (!selectedEdgeId || !visibleGraph) return null;
     return (
@@ -120,6 +145,12 @@ function App() {
     const exists = visibleGraph.nodes.some((node) => node.id === selectedNodeId);
     if (!exists) setSelectedNodeId(null);
   }, [selectedNodeId, visibleGraph]);
+  useEffect(() => {
+    if (!selectedNodeId) return;
+    if (hiddenNodeIds.has(selectedNodeId)) {
+      setSelectedNodeId(null);
+    }
+  }, [hiddenNodeIds, selectedNodeId]);
   useEffect(() => {
     if (!selectedCommentId) return;
     const commentNodeId = `${COMMENT_NODE_PREFIX}${selectedCommentId}`;
@@ -151,6 +182,17 @@ function App() {
   const handleGroupSelect = (groupId: string) => {
     setFocusedFilePath(null); setSelectedCommentId(null); setSelectedNodeId(null); setSelectedEdgeId(null); selectGroup(groupId);
   };
+  const handleGroupCollapseToggle = useCallback((groupId: string) => {
+    setCollapsedGroupIds((current) => {
+      const next = new Set(current);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
+      return next;
+    });
+  }, []);
   const handleGroupUpdated = useCallback(
     (groupId: string, note: string | null) => updateGroupNote(groupId, note),
     [updateGroupNote]
@@ -212,7 +254,7 @@ function App() {
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <LeftToolbar onSearchClick={() => setSearchOpen(true)} commentMode={commentToolMode} onToggleAddMode={togglePlacementMode} edgeStyle={edgeStyle} onEdgeStyleChange={setEdgeStyle} />
-          <FeatureMap graph={visibleGraph} entities={data.entities} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} />
+          <FeatureMap graph={visibleGraph} entities={data.entities} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds} hiddenNodeIds={hiddenNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} collapsedGroupIds={collapsedGroupIds} onGroupCollapseToggle={handleGroupCollapseToggle} />
         </main>
         {selectedEdge ? (
           <EdgeDetailsPanel

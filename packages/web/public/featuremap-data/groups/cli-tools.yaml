@@ -7,9 +7,10 @@ featureIds:
   - cli-commands
   - cli-foundation
   - cli-local-server
-source: ai
+note: I am trying to understand what it is.
 metadata:
-  createdAt: 2026-01-11T15:25:27.491Z
-  updatedAt: 2026-01-11T15:25:27.491Z
-  lastModifiedBy: ai
   version: 1
+  createdAt: 2026-01-11T15:25:27.491Z
+  updatedAt: 2026-01-11T20:15:04.589Z
+  lastModifiedBy: user
+source: ai

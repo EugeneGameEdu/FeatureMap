@@ -3,6 +3,7 @@ import type { GroupSummary } from './types';
 
 export const GROUP_CONTAINER_PADDING = 40;
 export const GROUP_HEADER_HEIGHT = 36;
+const GROUP_HEADER_LINE_HEIGHT = 18;
 export const GROUP_NOTE_HEIGHT = 44;
 export const GROUP_PACK_MARGIN = 80;
 
@@ -16,6 +17,7 @@ export interface GroupRectangle {
   width: number;
   height: number;
   noteHeight: number;
+  headerHeight: number;
 }
 
 interface BuildGroupRectanglesInput {
@@ -23,6 +25,7 @@ interface BuildGroupRectanglesInput {
   groups: GroupSummary[];
   membership: Map<string, string[]>;
   padding?: number;
+  collapsedGroupIds?: Set<string>;
 }
 
 export function buildGroupRectangles({
@@ -30,6 +33,7 @@ export function buildGroupRectangles({
   groups,
   membership,
   padding = GROUP_CONTAINER_PADDING,
+  collapsedGroupIds,
 }: BuildGroupRectanglesInput): GroupRectangle[] {
   const rectangles: GroupRectangle[] = [];
 
@@ -42,13 +46,18 @@ export function buildGroupRectangles({
 
     const bounds = resolveBounds(memberNodes);
     const noteHeight = group.note ? GROUP_NOTE_HEIGHT : 0;
+    const headerHeight = estimateHeaderHeight(group.name, group.description, bounds.maxX - bounds.minX + padding * 2);
+    const isCollapsed = collapsedGroupIds?.has(group.id) ?? false;
+    const bodyHeight = bounds.maxY - bounds.minY + padding * 2;
+    const height = isCollapsed ? headerHeight + noteHeight : bodyHeight + headerHeight + noteHeight;
     rectangles.push({
       id: group.id,
       x: bounds.minX - padding,
-      y: bounds.minY - padding - GROUP_HEADER_HEIGHT,
+      y: bounds.minY - padding - headerHeight,
       width: bounds.maxX - bounds.minX + padding * 2,
-      height: bounds.maxY - bounds.minY + padding * 2 + GROUP_HEADER_HEIGHT + noteHeight,
+      height,
       noteHeight,
+      headerHeight,
     });
   }
 
@@ -121,6 +130,15 @@ function resolveNodeWidth(node: Node): number {
 function resolveNodeHeight(node: Node): number {
   const measured = (node as Node & { measured?: { height?: number } }).measured;
   return node.height ?? measured?.height ?? DEFAULT_NODE_HEIGHT;
+}
+
+function estimateHeaderHeight(name: string, description: string | undefined, width: number): number {
+  const contentWidth = Math.max(width - 32, 120);
+  const charsPerLine = Math.max(Math.floor(contentWidth / 7), 8);
+  const extraLength = description ? description.length + 3 : 0;
+  const totalLength = name.length + extraLength;
+  const lineCount = Math.max(1, Math.ceil(totalLength / charsPerLine));
+  return GROUP_HEADER_HEIGHT + (lineCount - 1) * GROUP_HEADER_LINE_HEIGHT;
 }
 
 function isDefined<T>(value: T | undefined): value is T {

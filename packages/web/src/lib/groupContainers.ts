@@ -13,7 +13,9 @@ export interface GroupContainerData extends Record<string, unknown> {
   headerHeight: number;
   noteHeight: number;
   isSelected: boolean;
+  isCollapsed: boolean;
   onSelectGroup?: (groupId: string) => void;
+  onToggleCollapsed?: (groupId: string) => void;
 }
 
 export type GroupContainerNode = Node<GroupContainerData, typeof GROUP_CONTAINER_NODE_TYPE>;
@@ -25,6 +27,8 @@ interface BuildGroupContainerNodesInput {
   padding: number;
   selectedGroupId?: string | null;
   onSelectGroup?: (groupId: string) => void;
+  collapsedGroupIds?: Set<string>;
+  onToggleCollapsed?: (groupId: string) => void;
 }
 
 export function buildGroupContainerNodes({
@@ -34,9 +38,11 @@ export function buildGroupContainerNodes({
   padding,
   selectedGroupId,
   onSelectGroup,
+  collapsedGroupIds,
+  onToggleCollapsed,
 }: BuildGroupContainerNodesInput): GroupContainerNode[] {
   const nodesById = new Map(visibleNodes.map((node) => [node.id, node]));
-  const rectangles = buildGroupRectangles({ nodesById, groups, membership, padding });
+  const rectangles = buildGroupRectangles({ nodesById, groups, membership, padding, collapsedGroupIds });
   const containerNodes: GroupContainerNode[] = [];
 
   for (const rect of rectangles) {
@@ -44,6 +50,7 @@ export function buildGroupContainerNodes({
     if (!group) {
       continue;
     }
+    const isCollapsed = collapsedGroupIds?.has(rect.id) ?? false;
 
     containerNodes.push({
       id: `${GROUP_CONTAINER_ID_PREFIX}${rect.id}`,
@@ -56,10 +63,12 @@ export function buildGroupContainerNodes({
         name: group.name,
         description: group.description,
         note: group.note,
-        headerHeight: GROUP_HEADER_HEIGHT,
+        headerHeight: rect.headerHeight,
         noteHeight: rect.noteHeight,
         isSelected: rect.id === selectedGroupId,
+        isCollapsed,
         onSelectGroup,
+        onToggleCollapsed,
       },
       selectable: false,
       draggable: rect.id === selectedGroupId,
