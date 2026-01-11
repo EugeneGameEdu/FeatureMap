@@ -233,6 +233,9 @@ exports:
     name: EdgeImportDetail
     type: type
   - isDefault: false
+    name: EdgeStyle
+    type: type
+  - isDefault: false
     name: Feature
     type: type
   - isDefault: false
@@ -566,4 +569,4 @@ imports:
 compositionHash: 9a51928c4bfdd9f4
 metadata:
   createdAt: 2026-01-11T15:14:54.313Z
-  updatedAt: 2026-01-11T18:20:13.265Z
+  updatedAt: 2026-01-11T20:27:52.438Z

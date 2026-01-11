@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-11T18:27:42.790Z
+generatedAt: 2026-01-11T20:27:52.449Z
 nodes:
   - fileCount: 20
     id: cli-analyzer
@@ -73,34 +73,6 @@ nodes:
     id: web-lib
     label: Web Lib
     type: cluster
-  - id: cli-code-scanner
-    label: Code Scanning Engine
-    type: feature
-    fileCount: 20
-  - id: cli-commands
-    label: CLI Commands
-    type: feature
-    fileCount: 9
-  - id: cli-foundation
-    label: CLI Foundation & Helpers
-    type: feature
-    fileCount: 25
-  - id: cli-local-server
-    label: Local Data Server
-    type: feature
-    fileCount: 12
-  - id: mcp-integration-server
-    label: MCP Integration Server
-    type: feature
-    fileCount: 39
-  - id: web-app-shell
-    label: Web App Shell
-    type: feature
-    fileCount: 43
-  - id: web-ui-components
-    label: Web UI Components
-    type: feature
-    fileCount: 21
 edges:
   - source: cli-analyzer
     target: cli-constants
@@ -162,57 +134,3 @@ edges:
     target: web-components
   - source: web-core
     target: web-lib
-  - source: cli-code-scanner
-    target: cli-analyzer
-    type: contains
-  - source: cli-commands
-    target: cli-commands
-    type: contains
-  - source: cli-commands
-    target: cli-core
-    type: contains
-  - source: cli-commands
-    target: cli-scripts
-    type: contains
-  - source: cli-foundation
-    target: cli-constants
-    type: contains
-  - source: cli-foundation
-    target: cli-types
-    type: contains
-  - source: cli-foundation
-    target: cli-utils
-    type: contains
-  - source: cli-local-server
-    target: cli-server
-    type: contains
-  - source: cli-local-server
-    target: cli-server-routes
-    type: contains
-  - source: mcp-integration-server
-    target: mcp-server-core
-    type: contains
-  - source: mcp-integration-server
-    target: mcp-server-tools
-    type: contains
-  - source: mcp-integration-server
-    target: mcp-server-types
-    type: contains
-  - source: mcp-integration-server
-    target: mcp-server-utils
-    type: contains
-  - source: web-app-shell
-    target: packages-web
-    type: contains
-  - source: web-app-shell
-    target: web-core
-    type: contains
-  - source: web-app-shell
-    target: web-lib
-    type: contains
-  - source: web-ui-components
-    target: web-components
-    type: contains
-  - source: web-ui-components
-    target: web-components-ui
-    type: contains

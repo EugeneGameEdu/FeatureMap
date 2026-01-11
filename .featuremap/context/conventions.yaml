@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-11T18:20:13.282Z
+detectedAt: 2026-01-11T20:27:52.454Z
 naming:
   files:
     components: PascalCase.tsx
