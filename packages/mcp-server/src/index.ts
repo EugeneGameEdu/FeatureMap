@@ -17,6 +17,8 @@ import { getNodeCommentsTool } from './tools/getNodeComments.js';
 import { getGroupDetailsTool } from './tools/getGroupDetails.js';
 import { analyzeProjectStructureTool } from './tools/analyzeProjectStructure.js';
 import { setupFeaturemapTool } from './tools/setupFeaturemap.js';
+import { saveProjectConfigTool } from './tools/saveProjectConfig.js';
+import { runScanTool } from './tools/runScan.js';
 
 const server = new McpServer({
   name: 'featuremap',
@@ -203,10 +205,26 @@ server.tool(
   setupFeaturemapTool.execute
 );
 
+// Tool: save_project_config
+server.tool(
+  saveProjectConfigTool.name,
+  saveProjectConfigTool.description,
+  saveProjectConfigTool.parameters,
+  saveProjectConfigTool.execute
+);
+
+// Tool: run_scan
+server.tool(
+  runScanTool.name,
+  runScanTool.description,
+  runScanTool.parameters,
+  runScanTool.execute
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('FeatureMap MCP server started with 14 tools');
+  console.error('FeatureMap MCP server started with 16 tools');
 }
 
 main().catch((error) => {
