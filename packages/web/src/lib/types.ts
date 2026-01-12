@@ -138,6 +138,7 @@ export const ClusterSchema = z
     layer: LayerSchema,
     layerDetection: z
       .object({
+        layer: LayerSchema.optional(),
         confidence: z.enum(['high', 'medium', 'low']),
         signals: z.array(z.string()),
       })

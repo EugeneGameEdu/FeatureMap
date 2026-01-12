@@ -41,8 +41,8 @@ export function buildClusterFile(
     files: cluster.files,
     exports: exportSymbols,
     imports,
-    purpose_hint: options.purpose_hint,
-    entry_points: options.entry_points,
+    ...(options.purpose_hint !== undefined ? { purpose_hint: options.purpose_hint } : {}),
+    ...(options.entry_points !== undefined ? { entry_points: options.entry_points } : {}),
     compositionHash: generateCompositionHash(cluster.files),
     metadata: options.metadata,
   };

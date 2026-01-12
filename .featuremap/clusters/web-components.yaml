@@ -2,6 +2,7 @@ version: 1
 id: web-components
 layer: frontend
 layerDetection:
+  layer: frontend
   confidence: high
   signals:
     - exports React components
@@ -134,4 +135,4 @@ imports:
 compositionHash: da4287e5f049c686
 metadata:
   createdAt: 2026-01-11T15:14:54.305Z
-  updatedAt: 2026-01-11T21:20:12.456Z
+  updatedAt: 2026-01-12T10:49:49.729Z

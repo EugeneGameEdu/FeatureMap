@@ -2,6 +2,7 @@ version: 1
 id: cli-constants
 layer: smell
 layerDetection:
+  layer: smell
   confidence: low
   signals:
     - no layer signals detected
@@ -23,4 +24,4 @@ imports:
 compositionHash: fefbf602a80f23f3
 metadata:
   createdAt: 2026-01-11T15:14:54.282Z
-  updatedAt: 2026-01-11T21:20:12.303Z
+  updatedAt: 2026-01-12T10:49:49.679Z

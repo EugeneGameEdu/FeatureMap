@@ -2,6 +2,7 @@ version: 1
 id: packages-web
 layer: infrastructure
 layerDetection:
+  layer: infrastructure
   confidence: medium
   signals:
     - file name starts with vite.config
@@ -24,4 +25,4 @@ imports:
 compositionHash: 0606b46a07a7b820
 metadata:
   createdAt: 2026-01-11T15:14:54.304Z
-  updatedAt: 2026-01-11T21:20:12.447Z
+  updatedAt: 2026-01-12T10:49:49.725Z

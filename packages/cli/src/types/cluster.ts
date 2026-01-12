@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ExportSchema, ImportListSchema, LayerSchema, MetadataSchema } from './common.js';
 
 const LayerDetectionSchema = z.object({
+  layer: LayerSchema.optional(),
   confidence: z.enum(['high', 'medium', 'low']),
   signals: z.array(z.string()),
 }).describe('Signals used to infer cluster layer');

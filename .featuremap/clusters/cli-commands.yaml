@@ -2,6 +2,7 @@ version: 1
 id: cli-commands
 layer: backend
 layerDetection:
+  layer: backend
   confidence: medium
   signals:
     - imports @modelcontextprotocol/sdk
@@ -68,4 +69,4 @@ imports:
 compositionHash: 739e908fbe699880
 metadata:
   createdAt: 2026-01-11T15:14:54.279Z
-  updatedAt: 2026-01-11T21:20:12.297Z
+  updatedAt: 2026-01-12T10:49:49.676Z

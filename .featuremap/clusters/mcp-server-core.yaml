@@ -2,6 +2,7 @@ version: 1
 id: mcp-server-core
 layer: backend
 layerDetection:
+  layer: backend
   confidence: medium
   signals:
     - imports @modelcontextprotocol/sdk
@@ -34,4 +35,4 @@ imports:
 compositionHash: 0d61616d41c6fc88
 metadata:
   createdAt: 2026-01-11T15:14:54.295Z
-  updatedAt: 2026-01-11T21:20:12.381Z
+  updatedAt: 2026-01-12T10:49:49.706Z

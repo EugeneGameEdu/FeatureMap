@@ -2,6 +2,7 @@ version: 1
 id: cli-scripts
 layer: infrastructure
 layerDetection:
+  layer: infrastructure
   confidence: medium
   signals:
     - path contains /scripts/
@@ -18,4 +19,4 @@ imports:
 compositionHash: a8d778d143847099
 metadata:
   createdAt: 2026-01-11T15:14:54.284Z
-  updatedAt: 2026-01-11T21:20:12.315Z
+  updatedAt: 2026-01-12T10:49:49.682Z
