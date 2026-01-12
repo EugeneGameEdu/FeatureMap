@@ -119,21 +119,27 @@ export function detectStructure(rootDir: string, packageJsonPaths: string[]): Te
     (pkgPath) => path.resolve(pkgPath) !== rootPackageResolved
   );
 
+  const entryPoints = detectEntryPoints(rootPackage);
+
   if (hasWorkspaceConfig || otherPackages.length > 0) {
-    return {
+    const structure: TechStack['structure'] = {
       type: hasWorkspaceConfig ? 'monorepo' : 'multi-root',
       packages:
         packages.length > 0
           ? packages
           : otherPackages.map((pkgPath) => path.basename(path.dirname(pkgPath))),
-      entryPoints: detectEntryPoints(rootPackage),
     };
+    if (entryPoints) {
+      structure.entryPoints = entryPoints;
+    }
+    return structure;
   }
 
-  return {
-    type: 'single-package',
-    entryPoints: detectEntryPoints(rootPackage),
-  };
+  const structure: TechStack['structure'] = { type: 'single-package' };
+  if (entryPoints) {
+    structure.entryPoints = entryPoints;
+  }
+  return structure;
 }
 
 export function detectLanguagesAndPatterns(rootDir: string): {
