@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MessageSquarePlus, Search, Share2 } from 'lucide-react';
+import { MessageSquarePlus, Search, Spline } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { CommentToolMode } from '@/lib/commentsMode';
 import type { EdgeStyle } from '@/lib/types';
@@ -78,12 +78,12 @@ export function LeftToolbar({
           onClick={() => setEdgeMenuOpen((open) => !open)}
           title="Link style"
           aria-label="Link style"
-          aria-haspopup="menu"
-          aria-expanded={edgeMenuOpen}
-          className="relative"
-        >
-          <Share2 size={18} />
-        </Button>
+        aria-haspopup="menu"
+        aria-expanded={edgeMenuOpen}
+        className="relative"
+      >
+        <Spline size={18} />
+      </Button>
         {edgeMenuOpen && (
           <div className="absolute left-full top-0 ml-2 w-36 rounded-lg border border-border bg-card/95 p-1 shadow-md">
             {EDGE_STYLE_OPTIONS.map((option) => (
