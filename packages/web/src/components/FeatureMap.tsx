@@ -231,6 +231,16 @@ export function FeatureMap({
     [onNodeClick]
   );
 
+  const handleNodeDragStart = useCallback(
+    (_: React.MouseEvent, node: Node) => {
+      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
+        return;
+      }
+      onNodeClick?.(node.id);
+    },
+    [onNodeClick]
+  );
+
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
       const nextChanges = isReadOnly
@@ -331,6 +341,7 @@ export function FeatureMap({
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
         onNodeClick={handleNodeClick}
+        onNodeDragStart={handleNodeDragStart}
         onEdgeClick={onEdgeClick}
         onPaneClick={handlePaneClick}
         onConnect={handleConnect}
