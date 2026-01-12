@@ -2,6 +2,7 @@ version: 1
 id: cli-core
 layer: smell
 layerDetection:
+  layer: smell
   confidence: low
   signals:
     - no layer signals detected
@@ -22,4 +23,4 @@ imports:
 compositionHash: 6697022cf94640df
 metadata:
   createdAt: 2026-01-11T15:14:54.283Z
-  updatedAt: 2026-01-11T21:20:12.310Z
+  updatedAt: 2026-01-12T10:49:49.680Z

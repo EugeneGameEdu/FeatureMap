@@ -2,6 +2,7 @@ version: 1
 id: web-lib
 layer: frontend
 layerDetection:
+  layer: frontend
   confidence: medium
   signals:
     - exports React components
@@ -569,4 +570,4 @@ imports:
 compositionHash: 9a51928c4bfdd9f4
 metadata:
   createdAt: 2026-01-11T15:14:54.313Z
-  updatedAt: 2026-01-11T21:20:12.508Z
+  updatedAt: 2026-01-12T10:49:49.750Z

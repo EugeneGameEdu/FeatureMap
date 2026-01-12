@@ -2,6 +2,7 @@ version: 1
 id: cli-analyzer
 layer: infrastructure
 layerDetection:
+  layer: infrastructure
   confidence: medium
   signals:
     - file name starts with tsconfig
@@ -237,4 +238,4 @@ imports:
 compositionHash: 4ee37aec38f1e940
 metadata:
   createdAt: 2026-01-11T15:14:54.273Z
-  updatedAt: 2026-01-11T21:20:12.273Z
+  updatedAt: 2026-01-12T10:49:49.668Z

@@ -2,6 +2,7 @@ version: 1
 id: cli-types
 layer: shared
 layerDetection:
+  layer: shared
   confidence: medium
   signals:
     - path contains /types/
@@ -164,4 +165,4 @@ imports:
 compositionHash: 26a6168d39f3d617
 metadata:
   createdAt: 2026-01-11T15:14:54.289Z
-  updatedAt: 2026-01-11T21:20:12.353Z
+  updatedAt: 2026-01-12T10:49:49.695Z

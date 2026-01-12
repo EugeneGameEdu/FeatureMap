@@ -2,6 +2,7 @@ version: 1
 id: mcp-server-utils
 layer: shared
 layerDetection:
+  layer: shared
   confidence: low
   signals:
     - path contains /mcp-server/
@@ -218,4 +219,4 @@ imports:
 compositionHash: 80cc1f9571339efa
 metadata:
   createdAt: 2026-01-11T15:14:54.301Z
-  updatedAt: 2026-01-11T21:20:12.425Z
+  updatedAt: 2026-01-12T10:49:49.721Z

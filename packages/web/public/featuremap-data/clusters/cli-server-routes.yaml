@@ -2,6 +2,7 @@ version: 1
 id: cli-server-routes
 layer: backend
 layerDetection:
+  layer: backend
   confidence: high
   signals:
     - exports route handlers
@@ -45,4 +46,4 @@ imports:
 compositionHash: f62af32e9ce599a6
 metadata:
   createdAt: 2026-01-11T15:14:54.288Z
-  updatedAt: 2026-01-11T21:20:12.335Z
+  updatedAt: 2026-01-12T10:49:49.691Z

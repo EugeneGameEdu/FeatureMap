@@ -2,6 +2,7 @@ version: 1
 id: cli-utils
 layer: shared
 layerDetection:
+  layer: shared
   confidence: medium
   signals:
     - path contains /utils/
@@ -133,4 +134,4 @@ imports:
 compositionHash: e618131c64d6ca13
 metadata:
   createdAt: 2026-01-11T15:14:54.292Z
-  updatedAt: 2026-01-11T21:20:12.375Z
+  updatedAt: 2026-01-12T10:49:49.702Z

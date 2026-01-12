@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-11T21:06:18.440Z
+generatedAt: 2026-01-12T10:49:49.791Z
 nodes:
   - fileCount: 20
     id: cli-analyzer
@@ -1012,7 +1012,6 @@ edges:
   - imports:
       - sourceFiles:
           - packages/web/src/components/ContextViewer.tsx
-          - packages/web/src/components/EdgeDetailsPanel.tsx
           - packages/web/src/components/GroupDetailsPanel.tsx
           - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
