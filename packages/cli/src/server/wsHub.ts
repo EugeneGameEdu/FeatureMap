@@ -9,14 +9,14 @@ export type FeaturemapWsMessage = {
 };
 
 export interface WsHub {
+  handleUpgrade: (req: import('http').IncomingMessage, socket: import('net').Socket, head: Buffer) => void;
   broadcast: (message: FeaturemapWsMessage) => void;
   close: () => Promise<void>;
 }
 
 export function createWsHub(server: Server): WsHub {
   const wss = new WebSocketServer({
-    server,
-    path: '/ws',
+    noServer: true,
     verifyClient: (info, done) => {
       if (!isLocalhostRequest(info.req.headers)) {
         done(false, 403, 'Forbidden');
@@ -44,6 +44,17 @@ export function createWsHub(server: Server): WsHub {
     }
   };
 
+  const handleUpgrade = (req: import('http').IncomingMessage, socket: import('net').Socket, head: Buffer): void => {
+    const url = req.url ?? '';
+    const path = url.split('?')[0];
+    if (path !== '/ws') {
+      return;
+    }
+    wss.handleUpgrade(req, socket, head, (client) => {
+      wss.emit('connection', client, req);
+    });
+  };
+
   const close = (): Promise<void> =>
     new Promise((resolve, reject) => {
       wss.close((error) => {
@@ -55,5 +66,5 @@ export function createWsHub(server: Server): WsHub {
       });
     });
 
-  return { broadcast, close };
+  return { handleUpgrade, broadcast, close };
 }

@@ -115,6 +115,7 @@
 
 .react-flow__edge.edge-selected {
   --xy-edge-stroke: hsl(var(--primary));
+  --xy-edge-stroke-selected: hsl(var(--primary));
   --xy-edge-stroke-width: 3px;
   opacity: 1;
 }

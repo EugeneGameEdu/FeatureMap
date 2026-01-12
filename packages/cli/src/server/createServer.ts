@@ -1,5 +1,6 @@
 import * as http from 'http';
 import type { Server } from 'http';
+import type { Socket } from 'net';
 import express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -41,6 +42,11 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
 
   const server = http.createServer(app);
   wsHub = options.enableWs ? createWsHub(server) : null;
+  if (wsHub) {
+    server.on('upgrade', (req, socket, head) => {
+      wsHub?.handleUpgrade(req, socket as Socket, head);
+    });
+  }
   const contextUpdateHandler = createContextUpdateHandler({
     projectRoot: options.projectRoot,
     wsHub,
