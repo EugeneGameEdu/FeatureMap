@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, type MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, type MouseEvent } from 'react';
 import {
   Background, BezierEdge, ConnectionMode, ControlButton, Controls, Edge,
-  type Connection, type EdgeChange, type NodeChange, Node, ReactFlow, type ReactFlowInstance,
+  type Connection, Node, ReactFlow, type ReactFlowInstance,
   useEdgesState, useNodesState, type EdgeTypes, type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -11,11 +11,13 @@ import { CommentNode } from './CommentNode';
 import { GroupContainerNode } from './GroupContainerNode';
 import { COMMENT_EDGE_TYPE } from '@/lib/commentTypes';
 import { buildDependencyCountById, buildGraphEdges, buildGraphNodes } from '@/lib/featureMapElements';
+import { buildStyledEdges } from '@/lib/flowEdges';
+import { mergeMeasuredNodes } from '@/lib/flowNodes';
 import { buildGroupContainerNodes, GROUP_CONTAINER_NODE_TYPE } from '@/lib/groupContainers';
-import { applyGroupDragChanges, collectMemberPositions, getGroupIdFromContainer, type GroupDragStateEntry } from '@/lib/groupDrag';
+import { type GroupDragStateEntry } from '@/lib/groupDrag';
 import { applyLayoutPositions, getLayoutedElements } from '@/lib/graphLayout';
 import type { EdgeStyle, GraphData, GroupSummary, MapEntity } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { useFlowHandlers } from '@/lib/useFlowHandlers';
 
 interface FeatureMapProps {
   graph: GraphData;
@@ -175,160 +177,40 @@ export function FeatureMap({
   const groupDragStateRef = useRef<Map<string, GroupDragStateEntry>>(new Map());
 
   useEffect(() => {
-    setNodes(layoutedNodes);
+    const nextNodes = mergeMeasuredNodes(layoutedNodes, nodesRef.current);
+    setNodes(nextNodes);
     setEdges(layoutedEdges);
-    nodesRef.current = layoutedNodes;
+    nodesRef.current = nextNodes;
   }, [layoutedNodes, layoutedEdges, setNodes, setEdges]);
 
-  const styledEdges = useMemo(() => {
-    if (edges.length === 0) {
-      return edges;
-    }
-    return edges.map((edge) => {
-      if (edge.type === COMMENT_EDGE_TYPE) {
-        return edge;
-      }
-      const isSelected = selectedEdgeId === edge.id;
-      const isConnected = connectedEdgeIds?.has(edge.id) ?? false;
-      const hasNodeSelection = Boolean(selectedNodeId);
-      const isDimmed = hasNodeSelection && !isConnected && !isSelected;
-
-      const markerColor = isSelected
-        ? 'hsl(var(--primary))'
-        : hasNodeSelection && isConnected
-        ? 'hsl(var(--primary) / 0.55)'
-        : isDimmed
-        ? 'hsl(var(--border) / 0.3)'
-        : 'hsl(var(--border))';
-      const zIndex = isSelected ? 3 : hasNodeSelection && isConnected ? 2 : hasNodeSelection ? 1 : edge.zIndex;
-      const markerEnd = edge.markerEnd;
-      const nextMarkerEnd =
-        markerEnd && typeof markerEnd === 'object'
-          ? { ...markerEnd, color: markerColor }
-          : markerEnd ?? { type: 'arrowclosed' as const, color: markerColor };
-
-      return {
-        ...edge,
-        zIndex,
-        markerEnd: nextMarkerEnd,
-        className: cn(
-          edge.className,
-          'edge-base transition-all duration-200',
-          isSelected && 'edge-selected',
-          !isSelected && hasNodeSelection && isConnected && 'edge-connected',
-          isDimmed && 'edge-dimmed'
-        ),
-      };
-    });
-  }, [edges, selectedEdgeId, selectedNodeId, connectedEdgeIds]);
-
-  const handleNodeClick = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
-        return;
-      }
-      onNodeClick?.(node.id);
-    },
-    [onNodeClick]
+  const styledEdges = useMemo(
+    () => buildStyledEdges({ edges, selectedEdgeId, selectedNodeId, connectedEdgeIds }),
+    [edges, selectedEdgeId, selectedNodeId, connectedEdgeIds]
   );
 
-  const handleNodeDragStart = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
-        return;
-      }
-      onNodeClick?.(node.id);
-    },
-    [onNodeClick]
-  );
-
-  const handleEdgesChange = useCallback(
-    (changes: EdgeChange[]) => {
-      const nextChanges = isReadOnly
-        ? changes.filter((change) => change.type !== 'remove')
-        : changes;
-      if (nextChanges.length > 0) {
-        onEdgesChange(nextChanges);
-      }
-      if (isReadOnly || !onEdgeRemove) {
-        return;
-      }
-      for (const change of changes) {
-        if (change.type === 'remove') {
-          onEdgeRemove(change.id);
-        }
-      }
-    },
-    [isReadOnly, onEdgeRemove, onEdgesChange]
-  );
-
-  const handleNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      setNodes((currentNodes) => {
-        const nextChanges = isReadOnly
-          ? changes.filter((change) => change.type !== 'remove' && change.type !== 'position')
-          : changes;
-        const nextNodes = applyGroupDragChanges(
-          nextChanges,
-          currentNodes,
-          groupMembership ?? new Map(),
-          groupDragStateRef.current
-        );
-        nodesRef.current = nextNodes;
-        return nextNodes;
-      });
-      if (isReadOnly || !onNodeRemove) {
-        return;
-      }
-      for (const change of changes) {
-        if (change.type === 'remove') {
-          onNodeRemove(change.id);
-        }
-      }
-    },
-    [groupMembership, isReadOnly, onNodeRemove, setNodes]
-  );
-
-  const handleNodeDragStop = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      if (isReadOnly) {
-        return;
-      }
-      if (node.type === GROUP_CONTAINER_NODE_TYPE) {
-        const groupId = getGroupIdFromContainer(node.id);
-        if (!groupId || !onGroupDragStop) {
-          return;
-        }
-        const memberIds = groupMembership?.get(groupId) ?? [];
-        const positions = collectMemberPositions(nodesRef.current, memberIds);
-        groupDragStateRef.current.delete(groupId);
-        onGroupDragStop(positions);
-        return;
-      }
-      onNodeDragStop?.(node);
-    },
-    [groupMembership, isReadOnly, onGroupDragStop, onNodeDragStop]
-  );
-
-  const handlePaneClick = useCallback(
-    (event: MouseEvent) => {
-      if (isReadOnly) {
-        return;
-      }
-      onPaneClick?.(event);
-    },
-    [isReadOnly, onPaneClick]
-  );
-
-  const handleConnect = useCallback(
-    (connection: Connection) => {
-      if (isReadOnly) {
-        return;
-      }
-      onConnect?.(connection);
-    },
-    [isReadOnly, onConnect]
-  );
+  const {
+    handleNodeClick,
+    handleNodeDragStart,
+    handleEdgesChange,
+    handleNodesChange,
+    handleNodeDragStop,
+    handlePaneClick,
+    handleConnect,
+  } = useFlowHandlers({
+    isReadOnly,
+    groupMembership,
+    groupDragStateRef,
+    nodesRef,
+    setNodes,
+    onEdgesChange,
+    onEdgeRemove,
+    onNodeRemove,
+    onNodeClick,
+    onNodeDragStop,
+    onGroupDragStop,
+    onPaneClick,
+    onConnect,
+  });
 
   const lockTitle = isReadOnly ? 'Unlock graph (edit mode)' : 'Lock graph (read-only)';
 
