@@ -33,13 +33,14 @@ export async function createServer(options: CreateServerOptions): Promise<Featur
   app.use(express.json({ limit: '1mb' }));
   app.use(enforceLocalhost);
 
+  let wsHub: WsHub | null = null;
   const apiRouter = express.Router();
   apiRouter.get('/health', (_req, res) => {
-    res.json({ ok: true });
+    res.json({ ok: true, ws: Boolean(wsHub) });
   });
 
   const server = http.createServer(app);
-  const wsHub = options.enableWs ? createWsHub(server) : null;
+  wsHub = options.enableWs ? createWsHub(server) : null;
   const contextUpdateHandler = createContextUpdateHandler({
     projectRoot: options.projectRoot,
     wsHub,

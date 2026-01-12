@@ -60,6 +60,7 @@ const nodeTypes: NodeTypes = {
 };
 
 const edgeTypes: EdgeTypes = {
+  bezier: BezierEdge,
   [COMMENT_EDGE_TYPE]: BezierEdge,
 };
 
