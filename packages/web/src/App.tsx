@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
-import type { Edge, ReactFlowInstance } from '@xyflow/react';
+import type { Edge, Node, ReactFlowInstance } from '@xyflow/react';
 import { FeatureMap } from '@/components/FeatureMap';
 import { Sidebar } from '@/components/Sidebar';
 import { LeftToolbar } from '@/components/LeftToolbar';
 import { MapHeader } from '@/components/MapHeader';
 import { SearchPalette } from '@/components/SearchPalette';
 import { ErrorScreen, LoadingScreen } from '@/components/StatusScreens';
-import { COMMENT_EDGE_TYPE, COMMENT_NODE_PREFIX } from '@/lib/commentTypes';
+import { COMMENT_EDGE_TYPE, COMMENT_NODE_PREFIX, isCommentNodeId } from '@/lib/commentTypes';
 import { EdgeDetailsPanel } from '@/components/EdgeDetailsPanel';
 import { applyGroupFilter } from '@/lib/groupFilters';
 import { buildGroupMembership, buildPrimaryGroupMembership } from '@/lib/groupMembership';
 import { applyLayerFilter } from '@/lib/layerFilters';
+import { getLayoutedPositions } from '@/lib/graphLayout';
 import { useCommentsTool } from '@/lib/useCommentsTool';
 import { useFeatureMapData } from '@/lib/useFeatureMapData';
 import { useGroupLayoutActions } from '@/lib/useGroupLayoutActions';
@@ -35,17 +36,8 @@ function App() {
   const [focusedFilePath, setFocusedFilePath] = useState<string | null>(null);
   const activeGraph = data ? (viewMode === 'clusters' ? data.clusterGraph : data.featureGraph) : null;
   const layoutPositions = data?.layout?.positions ?? {};
-  const primaryGroupMembership = useMemo(
-    () =>
-      data
-        ? buildPrimaryGroupMembership(data.groups, data.entities, viewMode)
-        : { membership: new Map<string, string[]>(), multiGroupNodeIds: [] },
-    [data, viewMode]
-  );
-  const fullGroupMembership = useMemo(
-    () => (data ? buildGroupMembership(data.groups, data.entities, viewMode) : new Map<string, string[]>()),
-    [data, viewMode]
-  );
+  const primaryGroupMembership = useMemo(() => (data ? buildPrimaryGroupMembership(data.groups, data.entities, viewMode) : { membership: new Map<string, string[]>(), multiGroupNodeIds: [] }), [data, viewMode]);
+  const fullGroupMembership = useMemo(() => (data ? buildGroupMembership(data.groups, data.entities, viewMode) : new Map<string, string[]>()), [data, viewMode]);
   const hiddenNodeIds = useMemo(() => {
     if (!data || collapsedGroupIds.size === 0) {
       return new Set<string>();
@@ -75,13 +67,22 @@ function App() {
     if (!visibleGraph) return new Set<string>();
     return new Set(visibleGraph.nodes.filter((node) => !hiddenNodeIds.has(node.id)).map((node) => node.id));
   }, [hiddenNodeIds, visibleGraph]);
-  const { clearGroupSelection, selectGroup, selectedGroupDetails, selectedGroupDetailsId, selectedGroupMembers, groupMembership, multiGroupNodeIds } = useGroupSelection({
-    data, viewMode, selectedGroupId, visibleNodeIds,
-    groupMembership: primaryGroupMembership.membership, multiGroupNodeIds: primaryGroupMembership.multiGroupNodeIds,
-  });
-  const { layoutMessage, packGroups, handleGroupDragStop } = useGroupLayoutActions({
+  const { clearGroupSelection, selectGroup, selectedGroupDetails, selectedGroupDetailsId, selectedGroupMembers, groupMembership, multiGroupNodeIds } = useGroupSelection({ data, viewMode, selectedGroupId, visibleNodeIds, groupMembership: primaryGroupMembership.membership, multiGroupNodeIds: primaryGroupMembership.multiGroupNodeIds });
+  const { layoutMessage, packGroups, handleGroupDragStop, saveLayoutPositions } = useGroupLayoutActions({
     reactFlowInstance, groups: data?.groups ?? [], groupMembership, selectedGroupId, multiGroupNodeIds, onLayoutPositionsChange: updateLayoutPositions,
   });
+  const handleAutoLayout = useCallback(async () => {
+    if (!reactFlowInstance) return;
+    const graphNodes = reactFlowInstance.getNodes().filter((node) => node.type === 'feature' || node.type === 'cluster');
+    if (graphNodes.length === 0) {
+      await saveLayoutPositions({}, { emptyText: 'No visible nodes to layout.' });
+      return;
+    }
+    const graphNodeIds = new Set(graphNodes.map((node) => node.id));
+    const graphEdges = reactFlowInstance.getEdges().filter((edge) => graphNodeIds.has(edge.source) && graphNodeIds.has(edge.target));
+    const positions = getLayoutedPositions(graphNodes, graphEdges, 'TB');
+    await saveLayoutPositions(positions, { allowUnsaved: true, successText: 'Auto layout saved.' });
+  }, [reactFlowInstance, saveLayoutPositions]);
   const handleSelectedNodeChange = useCallback((nodeId: string | null) => {
     setSelectedNodeId(nodeId);
     if (!nodeId) return;
@@ -89,9 +90,16 @@ function App() {
     clearGroupSelection();
     setSelectedCommentId(null);
   }, [clearGroupSelection]);
-  const { commentElements, commentToolMode, placementActive, handleNodeClick: handleCommentNodeClick, handlePaneClick, handleConnect, handleEdgeRemove, handleNodeDragStop, handleNodeRemove, togglePlacementMode } = useCommentsTool({
+  const { commentElements, commentToolMode, placementActive, handleNodeClick: handleCommentNodeClick, handlePaneClick, handleConnect, handleEdgeRemove, handleNodeDragStop: handleCommentNodeDragStop, handleNodeRemove, togglePlacementMode } = useCommentsTool({
     data, visibleGraph, currentView: viewMode, selectedCommentId, showComments, reactFlowInstance, readOnly,
   });
+  const handleNodeDragStop = useCallback((node: Node) => {
+    if (isCommentNodeId(node.id)) {
+      handleCommentNodeDragStop(node);
+      return;
+    }
+    void saveLayoutPositions({ [node.id]: node.position }, { allowUnsaved: true });
+  }, [handleCommentNodeDragStop, saveLayoutPositions]);
   const { searchOpen, setSearchOpen, searchQuery, setSearchQuery, searchResults, searchWarning, focusedNodeId, focusedUntil, onSearchSelect } = useSearchNavigation({
     data, viewMode, selectedLayer, selectedGroupId, reactFlowInstance, visibleNodeIds,
     onViewModeChange: setViewMode, onSelectedLayerChange: setSelectedLayer,
@@ -257,7 +265,7 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-background">
       <SearchPalette open={searchOpen} query={searchQuery} results={searchResults} warning={searchWarning} onOpenChange={setSearchOpen} onQueryChange={setSearchQuery} onSelectResult={onSearchSelect} />
-      <MapHeader viewMode={viewMode} selectedLayer={selectedLayer} selectedGroupId={selectedGroupId} groups={data.groups} missingGroupFeatures={missingGroupFeatures} hasGroups={hasGroups} context={data.context} showComments={showComments} layoutMessage={layoutMessage} onPackGroups={packGroups} onViewModeChange={setViewMode} onLayerChange={setSelectedLayer} onGroupChange={setSelectedGroupId} onToggleComments={() => setShowComments((current) => !current)} onRefresh={loadData} />
+      <MapHeader viewMode={viewMode} selectedLayer={selectedLayer} selectedGroupId={selectedGroupId} groups={data.groups} missingGroupFeatures={missingGroupFeatures} hasGroups={hasGroups} context={data.context} showComments={showComments} layoutMessage={layoutMessage} onPackGroups={packGroups} onViewModeChange={setViewMode} onLayerChange={setSelectedLayer} onGroupChange={setSelectedGroupId} onToggleComments={() => setShowComments((current) => !current)} onAutoLayout={handleAutoLayout} onRefresh={loadData} />
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <LeftToolbar onSearchClick={() => setSearchOpen(true)} commentMode={commentToolMode} onToggleAddMode={togglePlacementMode} edgeStyle={edgeStyle} onEdgeStyleChange={setEdgeStyle} />

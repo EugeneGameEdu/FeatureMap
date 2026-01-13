@@ -13,6 +13,13 @@ interface LayoutMessage {
   text: string;
 }
 
+interface SaveLayoutOptions {
+  allowUnsaved?: boolean;
+  successText?: string;
+  emptyText?: string;
+  requireToken?: boolean;
+}
+
 interface UseGroupLayoutActionsInput {
   reactFlowInstance: ReactFlowInstance | null;
   groups: GroupSummary[];
@@ -43,6 +50,35 @@ export function useGroupLayoutActions({
     return () => window.clearTimeout(timeout);
   }, [layoutMessage]);
 
+  const saveLayoutPositions = useCallback(
+    async (positions: Record<string, { x: number; y: number }>, options: SaveLayoutOptions = {}) => {
+      if (Object.keys(positions).length === 0) {
+        if (options.emptyText) {
+          setLayoutMessage({ type: 'warning', text: options.emptyText });
+        }
+        return;
+      }
+
+      if (options.requireToken && !hasSessionToken()) {
+        setLayoutMessage({
+          type: 'error',
+          text: 'Token required to save layout (run featuremap serve and paste token).',
+        });
+        return;
+      }
+
+      onLayoutPositionsChange(positions);
+
+      try {
+        await updateLayoutPositions(positions);
+        setLayoutMessage({ type: 'success', text: options.successText ?? 'Layout saved.' });
+      } catch (error) {
+        setLayoutMessage(formatLayoutError(error, options.allowUnsaved));
+      }
+    },
+    [onLayoutPositionsChange, updateLayoutPositions]
+  );
+
   const packGroups = useCallback(async () => {
     if (!reactFlowInstance) {
       return;
@@ -58,14 +94,6 @@ export function useGroupLayoutActions({
       return;
     }
 
-    if (!hasSessionToken()) {
-      setLayoutMessage({
-        type: 'error',
-        text: 'Token required to save layout (run featuremap serve and paste token).',
-      });
-      return;
-    }
-
     const packedPositions = packGroupRectangles(rectangles);
     const nextPositions = buildNodePositionUpdates(rectangles, packedPositions, nodesById, groupMembership);
 
@@ -74,50 +102,31 @@ export function useGroupLayoutActions({
       return;
     }
 
-    onLayoutPositionsChange(nextPositions);
-
     if (multiGroupNodeIds.length > 0) {
       console.warn('Skipping nodes in multiple groups:', multiGroupNodeIds);
     }
-
-    try {
-      await updateLayoutPositions(nextPositions);
-      setLayoutMessage({ type: 'success', text: 'Layout saved.' });
-    } catch (error) {
-      setLayoutMessage(formatLayoutError(error));
-    }
+    await saveLayoutPositions(nextPositions, { requireToken: true });
   }, [
     groupMembership,
     groups,
     multiGroupNodeIds,
-    onLayoutPositionsChange,
     reactFlowInstance,
     selectedGroupId,
-    updateLayoutPositions,
+    saveLayoutPositions,
   ]);
 
   const handleGroupDragStop = useCallback(
     async (positions: Record<string, { x: number; y: number }>) => {
-      if (Object.keys(positions).length === 0) {
-        return;
-      }
-
-      onLayoutPositionsChange(positions);
-
-      try {
-        await updateLayoutPositions(positions);
-        setLayoutMessage({ type: 'success', text: 'Layout saved.' });
-      } catch (error) {
-        setLayoutMessage(formatLayoutError(error, true));
-      }
+      await saveLayoutPositions(positions, { allowUnsaved: true });
     },
-    [onLayoutPositionsChange, updateLayoutPositions]
+    [saveLayoutPositions]
   );
 
   return {
     layoutMessage,
     packGroups,
     handleGroupDragStop,
+    saveLayoutPositions,
   };
 }
 

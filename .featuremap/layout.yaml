@@ -1,76 +1,55 @@
 version: 1
 positions:
   cli-analyzer:
-    x: 296.61417088793377
-    y: 1763.4803215137854
-  cli-code-scanner:
-    x: 93.38582911206622
-    y: 338
+    x: 1470
+    y: 510
   cli-commands:
-    x: 40
-    y: 829.4803215137853
+    x: 1180
+    y: 170
   cli-constants:
-    x: 86.61417088793378
-    y: 2103.4803215137854
+    x: 1345
+    y: 850
   cli-core:
-    x: 356.61417088793377
-    y: 1253.4803215137854
-  cli-foundation:
-    x: 333.38582911206623
-    y: 338
-  cli-local-server:
-    x: 93.38582911206622
-    y: 508
+    x: 1180
+    y: 0
   cli-scripts:
-    x: 641.6141708879337
-    y: 1763.4803215137854
+    x: 305
+    y: 510
   cli-server:
-    x: 761.6141708879337
-    y: 1593.4803215137854
+    x: 1120
+    y: 340
   cli-server-routes:
-    x: 881.6141708879337
-    y: 1763.4803215137854
+    x: 1095
+    y: 510
   cli-types:
-    x: 986.6141708879337
-    y: 2103.4803215137854
+    x: 1030
+    y: 850
   cli-utils:
-    x: 501.6141708879337
-    y: 1933.4803215137854
-  mcp-integration-server:
-    x: 40
-    y: 76
+    x: 965
+    y: 680
   mcp-server-core:
-    x: 40
-    y: 76
+    x: 65
+    y: 0
   mcp-server-tools:
-    x: 40
-    y: 246
+    x: 65
+    y: 170
   mcp-server-types:
-    x: 40
-    y: 586
+    x: 65
+    y: 510
   mcp-server-utils:
-    x: 105
-    y: 416
-  packages-web:
-    x: 40
-    y: 2384
-  web-app-shell:
-    x: 40
-    y: 1091.4803215137854
+    x: 0
+    y: 340
   web-components:
-    x: 215
-    y: 2554
+    x: 610
+    y: 170
   web-components-ui:
-    x: 280
-    y: 2724
+    x: 675
+    y: 340
   web-core:
-    x: 280
-    y: 2384
+    x: 510
+    y: 0
   web-lib:
-    x: 280
-    y: 2894
-  web-ui-components:
-    x: 280
-    y: 1091.4803215137854
+    x: 545
+    y: 510
 metadata:
-  updatedAt: 2026-01-11T19:03:48.375Z
+  updatedAt: 2026-01-13T15:46:28.069Z

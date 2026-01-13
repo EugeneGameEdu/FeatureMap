@@ -112,11 +112,24 @@ export function saveClusters(
 export function ensureLayout(featuremapDir: string, clusters: FolderCluster[]): void {
   const layoutPath = path.join(featuremapDir, 'layout.yaml');
   if (fs.existsSync(layoutPath)) {
-    return;
+    try {
+      const existing = loadYAML(layoutPath, LayoutSchema, { fileType: 'layout' });
+      if (Object.keys(existing.positions ?? {}).length > 0) {
+        return;
+      }
+    } catch {
+      // Fall through to regenerate layout.
+    }
   }
 
   const nodeIds = clusters.map((cluster) => cluster.id);
-  const layout = buildDefaultLayout(nodeIds);
+  const edges = clusters.flatMap((cluster) =>
+    cluster.externalDependencies.map((dependency) => ({
+      source: cluster.id,
+      target: dependency,
+    }))
+  );
+  const layout = buildDefaultLayout(nodeIds, edges);
   saveYAML(layoutPath, layout, LayoutSchema);
   console.log('  OK Generated layout.yaml');
 }

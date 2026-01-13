@@ -35,6 +35,7 @@ imports:
     - packages/web/src/components/StatusScreens.tsx
     - packages/web/src/lib/commentTypes.ts
     - packages/web/src/lib/featureMapElements.ts
+    - packages/web/src/lib/graphLayout.ts
     - packages/web/src/lib/groupFilters.ts
     - packages/web/src/lib/groupMembership.ts
     - packages/web/src/lib/layerFilters.ts
@@ -46,5 +47,5 @@ imports:
     - packages/web/src/lib/useSearchNavigation.ts
 compositionHash: 3f5c50ccf093e648
 metadata:
-  createdAt: 2026-01-11T15:14:54.310Z
-  updatedAt: 2026-01-12T10:49:49.738Z
+  createdAt: 2026-01-13T15:40:50.600Z
+  updatedAt: 2026-01-13T15:40:50.600Z

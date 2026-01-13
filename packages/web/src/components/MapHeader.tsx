@@ -19,6 +19,7 @@ interface MapHeaderProps {
   onLayerChange: (layer: LayerFilter) => void;
   onGroupChange: (groupId: string) => void;
   onToggleComments: () => void;
+  onAutoLayout: () => void;
   onRefresh: () => void;
 }
 
@@ -37,6 +38,7 @@ export function MapHeader({
   onLayerChange,
   onGroupChange,
   onToggleComments,
+  onAutoLayout,
   onRefresh,
 }: MapHeaderProps) {
   return (
@@ -61,6 +63,7 @@ export function MapHeader({
         onLayerChange={onLayerChange}
         onGroupChange={onGroupChange}
         onToggleComments={onToggleComments}
+        onAutoLayout={onAutoLayout}
         onRefresh={onRefresh}
       />
     </header>

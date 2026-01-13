@@ -287,6 +287,9 @@ exports:
     name: getLayoutedElements
     type: function
   - isDefault: false
+    name: getLayoutedPositions
+    type: function
+  - isDefault: false
     name: getVisibleCommentIds
     type: function
   - isDefault: false
@@ -603,5 +606,5 @@ imports:
     - ./yamlParsing
 compositionHash: 2b26becdc4aaa03b
 metadata:
-  createdAt: 2026-01-11T15:14:54.313Z
-  updatedAt: 2026-01-13T11:38:13.319Z
+  createdAt: 2026-01-13T15:40:50.606Z
+  updatedAt: 2026-01-13T15:40:50.606Z

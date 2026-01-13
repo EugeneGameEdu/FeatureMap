@@ -4,15 +4,7 @@ project:
   root: .
 scan:
   include:
-    - packages/cli/**/*.{js,jsx}
-    - packages/cli/**/*.{ts,tsx}
-    - packages/cli/**/*.go
-    - packages/mcp-server/**/*.{js,jsx}
-    - packages/mcp-server/**/*.{ts,tsx}
-    - packages/mcp-server/**/*.go
-    - packages/web/**/*.{js,jsx}
-    - packages/web/**/*.{ts,tsx}
-    - packages/web/**/*.go
+    - packages/*/src/**/*.{ts,tsx,js,jsx}
   exclude:
     - "**/node_modules/**"
     - "**/dist/**"

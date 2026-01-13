@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-13T12:19:27.524Z
+generatedAt: 2026-01-13T15:40:50.646Z
 nodes:
   - fileCount: 25
     id: cli-analyzer
@@ -53,11 +53,7 @@ nodes:
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 3
-    id: packages-web
-    label: Packages Web
-    type: cluster
-  - fileCount: 16
+  - fileCount: 20
     id: web-components
     label: Web Components
     type: cluster
@@ -1180,6 +1176,7 @@ edges:
       - sourceFiles:
           - packages/web/src/components/EdgeDetailsPanel.tsx
           - packages/web/src/components/LeftToolbar.tsx
+          - packages/web/src/components/ResizableSidebar.tsx
         symbol: cn
         targetFile: packages/web/src/lib/utils.ts
       - sourceFiles:
@@ -1217,6 +1214,7 @@ edges:
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
         symbol: ContextStatus
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
@@ -1246,7 +1244,6 @@ edges:
         symbol: FeatureDetails
         targetFile: packages/web/src/lib/types.ts
       - sourceFiles:
-          - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
         symbol: formatDate
         targetFile: packages/web/src/lib/loadFeatureMap.ts
@@ -1327,7 +1324,6 @@ edges:
         symbol: SearchIndexEntry
         targetFile: packages/web/src/lib/searchIndex.ts
       - sourceFiles:
-          - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
         symbol: Statistics
         targetFile: packages/web/src/lib/contextTypes.ts
@@ -1338,6 +1334,7 @@ edges:
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/projectOverviewHelpers.ts
           - packages/web/src/components/Sidebar.tsx
         symbol: TechStack
         targetFile: packages/web/src/lib/contextTypes.ts
@@ -1359,6 +1356,7 @@ edges:
         symbol: useGroupApi
         targetFile: packages/web/src/lib/useGroupApi.ts
       - sourceFiles:
+          - packages/web/src/components/FeatureMap.tsx
           - packages/web/src/components/GroupDetailsPanel.tsx
           - packages/web/src/components/MapControlsRow.tsx
           - packages/web/src/components/MapHeader.tsx
@@ -1447,6 +1445,14 @@ edges:
           - packages/web/src/App.tsx
         symbol: EdgeStyle
         targetFile: packages/web/src/lib/types.ts
+      - sourceFiles:
+          - packages/web/src/App.tsx
+        symbol: getLayoutedPositions
+        targetFile: packages/web/src/lib/graphLayout.ts
+      - sourceFiles:
+          - packages/web/src/App.tsx
+        symbol: isCommentNodeId
+        targetFile: packages/web/src/lib/commentTypes.ts
       - sourceFiles:
           - packages/web/src/App.tsx
         symbol: LayerFilter

@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-13T10:55:41.631Z
+detectedAt: 2026-01-13T15:39:46.830Z
 workspace:
   type: monorepo
   packageManager: npm

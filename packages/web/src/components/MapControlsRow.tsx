@@ -28,6 +28,7 @@ interface MapControlsRowProps {
   onLayerChange: (layer: LayerFilter) => void;
   onGroupChange: (groupId: string) => void;
   onToggleComments: () => void;
+  onAutoLayout: () => void;
   onRefresh: () => void;
 }
 
@@ -46,6 +47,7 @@ export function MapControlsRow({
   onLayerChange,
   onGroupChange,
   onToggleComments,
+  onAutoLayout,
   onRefresh,
 }: MapControlsRowProps) {
   return (
@@ -114,6 +116,9 @@ export function MapControlsRow({
             {showComments ? 'On' : 'Off'}
           </Button>
         </div>
+        <Button variant="outline" size="sm" onClick={onAutoLayout}>
+          Auto layout
+        </Button>
         <ContextViewer context={context} onRefresh={onRefresh} />
         <Button variant="outline" size="sm" onClick={onRefresh}>
           <RefreshCw size={14} className="mr-1" />

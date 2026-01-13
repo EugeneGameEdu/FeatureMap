@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-13T12:22:21.045Z
+detectedAt: 2026-01-13T15:39:46.802Z
 language: typescript
 frameworks:
   - name: "@dagrejs/dagre"
