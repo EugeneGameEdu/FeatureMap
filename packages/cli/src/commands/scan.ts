@@ -91,7 +91,11 @@ export function createScanCommand(): Command {
 
         const packageJsonPaths = findPackageJsonPaths(projectRoot);
         const goModPaths = findGoModPaths(projectRoot);
-        const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });
+        const techStack = detectTechStack({
+          rootDir: projectRoot,
+          packageJsonPaths,
+          goModPaths,
+        });
         saveAutoContext(
           path.join(featuremapDir, 'context', 'tech-stack.yaml'),
           techStack,

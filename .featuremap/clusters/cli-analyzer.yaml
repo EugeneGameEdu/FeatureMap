@@ -21,6 +21,8 @@ files:
   - packages/cli/src/analyzer/statistics-detector.ts
   - packages/cli/src/analyzer/structure-detector.ts
   - packages/cli/src/analyzer/structure-scanner.ts
+  - packages/cli/src/analyzer/tech-stack-categorizer.ts
+  - packages/cli/src/analyzer/tech-stack-dependencies.ts
   - packages/cli/src/analyzer/tech-stack-detector.ts
   - packages/cli/src/analyzer/techStackHelpers.ts
   - packages/cli/src/analyzer/test-graph.ts
@@ -41,10 +43,16 @@ exports:
     name: applyClusterMatching
     type: function
   - isDefault: false
+    name: buildDependencySummary
+    type: function
+  - isDefault: false
     name: buildGraph
     type: function
   - isDefault: false
     name: calculateFileOverlap
+    type: function
+  - isDefault: false
+    name: categorizeDependency
     type: function
   - isDefault: false
     name: Cluster
@@ -59,6 +67,9 @@ exports:
     name: ClusterMatchResult
     type: interface
   - isDefault: false
+    name: collectDependencyRecords
+    type: function
+  - isDefault: false
     name: Confidence
     type: type
   - isDefault: false
@@ -68,8 +79,23 @@ exports:
     name: createAliasResolver
     type: function
   - isDefault: false
+    name: DependencyAggregation
+    type: interface
+  - isDefault: false
     name: DependencyGraph
     type: interface
+  - isDefault: false
+    name: DependencyListEntry
+    type: interface
+  - isDefault: false
+    name: DependencySource
+    type: type
+  - isDefault: false
+    name: DependencySummary
+    type: interface
+  - isDefault: false
+    name: DependencyType
+    type: type
   - isDefault: false
     name: detectConventions
     type: function
@@ -121,6 +147,9 @@ exports:
   - isDefault: false
     name: formatStructureForAI
     type: function
+  - isDefault: false
+    name: FrameworkDependency
+    type: interface
   - isDefault: false
     name: getClusterStats
     type: function
@@ -253,10 +282,12 @@ imports:
     - ./grouper.js
     - ./parser.js
     - ./scanner.js
+    - ./tech-stack-categorizer.js
+    - ./tech-stack-dependencies.js
     - ./techStackHelpers.js
     - ./tsconfig.js
     - ./tsconfigLoader.js
-compositionHash: 31442e5b9c52fd5a
+compositionHash: b9a394ed536593f2
 metadata:
   createdAt: 2026-01-11T15:14:54.273Z
-  updatedAt: 2026-01-13T10:56:10.467Z
+  updatedAt: 2026-01-13T12:19:27.434Z

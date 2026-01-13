@@ -5,13 +5,26 @@ export const TechStackSchema = z
     version: z.number(),
     source: z.literal('auto'),
     detectedAt: z.string(),
+    language: z.enum(['typescript', 'javascript', 'go', 'unknown']).optional(),
     frameworks: z.array(
       z.object({
         name: z.string(),
         version: z.string().optional(),
+        category: z.string().optional(),
+        type: z.enum(['production', 'development']).optional(),
         usage: z.string().optional(),
       })
     ),
+    aggregations: z
+      .record(
+        z.string(),
+        z.object({
+          count: z.number(),
+          category: z.string(),
+          versions: z.string().optional(),
+        })
+      )
+      .optional(),
     dependencies: z
       .array(
         z.object({

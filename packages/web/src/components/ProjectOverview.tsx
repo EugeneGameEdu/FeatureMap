@@ -17,6 +17,14 @@ import type {
   Testing,
 } from '@/lib/contextTypes';
 import { formatDate } from '@/lib/loadFeatureMap';
+const PRIMARY_FRAMEWORK_CATEGORIES = new Set([
+  'UI Framework',
+  'Web Server',
+  'UI Components',
+  'Visualization',
+  'AI Integration',
+  'CLI',
+]);
 export type ProjectStats = {
   clusters: number;
   features: number;
@@ -57,21 +65,23 @@ export function ProjectOverview({
   const statsUpdatedLabel = statsUpdatedAt
     ? formatDate(statsUpdatedAt)
     : getUnavailableLabel(statistics?.status);
-
   const techStackData = techStack.status === 'present' ? techStack.data : undefined;
   const conventionsData = conventions.status === 'present' ? conventions.data : undefined;
   const structureData = structure?.status === 'present' ? structure.data : undefined;
   const testingData = testing?.status === 'present' ? testing.data : undefined;
-
   const techEmptyLabel = getEmptyLabel(techStack.status);
   const conventionsEmptyLabel = getEmptyLabel(conventions.status);
   const structureEmptyLabel = getEmptyLabel(structure?.status);
   const testingEmptyLabel = getEmptyLabel(testing?.status);
-
   const frameworkLabels =
-    techStackData?.frameworks.map((framework) =>
-      framework.version ? `${framework.name} ${framework.version}` : framework.name
-    ) ?? [];
+    techStackData?.frameworks
+      .filter(
+        (framework) =>
+          !framework.category || PRIMARY_FRAMEWORK_CATEGORIES.has(framework.category)
+      )
+      .map((framework) =>
+        framework.version ? `${framework.name} ${framework.version}` : framework.name
+      ) ?? [];
   const dependencyLabels =
     techStackData?.dependencies?.map((dependency) =>
       dependency.version ? `${dependency.name} ${dependency.version}` : dependency.name
@@ -84,14 +94,11 @@ export function ProjectOverview({
       return language.name;
     }) ?? [];
   const buildToolLabels = techStackData?.buildTools ?? [];
-
   const namingFiles = conventionsData?.naming?.files;
   const importStyle = conventionsData?.imports?.style;
-
   const workspaceType = structureData?.workspace.type;
   const workspaceManager = structureData?.workspace.packageManager;
   const workspacePackages = structureData?.workspace.packages ?? [];
-
   const testingFrameworks =
     testingData?.frameworks.map((framework) =>
       framework.version ? `${framework.name} ${framework.version}` : framework.name
@@ -104,7 +111,6 @@ export function ProjectOverview({
       : testFileTotal > 0
         ? `${testFileTotal} files`
         : 'Not detected';
-
   return (
     <div className="p-4 space-y-4">
       <OverviewSection title="Statistics" icon={FileText} defaultOpen>
@@ -118,7 +124,6 @@ export function ProjectOverview({
           Updated {statsUpdatedLabel}
         </div>
       </OverviewSection>
-
       <OverviewSection title="Tech Stack" icon={Package}>
         <div className="space-y-4">
           <StackSection icon={Package} label="Libraries">
@@ -135,7 +140,6 @@ export function ProjectOverview({
           </StackSection>
         </div>
       </OverviewSection>
-
       <OverviewSection title="Conventions" icon={Code}>
         <div className="space-y-4 text-sm text-foreground">
           <div className="space-y-3">
@@ -157,7 +161,6 @@ export function ProjectOverview({
           </div>
         </div>
       </OverviewSection>
-
       <OverviewSection title="File Structure" icon={FolderTree}>
         <div className="space-y-4 text-sm text-foreground">
           <KeyValueRow label="Workspace" value={workspaceType ?? structureEmptyLabel} />
@@ -171,7 +174,6 @@ export function ProjectOverview({
           </div>
         </div>
       </OverviewSection>
-
       <OverviewSection title="Testing" icon={TestTube2}>
         <div className="space-y-4 text-sm text-foreground">
           <div className="space-y-3">
@@ -188,7 +190,6 @@ export function ProjectOverview({
     </div>
   );
 }
-
 function OverviewSection({
   title,
   icon: Icon,
@@ -225,7 +226,6 @@ function OverviewSection({
     </Collapsible>
   );
 }
-
 function StackSection({
   icon: Icon,
   label,
@@ -242,7 +242,6 @@ function StackSection({
     </div>
   );
 }
-
 function SectionLabel({ label, icon: Icon }: { label: string; icon?: typeof Package }) {
   return (
     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">

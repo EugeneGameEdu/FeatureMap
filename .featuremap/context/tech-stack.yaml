@@ -1,23 +1,143 @@
 version: 1
 source: auto
-detectedAt: 2026-01-13T11:37:46.412Z
+detectedAt: 2026-01-13T12:22:21.045Z
+language: typescript
 frameworks:
+  - name: "@dagrejs/dagre"
+    version: ^1.1.8
+    category: Other
+    type: production
+  - name: "@featuremap/cli"
+    version: 0.1.0
+    category: CLI
+    type: production
   - name: "@modelcontextprotocol/sdk"
-    version: ^1.25.2
+    version: ^1.0.0 - ^1.25.2
+    category: AI Integration
+    type: production
     usage: ai/mcp
+  - name: "@radix-ui/react-collapsible"
+    version: ^1.1.0
+    category: UI Components
+    type: production
+  - name: "@radix-ui/react-dialog"
+    version: ^1.1.15
+    category: UI Components
+    type: production
+  - name: "@radix-ui/react-scroll-area"
+    version: ^1.2.10
+    category: UI Components
+    type: production
+  - name: "@radix-ui/react-slot"
+    version: ^1.2.4
+    category: UI Components
+    type: production
+  - name: "@vitejs/plugin-react"
+    version: ^4.7.0
+    category: Build Tools
+    type: development
+  - name: "@xyflow/react"
+    version: ^12.10.0
+    category: Visualization
+    type: production
+  - name: autoprefixer
+    version: ^10.4.22
+    category: Other
+    type: development
+  - name: chokidar
+    version: ^3.5.0
+    category: File Watching
+    type: production
+  - name: class-variance-authority
+    version: ^0.7.1
+    category: Other
+    type: production
+  - name: clsx
+    version: ^2.1.1
+    category: Other
+    type: production
+  - name: commander
+    version: ^12.0.0
+    category: CLI
+    type: production
   - name: express
     version: ^4.21.2
+    category: Web Server
+    type: production
     usage: backend API
+  - name: fast-glob
+    version: ^3.3.0
+    category: Other
+    type: production
+  - name: js-yaml
+    version: ^4.1.1
+    category: Other
+    type: production
+  - name: lucide-react
+    version: ^0.300.0
+    category: Icons
+    type: production
+  - name: postcss
+    version: ^8.5.6
+    category: Build Tools
+    type: development
   - name: react
     version: ^18.3.1
+    category: UI Framework
+    type: production
     usage: frontend UI
+  - name: react-dom
+    version: ^18.3.1
+    category: UI Framework
+    type: production
+  - name: tailwind-merge
+    version: ^3.4.0
+    category: Styling
+    type: production
+  - name: tailwindcss
+    version: ^3.4.19
+    category: Styling
+    type: development
+  - name: tailwindcss-animate
+    version: ^1.0.7
+    category: Other
+    type: production
+  - name: ts-morph
+    version: ^21.0.0
+    category: Code Analysis
+    type: production
+  - name: typescript
+    version: ^5.3.0 - ^5.9.3
+    category: Build Tools
+    type: development
+  - name: vite
+    version: ^5.4.21
+    category: Build Tools
+    type: development
+  - name: ws
+    version: ^8.18.0
+    category: Other
+    type: production
+  - name: yaml
+    version: ^2.3.0
+    category: Data Parsing
+    type: production
+  - name: zod
+    version: ^4.1.13 - ^4.3.5
+    category: Validation
+    type: production
+aggregations:
+  "@radix-ui/react-*":
+    count: 4
+    category: UI Components
+    versions: ^1.1.0 - ^1.2.4
 dependencies:
   - name: "@dagrejs/dagre"
     version: ^1.1.8
   - name: "@featuremap/cli"
     version: 0.1.0
   - name: "@modelcontextprotocol/sdk"
-    version: ^1.25.2
+    version: ^1.0.0 - ^1.25.2
   - name: "@radix-ui/react-collapsible"
     version: ^1.1.0
   - name: "@radix-ui/react-dialog"
@@ -26,18 +146,6 @@ dependencies:
     version: ^1.2.10
   - name: "@radix-ui/react-slot"
     version: ^1.2.4
-  - name: "@types/express"
-    version: ^4.17.23
-  - name: "@types/js-yaml"
-    version: ^4.0.9
-  - name: "@types/node"
-    version: ^20.0.0
-  - name: "@types/react"
-    version: ^18.3.27
-  - name: "@types/react-dom"
-    version: ^18.3.7
-  - name: "@types/ws"
-    version: ^8.18.1
   - name: "@vitejs/plugin-react"
     version: ^4.7.0
   - name: "@xyflow/react"
@@ -75,7 +183,7 @@ dependencies:
   - name: ts-morph
     version: ^21.0.0
   - name: typescript
-    version: ^5.3.0
+    version: ^5.3.0 - ^5.9.3
   - name: vite
     version: ^5.4.21
   - name: ws
@@ -83,7 +191,7 @@ dependencies:
   - name: yaml
     version: ^2.3.0
   - name: zod
-    version: ^4.3.5
+    version: ^4.1.13 - ^4.3.5
 buildTools:
   - typescript
   - vite

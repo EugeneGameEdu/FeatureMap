@@ -75,7 +75,11 @@ export function createContextCommand(): Command {
       try {
         const packageJsonPaths = findPackageJsonPaths(projectRoot);
         const goModPaths = findGoModPaths(projectRoot);
-        const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });
+        const techStack = detectTechStack({
+          rootDir: projectRoot,
+          packageJsonPaths,
+          goModPaths,
+        });
         const techStackPath = path.join(contextDir, 'tech-stack.yaml');
         recordAutoWrite(summary, 'tech-stack.yaml', saveAutoContext(techStackPath, techStack, TechStackSchema));
 

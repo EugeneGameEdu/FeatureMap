@@ -6,10 +6,15 @@ import {
   mergeDependencies,
   readPackageJson,
 } from './techStackHelpers.js';
+import {
+  buildDependencySummary,
+  collectDependencyRecords,
+} from './tech-stack-dependencies.js';
 
 export interface TechStackDetectionInput {
   rootDir: string;
   packageJsonPaths: string[];
+  goModPaths?: string[];
 }
 
 const FRAMEWORK_CATEGORIES = {
@@ -68,9 +73,8 @@ function collectMatches(names: string[], patterns: string[]): string[] {
   return Array.from(matches).sort((a, b) => a.localeCompare(b));
 }
 
-function buildFrameworks(deps: Map<string, string>): TechStack['frameworks'] {
-  const names = Array.from(deps.keys());
-  const frameworks: TechStack['frameworks'] = [];
+function buildUsageByDependency(names: string[]): Map<string, string> {
+  const usageByName = new Map<string, string>();
   const usageByCategory: Record<keyof typeof FRAMEWORK_CATEGORIES, string> = {
     frontend: 'frontend UI',
     backend: 'backend API',
@@ -86,26 +90,11 @@ function buildFrameworks(deps: Map<string, string>): TechStack['frameworks'] {
     const matches = collectMatches(names, FRAMEWORK_CATEGORIES[category]);
 
     for (const match of matches) {
-      frameworks.push({
-        name: match,
-        version: deps.get(match),
-        usage: usageByCategory[category],
-      });
+      usageByName.set(match, usageByCategory[category]);
     }
   }
 
-  frameworks.sort((a, b) => a.name.localeCompare(b.name));
-  return frameworks;
-}
-
-function buildDependencies(deps: Map<string, string>): TechStack['dependencies'] {
-  const entries = Array.from(deps.entries()).map(([name, version]) => ({
-    name,
-    version,
-  }));
-
-  entries.sort((a, b) => a.name.localeCompare(b.name));
-  return entries;
+  return usageByName;
 }
 
 function detectBuildTools(deps: Map<string, string>): string[] {
@@ -118,23 +107,46 @@ function detectTestingTools(deps: Map<string, string>): string[] {
   return collectMatches(names, TESTING_TOOLS);
 }
 
+function detectPrimaryLanguage(languages: TechStack['languages']): TechStack['language'] {
+  const names = new Set(languages.map((language) => language.name.toLowerCase()));
+  if (names.has('typescript')) {
+    return 'typescript';
+  }
+  if (names.has('javascript')) {
+    return 'javascript';
+  }
+  if (names.has('go')) {
+    return 'go';
+  }
+  return 'unknown';
+}
+
 export function detectTechStack(input: TechStackDetectionInput): TechStack {
   const packageJsons = input.packageJsonPaths.map((pkgPath) => readPackageJson(pkgPath));
   const dependencies = mergeDependencies(packageJsons);
 
-  const frameworks = buildFrameworks(dependencies);
-  const dependencyList = buildDependencies(dependencies);
+  const dependencyRecords = collectDependencyRecords(
+    input.packageJsonPaths,
+    input.goModPaths ?? []
+  );
+  const usageByName = buildUsageByDependency(
+    Array.from(new Set(dependencyRecords.map((record) => record.name)))
+  );
+  const dependencySummary = buildDependencySummary(dependencyRecords, usageByName);
   const buildTools = detectBuildTools(dependencies);
   const testingFrameworks = detectTestingTools(dependencies);
   const { languages, testPatterns } = detectLanguagesAndPatterns(input.rootDir);
   const structure = detectStructure(input.rootDir, input.packageJsonPaths);
+  const language = detectPrimaryLanguage(languages);
 
   const techStack: TechStack = {
     version: SUPPORTED_VERSIONS.context,
     source: 'auto',
     detectedAt: new Date().toISOString(),
-    frameworks,
-    dependencies: dependencyList,
+    language,
+    frameworks: dependencySummary.frameworks,
+    dependencies: dependencySummary.dependencies,
+    aggregations: dependencySummary.aggregations,
     buildTools,
     languages,
     structure,
