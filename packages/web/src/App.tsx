@@ -106,33 +106,27 @@ function App() {
     onSelectedGroupChange: setSelectedGroupId, onSelectedNodeChange: handleSelectedNodeChange,
     onFocusedFilePathChange: setFocusedFilePath,
   });
-  const connectedEdgeIds = useMemo(() => {
-    if (!selectedNodeId || !visibleGraph) return new Set<string>();
-    const connected = new Set<string>();
+  const { dependencyEdgeIds, dependentEdgeIds, dependencyNodeIds, dependentNodeIds } = useMemo(() => {
+    const dependencyEdgeIds = new Set<string>();
+    const dependentEdgeIds = new Set<string>();
+    const dependencyNodeIds = new Set<string>();
+    const dependentNodeIds = new Set<string>();
+    if (!selectedNodeId || !visibleGraph) {
+      return { dependencyEdgeIds, dependentEdgeIds, dependencyNodeIds, dependentNodeIds };
+    }
     visibleGraph.edges.forEach((edge, index) => {
       if (hiddenNodeIds.has(edge.source) || hiddenNodeIds.has(edge.target)) {
         return;
       }
-      if (edge.source === selectedNodeId || edge.target === selectedNodeId) {
-        connected.add(buildEdgeId(edge, index));
-      }
-    });
-    return connected;
-  }, [hiddenNodeIds, selectedNodeId, visibleGraph]);
-  const connectedNodeIds = useMemo(() => {
-    if (!selectedNodeId || !visibleGraph) return new Set<string>();
-    const connected = new Set<string>();
-    visibleGraph.edges.forEach((edge) => {
-      if (hiddenNodeIds.has(edge.source) || hiddenNodeIds.has(edge.target)) {
-        return;
-      }
       if (edge.source === selectedNodeId) {
-        connected.add(edge.target);
+        dependencyEdgeIds.add(buildEdgeId(edge, index));
+        dependencyNodeIds.add(edge.target);
       } else if (edge.target === selectedNodeId) {
-        connected.add(edge.source);
+        dependentEdgeIds.add(buildEdgeId(edge, index));
+        dependentNodeIds.add(edge.source);
       }
     });
-    return connected;
+    return { dependencyEdgeIds, dependentEdgeIds, dependencyNodeIds, dependentNodeIds };
   }, [hiddenNodeIds, selectedNodeId, visibleGraph]);
   const selectedNodeDependencies = useMemo(() => {
     if (!selectedNodeId || !visibleGraph) return [];
@@ -269,7 +263,7 @@ function App() {
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <LeftToolbar onSearchClick={() => setSearchOpen(true)} commentMode={commentToolMode} onToggleAddMode={togglePlacementMode} edgeStyle={edgeStyle} onEdgeStyleChange={setEdgeStyle} />
-          <FeatureMap graph={visibleGraph} entities={data.entities} viewMode={viewMode} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds} hiddenNodeIds={hiddenNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} collapsedGroupIds={collapsedGroupIds} onGroupCollapseToggle={handleGroupCollapseToggle} />
+          <FeatureMap graph={visibleGraph} entities={data.entities} viewMode={viewMode} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} dependencyEdgeIds={dependencyEdgeIds} dependentEdgeIds={dependentEdgeIds} dependencyNodeIds={dependencyNodeIds} dependentNodeIds={dependentNodeIds} hiddenNodeIds={hiddenNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} collapsedGroupIds={collapsedGroupIds} onGroupCollapseToggle={handleGroupCollapseToggle} />
         </main>
         {selectedEdge ? (
           <EdgeDetailsPanel

@@ -19,7 +19,8 @@ export function buildGraphNodes({
   nodes,
   entities,
   dependencyCountById,
-  connectedNodeIds,
+  dependencyNodeIds,
+  dependentNodeIds,
   selectedNodeId,
   focusedNodeId,
   focusedUntil,
@@ -27,7 +28,8 @@ export function buildGraphNodes({
   nodes: GraphData['nodes'];
   entities: Record<string, MapEntity>;
   dependencyCountById: Record<string, number>;
-  connectedNodeIds?: Set<string>;
+  dependencyNodeIds?: Set<string>;
+  dependentNodeIds?: Set<string>;
   selectedNodeId?: string | null;
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
@@ -44,6 +46,8 @@ export function buildGraphNodes({
       focusedNodeId === node.id &&
       typeof focusedUntil === 'number' &&
       focusedUntil > Date.now();
+    const isDependency = dependencyNodeIds?.has(node.id) ?? false;
+    const isDependent = dependentNodeIds?.has(node.id) ?? false;
 
     return {
       id: node.id,
@@ -57,7 +61,8 @@ export function buildGraphNodes({
         dependencyCount: dependencyCountById[node.id] ?? 0,
         layer: nodeLayer,
         layers: nodeLayers,
-        isConnected: connectedNodeIds?.has(node.id) ?? false,
+        isDependency,
+        isDependent,
         isFocused,
       },
       position: { x: 0, y: 0 },

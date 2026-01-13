@@ -42,8 +42,10 @@ interface FeatureMapProps {
   onInit?: (instance: ReactFlowInstance) => void;
   selectedNodeId?: string | null;
   selectedEdgeId?: string | null;
-  connectedEdgeIds?: Set<string>;
-  connectedNodeIds?: Set<string>;
+  dependencyEdgeIds?: Set<string>;
+  dependentEdgeIds?: Set<string>;
+  dependencyNodeIds?: Set<string>;
+  dependentNodeIds?: Set<string>;
   hiddenNodeIds?: Set<string>;
   focusedNodeId?: string | null;
   focusedUntil?: number | null;
@@ -95,8 +97,10 @@ export function FeatureMap({
   onInit,
   selectedNodeId,
   selectedEdgeId,
-  connectedEdgeIds,
-  connectedNodeIds,
+  dependencyEdgeIds,
+  dependentEdgeIds,
+  dependencyNodeIds,
+  dependentNodeIds,
   hiddenNodeIds,
   focusedNodeId,
   focusedUntil,
@@ -112,8 +116,8 @@ export function FeatureMap({
   const viewDescription = VIEW_DESCRIPTIONS[viewMode];
 
   const graphNodes: Node[] = useMemo(
-    () => buildGraphNodes({ nodes: graph.nodes, entities, dependencyCountById, connectedNodeIds, selectedNodeId, focusedNodeId, focusedUntil }),
-    [graph.nodes, entities, dependencyCountById, connectedNodeIds, selectedNodeId, focusedNodeId, focusedUntil]
+    () => buildGraphNodes({ nodes: graph.nodes, entities, dependencyCountById, dependencyNodeIds, dependentNodeIds, selectedNodeId, focusedNodeId, focusedUntil }),
+    [graph.nodes, entities, dependencyCountById, dependencyNodeIds, dependentNodeIds, selectedNodeId, focusedNodeId, focusedUntil]
   );
 
   const graphEdges: Edge[] = useMemo(
@@ -192,8 +196,8 @@ export function FeatureMap({
   }, [layoutedNodes, layoutedEdges, setNodes, setEdges]);
 
   const styledEdges = useMemo(
-    () => buildStyledEdges({ edges, selectedEdgeId, selectedNodeId, connectedEdgeIds }),
-    [edges, selectedEdgeId, selectedNodeId, connectedEdgeIds]
+    () => buildStyledEdges({ edges, selectedEdgeId, selectedNodeId, dependencyEdgeIds, dependentEdgeIds }),
+    [edges, selectedEdgeId, selectedNodeId, dependencyEdgeIds, dependentEdgeIds]
   );
 
   const {

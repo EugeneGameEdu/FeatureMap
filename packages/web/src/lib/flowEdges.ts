@@ -6,12 +6,14 @@ export function buildStyledEdges({
   edges,
   selectedEdgeId,
   selectedNodeId,
-  connectedEdgeIds,
+  dependencyEdgeIds,
+  dependentEdgeIds,
 }: {
   edges: Edge[];
   selectedEdgeId?: string | null;
   selectedNodeId?: string | null;
-  connectedEdgeIds?: Set<string>;
+  dependencyEdgeIds?: Set<string>;
+  dependentEdgeIds?: Set<string>;
 }): Edge[] {
   if (edges.length === 0) {
     return edges;
@@ -25,13 +27,17 @@ export function buildStyledEdges({
     }
 
     const isSelected = selectedEdgeId === edge.id;
-    const isConnected = connectedEdgeIds?.has(edge.id) ?? false;
+    const isDependency = dependencyEdgeIds?.has(edge.id) ?? false;
+    const isDependent = dependentEdgeIds?.has(edge.id) ?? false;
+    const isConnected = isDependency || isDependent;
     const isDimmed = hasNodeSelection && !isConnected && !isSelected;
 
     const markerColor = isSelected
       ? 'hsl(var(--primary))'
-      : hasNodeSelection && isConnected
-      ? 'hsl(var(--primary) / 0.55)'
+      : isDependency
+      ? 'var(--edge-dependency)'
+      : isDependent
+      ? 'var(--edge-dependent)'
       : isDimmed
       ? 'hsl(var(--border) / 0.3)'
       : 'hsl(var(--border))';
@@ -50,7 +56,8 @@ export function buildStyledEdges({
         edge.className,
         'edge-base transition-all duration-200',
         isSelected && 'edge-selected',
-        !isSelected && hasNodeSelection && isConnected && 'edge-connected',
+        !isSelected && hasNodeSelection && isDependency && 'edge-dependency',
+        !isSelected && hasNodeSelection && !isDependency && isDependent && 'edge-dependent',
         isDimmed && 'edge-dimmed'
       ),
     };

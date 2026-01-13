@@ -24,6 +24,8 @@
     --border: 220 16% 36%;
     --input: 220 16% 36%;
     --ring: 14 51% 63%;
+    --edge-dependency: theme('colors.edge.dependency');
+    --edge-dependent: theme('colors.edge.dependent');
     --chart-1: 14 51% 63%;
     --chart-2: 92 28% 65%;
     --chart-3: 40 71% 73%;
@@ -121,9 +123,21 @@
   opacity: 1;
 }
 
+.react-flow__edge.edge-dependency {
+  --xy-edge-stroke: var(--edge-dependency);
+  --xy-edge-stroke-selected: var(--edge-dependency);
+  opacity: 1;
+}
+
+.react-flow__edge.edge-dependent {
+  --xy-edge-stroke: var(--edge-dependent);
+  --xy-edge-stroke-selected: var(--edge-dependent);
+  opacity: 1;
+}
+
 .react-flow__edge.edge-connected {
   --xy-edge-stroke: hsl(var(--primary));
-  opacity: 0.55;
+  opacity: 1;
 }
 
 .react-flow__edge.edge-dimmed {
