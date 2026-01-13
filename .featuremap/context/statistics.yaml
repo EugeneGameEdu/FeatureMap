@@ -1,0 +1,8 @@
+version: 1
+source: auto
+detectedAt: 2026-01-13T10:56:10.609Z
+counts:
+  files: 177
+  clusters: 18
+  features: 7
+  edges: 399

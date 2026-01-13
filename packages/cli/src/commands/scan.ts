@@ -1,8 +1,11 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { buildGraph, getGraphStats, type DependencyGraph } from '../analyzer/graph.js';
-import { groupByFolders, type Cluster as FolderCluster } from '../analyzer/grouper.js';
+import { buildGraph, getGraphStats } from '../analyzer/graph.js';
+import { groupByFolders } from '../analyzer/grouper.js';
+import { detectStatistics } from '../analyzer/statistics-detector.js';
+import { detectStructureContext } from '../analyzer/structure-detector.js';
+import { detectTesting } from '../analyzer/testing-detector.js';
 import { detectConventions } from '../analyzer/conventions-detector.js';
 import { detectTechStack } from '../analyzer/tech-stack-detector.js';
 import { loadExistingClusters } from '../analyzer/cluster-loader.js';
@@ -10,26 +13,27 @@ import { applyClusterMatching } from '../analyzer/cluster-id-matching.js';
 import { loadConfig, scanProject } from '../analyzer/scanner.js';
 import { scanProjectStructure } from '../analyzer/structure-scanner.js';
 import {
-  type Cluster as ClusterFile,
-  ClusterSchema,
   ConventionsSchema,
-  LayoutSchema,
+  StatisticsSchema,
+  StructureSchema,
+  TestingSchema,
   TechStackSchema,
-  type Layer,
 } from '../types/index.js';
-import { loadYAML, saveYAML } from '../utils/yaml-loader.js';
-import {
-  areClustersEquivalent,
-  buildUpdatedMetadata,
-} from '../utils/scanCompare.js';
-import { buildClusterFile } from '../utils/cluster-builder.js';
-import { buildDefaultLayout } from '../utils/layout-builder.js';
 import {
   buildConventionsInput,
+  countFeatureFiles,
+  findGoModPaths,
   findPackageJsonPaths,
   saveAutoContext,
 } from '../utils/contextUtils.js';
 import { saveGraphYaml } from '../utils/graphYaml.js';
+import {
+  ensureDirectory,
+  ensureLayout,
+  migrateLegacyClusters,
+  printLayerSummary,
+  saveClusters,
+} from './scanHelpers.js';
 
 export function createScanCommand(): Command {
   const command = new Command('scan');
@@ -86,11 +90,28 @@ export function createScanCommand(): Command {
         }
 
         const packageJsonPaths = findPackageJsonPaths(projectRoot);
+        const goModPaths = findGoModPaths(projectRoot);
         const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });
         saveAutoContext(
           path.join(featuremapDir, 'context', 'tech-stack.yaml'),
           techStack,
           TechStackSchema
+        );
+        const structure = detectStructureContext({
+          projectRoot,
+          packageJsonPaths,
+          goModPaths,
+        });
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'structure.yaml'),
+          structure,
+          StructureSchema
+        );
+        const testing = detectTesting({ projectRoot, packageJsonPaths });
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'testing.yaml'),
+          testing,
+          TestingSchema
         );
 
         const graph = await buildGraph(scanResult);
@@ -137,6 +158,19 @@ export function createScanCommand(): Command {
           conventions,
           ConventionsSchema
         );
+
+        const statistics = detectStatistics({
+          totalFiles: graphStats.totalFiles,
+          totalDependencies: graphStats.totalDependencies,
+          clusterCount: clusters.length,
+          featureCount: countFeatureFiles(featuremapDir),
+        });
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'statistics.yaml'),
+          statistics,
+          StatisticsSchema
+        );
+
         console.log('  OK Updated project context');
 
         ensureLayout(featuremapDir, clusters);
@@ -199,134 +233,4 @@ export function createScanCommand(): Command {
     });
 
   return command;
-}
-
-function migrateLegacyClusters(featuremapDir: string): void {
-  const legacyFeaturesDir = path.join(featuremapDir, 'features');
-  const clustersDir = path.join(featuremapDir, 'clusters');
-
-  if (fs.existsSync(legacyFeaturesDir) && !fs.existsSync(clustersDir)) {
-    fs.renameSync(legacyFeaturesDir, clustersDir);
-    console.log('  OK Migrated features/ to clusters/');
-  }
-}
-
-function ensureDirectory(dirPath: string): void {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-}
-
-interface ClusterSaveResult {
-  created: number;
-  layerSummary: Record<Layer, string[]>;
-}
-
-function saveClusters(
-  featuremapDir: string,
-  clusters: FolderCluster[],
-  graph: DependencyGraph
-): ClusterSaveResult {
-  const clustersDir = path.join(featuremapDir, 'clusters');
-  let created = 0;
-  const layerSummary: Record<Layer, string[]> = {
-    frontend: [],
-    backend: [],
-    fullstack: [],
-    shared: [],
-    infrastructure: [],
-    smell: [],
-  };
-
-  for (const cluster of clusters) {
-    const clusterFile = path.join(clustersDir, `${cluster.id}.yaml`);
-    const isNewCluster = !fs.existsSync(clusterFile);
-    let versionInjected = false;
-    let existing: ClusterFile | null = null;
-
-    if (!isNewCluster) {
-      try {
-        existing = loadYAML(clusterFile, ClusterSchema, {
-          fileType: 'cluster',
-          allowMissingVersion: true,
-          onVersionInjected: () => {
-            versionInjected = true;
-          },
-        });
-      } catch {
-        existing = null;
-      }
-    }
-
-    const baseMetadata = existing?.metadata ?? buildUpdatedMetadata(undefined);
-    const nextCluster = buildClusterFile(cluster, graph, {
-      metadata: baseMetadata,
-      version: existing?.version,
-      purpose_hint: existing?.purpose_hint,
-      entry_points: existing?.entry_points,
-      existingCluster: existing,
-    });
-    const contentChanged = !existing || !areClustersEquivalent(existing, nextCluster);
-    const shouldWrite = contentChanged || versionInjected;
-
-    layerSummary[nextCluster.layer].push(nextCluster.id);
-
-    if (!shouldWrite) {
-      continue;
-    }
-
-    if (contentChanged) {
-      nextCluster.metadata = buildUpdatedMetadata(existing?.metadata);
-    } else if (existing?.metadata) {
-      nextCluster.metadata = existing.metadata;
-    }
-
-    saveYAML(clusterFile, nextCluster, ClusterSchema, {
-      sortArrayFields: ['files', 'exports', 'entry_points', 'internal', 'external'],
-    });
-
-    if (isNewCluster) {
-      created++;
-    }
-  }
-
-  for (const layer of Object.keys(layerSummary) as Layer[]) {
-    layerSummary[layer].sort((a, b) => a.localeCompare(b));
-  }
-
-  return { created, layerSummary };
-}
-
-function ensureLayout(featuremapDir: string, clusters: FolderCluster[]): void {
-  const layoutPath = path.join(featuremapDir, 'layout.yaml');
-  if (fs.existsSync(layoutPath)) {
-    return;
-  }
-
-  const nodeIds = clusters.map((cluster) => cluster.id);
-  const layout = buildDefaultLayout(nodeIds);
-  saveYAML(layoutPath, layout, LayoutSchema);
-  console.log('  OK Generated layout.yaml');
-}
-
-function printLayerSummary(layerSummary: Record<Layer, string[]>): void {
-  console.log('\nLayer distribution:');
-  const order: Layer[] = [
-    'frontend',
-    'backend',
-    'fullstack',
-    'shared',
-    'infrastructure',
-    'smell',
-  ];
-
-  for (const layer of order) {
-    const clusters = layerSummary[layer];
-    if (!clusters || clusters.length === 0) {
-      console.log(`  - ${layer}: 0 clusters`);
-      continue;
-    }
-    console.log(`  - ${layer}: ${clusters.length} clusters (${clusters.join(', ')})`);
-  }
-  console.log('');
 }

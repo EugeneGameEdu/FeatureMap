@@ -6,6 +6,9 @@ export { loadExistingClusters } from './analyzer/cluster-loader.js';
 export { applyClusterMatching } from './analyzer/cluster-id-matching.js';
 export { detectTechStack } from './analyzer/tech-stack-detector.js';
 export { detectConventions } from './analyzer/conventions-detector.js';
+export { detectStatistics } from './analyzer/statistics-detector.js';
+export { detectStructureContext } from './analyzer/structure-detector.js';
+export { detectTesting } from './analyzer/testing-detector.js';
 export { buildClusterFile } from './utils/cluster-builder.js';
 export {
   buildUpdatedMetadata,
@@ -16,6 +19,8 @@ export { buildDefaultLayout } from './utils/layout-builder.js';
 export { saveGraphYaml } from './utils/graphYaml.js';
 export {
   buildConventionsInput,
+  countFeatureFiles,
+  findGoModPaths,
   findPackageJsonPaths,
   saveAutoContext,
 } from './utils/contextUtils.js';
@@ -27,6 +32,9 @@ export {
   ConventionsSchema,
   GraphSchema,
   LayoutSchema,
+  StatisticsSchema,
+  StructureSchema,
+  TestingSchema,
   TechStackSchema,
 } from './types/index.js';
 

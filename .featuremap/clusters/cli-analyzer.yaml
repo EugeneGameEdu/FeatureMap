@@ -18,6 +18,8 @@ files:
   - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
   - packages/cli/src/analyzer/scanner.ts
+  - packages/cli/src/analyzer/statistics-detector.ts
+  - packages/cli/src/analyzer/structure-detector.ts
   - packages/cli/src/analyzer/structure-scanner.ts
   - packages/cli/src/analyzer/tech-stack-detector.ts
   - packages/cli/src/analyzer/techStackHelpers.ts
@@ -25,6 +27,7 @@ files:
   - packages/cli/src/analyzer/test-grouper.ts
   - packages/cli/src/analyzer/test-parser.ts
   - packages/cli/src/analyzer/test-scanner.ts
+  - packages/cli/src/analyzer/testing-detector.ts
   - packages/cli/src/analyzer/tsconfig.ts
   - packages/cli/src/analyzer/tsconfigLoader.ts
 exports:
@@ -77,10 +80,19 @@ exports:
     name: detectLayer
     type: function
   - isDefault: false
+    name: detectStatistics
+    type: function
+  - isDefault: false
     name: detectStructure
     type: function
   - isDefault: false
+    name: detectStructureContext
+    type: function
+  - isDefault: false
     name: detectTechStack
+    type: function
+  - isDefault: false
+    name: detectTesting
     type: function
   - isDefault: false
     name: ExistingCluster
@@ -203,7 +215,16 @@ exports:
     name: ScanResult
     type: interface
   - isDefault: false
+    name: StatisticsDetectionInput
+    type: interface
+  - isDefault: false
+    name: StructureDetectionInput
+    type: interface
+  - isDefault: false
     name: TechStackDetectionInput
+    type: interface
+  - isDefault: false
+    name: TestingDetectionInput
     type: interface
   - isDefault: false
     name: TsConfigData
@@ -235,7 +256,7 @@ imports:
     - ./techStackHelpers.js
     - ./tsconfig.js
     - ./tsconfigLoader.js
-compositionHash: 4ee37aec38f1e940
+compositionHash: 31442e5b9c52fd5a
 metadata:
   createdAt: 2026-01-11T15:14:54.273Z
-  updatedAt: 2026-01-12T10:49:49.668Z
+  updatedAt: 2026-01-13T10:56:10.467Z

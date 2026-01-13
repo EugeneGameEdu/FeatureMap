@@ -82,6 +82,65 @@ export const ConventionsSchema = z.object({
     .optional(),
 });
 
+// Statistics - aggregated metrics from scan
+export const StatisticsSchema = z.object({
+  version: z.number().int().positive(),
+  source: z.literal('auto'),
+  detectedAt: z.string(),
+
+  counts: z.object({
+    files: z.number().int().nonnegative(),
+    clusters: z.number().int().nonnegative(),
+    features: z.number().int().nonnegative(),
+    edges: z.number().int().nonnegative(),
+  }),
+});
+
+// Structure - repository organization and workspace info
+export const StructureSchema = z.object({
+  version: z.number().int().positive(),
+  source: z.literal('auto'),
+  detectedAt: z.string(),
+
+  workspace: z.object({
+    type: z.enum(['monorepo', 'single-package', 'multi-root']),
+    packageManager: z.enum(['npm', 'yarn', 'pnpm', 'bun', 'unknown']),
+    packages: z.array(z.string()).optional(),
+    workspaceGlobs: z.array(z.string()).optional(),
+  }),
+
+  subprojects: z.object({
+    packageJson: z.array(z.string()),
+    goModules: z.array(z.string()),
+  }),
+});
+
+// Testing - test frameworks and coverage detection
+export const TestingSchema = z.object({
+  version: z.number().int().positive(),
+  source: z.literal('auto'),
+  detectedAt: z.string(),
+
+  frameworks: z.array(
+    z.object({
+      name: z.string(),
+      version: z.string().optional(),
+    })
+  ),
+
+  testFiles: z.object({
+    total: z.number().int().nonnegative(),
+    patterns: z.array(z.string()),
+  }),
+
+  coverage: z
+    .object({
+      reports: z.array(z.string()),
+      tools: z.array(z.string()),
+    })
+    .optional(),
+});
+
 // Decisions - manually written by user
 export const DecisionsSchema = z.object({
   version: z.number().int().positive(),
@@ -151,6 +210,9 @@ export const DesignSystemSchema = z
 
 export type TechStack = z.infer<typeof TechStackSchema>;
 export type Conventions = z.infer<typeof ConventionsSchema>;
+export type Statistics = z.infer<typeof StatisticsSchema>;
+export type Structure = z.infer<typeof StructureSchema>;
+export type Testing = z.infer<typeof TestingSchema>;
 export type Decisions = z.infer<typeof DecisionsSchema>;
 export type Constraints = z.infer<typeof ConstraintsSchema>;
 export type Overview = z.infer<typeof OverviewSchema>;

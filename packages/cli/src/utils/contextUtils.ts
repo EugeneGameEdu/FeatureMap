@@ -1,4 +1,5 @@
 ﻿import * as fs from 'fs';
+import * as path from 'path';
 import fg from 'fast-glob';
 import * as yaml from 'yaml';
 import type { ZodType } from 'zod';
@@ -24,6 +25,28 @@ export function findPackageJsonPaths(projectRoot: string): string[] {
 
   results.sort((a, b) => a.localeCompare(b));
   return results;
+}
+
+export function findGoModPaths(projectRoot: string): string[] {
+  const results = fg.sync('**/go.mod', {
+    cwd: projectRoot,
+    absolute: true,
+    onlyFiles: true,
+    ignore: SCAN_IGNORES,
+  });
+
+  results.sort((a, b) => a.localeCompare(b));
+  return results;
+}
+
+export function countFeatureFiles(featuremapDir: string): number {
+  const featuresDir = path.join(featuremapDir, 'features');
+  if (!fs.existsSync(featuresDir)) {
+    return 0;
+  }
+
+  const entries = fs.readdirSync(featuresDir, { withFileTypes: true });
+  return entries.filter((entry) => entry.isFile() && entry.name.endsWith('.yaml')).length;
 }
 
 export function buildConventionsInput(graph: DependencyGraph): ConventionsDetectionInput {

@@ -119,6 +119,8 @@ imports:
     - packages/web/src/lib/commentTypes.ts
     - packages/web/src/lib/contextTypes.ts
     - packages/web/src/lib/featureMapElements.ts
+    - packages/web/src/lib/flowEdges.ts
+    - packages/web/src/lib/flowNodes.ts
     - packages/web/src/lib/graphLayout.ts
     - packages/web/src/lib/groupContainers.ts
     - packages/web/src/lib/groupDrag.ts
@@ -129,10 +131,11 @@ imports:
     - packages/web/src/lib/searchIndex.ts
     - packages/web/src/lib/types.ts
     - packages/web/src/lib/useContextApi.ts
+    - packages/web/src/lib/useFlowHandlers.ts
     - packages/web/src/lib/useGroupApi.ts
     - packages/web/src/lib/utils.ts
     - packages/web/src/lib/yamlParsing.ts
 compositionHash: da4287e5f049c686
 metadata:
   createdAt: 2026-01-11T15:14:54.305Z
-  updatedAt: 2026-01-12T10:49:49.729Z
+  updatedAt: 2026-01-13T10:56:10.530Z

@@ -152,10 +152,28 @@ exports:
     name: SourceSchema
     type: variable
   - isDefault: false
+    name: Statistics
+    type: type
+  - isDefault: false
+    name: StatisticsSchema
+    type: variable
+  - isDefault: false
+    name: Structure
+    type: type
+  - isDefault: false
+    name: StructureSchema
+    type: variable
+  - isDefault: false
     name: TechStack
     type: type
   - isDefault: false
     name: TechStackSchema
+    type: variable
+  - isDefault: false
+    name: Testing
+    type: type
+  - isDefault: false
+    name: TestingSchema
     type: variable
 imports:
   external:
@@ -165,4 +183,4 @@ imports:
 compositionHash: 26a6168d39f3d617
 metadata:
   createdAt: 2026-01-11T15:14:54.289Z
-  updatedAt: 2026-01-12T10:49:49.695Z
+  updatedAt: 2026-01-13T10:56:10.506Z

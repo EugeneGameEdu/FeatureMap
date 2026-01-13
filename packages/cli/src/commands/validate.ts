@@ -16,6 +16,9 @@ import {
   RawGraphSchema,
   LayoutSchema,
   OverviewSchema,
+  StatisticsSchema,
+  StructureSchema,
+  TestingSchema,
   TechStackSchema,
 } from '../types/index.js';
 import type { FileType } from '../constants/versions.js';
@@ -65,6 +68,18 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath === 'context/conventions.yaml') {
     return { schema: ConventionsSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/statistics.yaml') {
+    return { schema: StatisticsSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/structure.yaml') {
+    return { schema: StructureSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/testing.yaml') {
+    return { schema: TestingSchema, fileType: 'context' };
   }
 
   if (relativePath === 'context/decisions.yaml') {

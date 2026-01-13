@@ -11,7 +11,13 @@ import {
 import { saveYAML } from '../../utils/yaml-loader.js';
 import type { WsHub } from '../wsHub.js';
 
-const AUTO_CONTEXT_FILES = new Set(['tech-stack.yaml', 'conventions.yaml']);
+const AUTO_CONTEXT_FILES = new Set([
+  'tech-stack.yaml',
+  'conventions.yaml',
+  'statistics.yaml',
+  'structure.yaml',
+  'testing.yaml',
+]);
 
 const MANUAL_CONTEXT_SCHEMAS = {
   'decisions.yaml': DecisionsSchema,

@@ -1,13 +1,25 @@
 import { Command } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { buildGraph } from '../analyzer/graph.js';
+import { buildGraph, getGraphStats } from '../analyzer/graph.js';
+import { groupByFolders } from '../analyzer/grouper.js';
+import { detectStatistics } from '../analyzer/statistics-detector.js';
+import { detectStructureContext } from '../analyzer/structure-detector.js';
+import { detectTesting } from '../analyzer/testing-detector.js';
 import { detectConventions } from '../analyzer/conventions-detector.js';
 import { detectTechStack } from '../analyzer/tech-stack-detector.js';
 import { scanProject } from '../analyzer/scanner.js';
-import { ConventionsSchema, TechStackSchema } from '../types/index.js';
+import {
+  ConventionsSchema,
+  StatisticsSchema,
+  StructureSchema,
+  TestingSchema,
+  TechStackSchema,
+} from '../types/index.js';
 import {
   buildConventionsInput,
+  countFeatureFiles,
+  findGoModPaths,
   findPackageJsonPaths,
   saveAutoContext,
 } from '../utils/contextUtils.js';
@@ -62,12 +74,27 @@ export function createContextCommand(): Command {
 
       try {
         const packageJsonPaths = findPackageJsonPaths(projectRoot);
+        const goModPaths = findGoModPaths(projectRoot);
         const techStack = detectTechStack({ rootDir: projectRoot, packageJsonPaths });
         const techStackPath = path.join(contextDir, 'tech-stack.yaml');
         recordAutoWrite(summary, 'tech-stack.yaml', saveAutoContext(techStackPath, techStack, TechStackSchema));
 
+        const structure = detectStructureContext({
+          projectRoot,
+          packageJsonPaths,
+          goModPaths,
+        });
+        const structurePath = path.join(contextDir, 'structure.yaml');
+        recordAutoWrite(summary, 'structure.yaml', saveAutoContext(structurePath, structure, StructureSchema));
+
+        const testing = detectTesting({ projectRoot, packageJsonPaths });
+        const testingPath = path.join(contextDir, 'testing.yaml');
+        recordAutoWrite(summary, 'testing.yaml', saveAutoContext(testingPath, testing, TestingSchema));
+
         const scanResult = await scanProject(projectRoot);
         const graph = await buildGraph(scanResult);
+        const graphStats = getGraphStats(graph);
+        const grouping = groupByFolders(graph);
         const conventionsInput = buildConventionsInput(graph);
         const conventions = detectConventions(conventionsInput);
         const conventionsPath = path.join(contextDir, 'conventions.yaml');
@@ -75,6 +102,19 @@ export function createContextCommand(): Command {
           summary,
           'conventions.yaml',
           saveAutoContext(conventionsPath, conventions, ConventionsSchema)
+        );
+
+        const statistics = detectStatistics({
+          totalFiles: graphStats.totalFiles,
+          totalDependencies: graphStats.totalDependencies,
+          clusterCount: grouping.clusters.length,
+          featureCount: countFeatureFiles(featuremapDir),
+        });
+        const statisticsPath = path.join(contextDir, 'statistics.yaml');
+        recordAutoWrite(
+          summary,
+          'statistics.yaml',
+          saveAutoContext(statisticsPath, statistics, StatisticsSchema)
         );
       } catch (error) {
         console.error('ERROR: Failed to refresh auto context:', error);

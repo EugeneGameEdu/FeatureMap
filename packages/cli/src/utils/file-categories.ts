@@ -2,6 +2,9 @@ const DERIVED_FILES = [
   'graph.yaml',
   'context/tech-stack.yaml',
   'context/conventions.yaml',
+  'context/statistics.yaml',
+  'context/structure.yaml',
+  'context/testing.yaml',
 ];
 
 const AUTHORED_PATTERNS = [

@@ -1,0 +1,19 @@
+version: 1
+source: auto
+detectedAt: 2026-01-13T10:55:41.631Z
+workspace:
+  type: monorepo
+  packageManager: npm
+  packages:
+    - cli
+    - mcp-server
+    - web
+  workspaceGlobs:
+    - packages/*
+subprojects:
+  packageJson:
+    - package.json
+    - packages/cli/package.json
+    - packages/mcp-server/package.json
+    - packages/web/package.json
+  goModules: []
