@@ -98,6 +98,16 @@ function buildFrameworks(deps: Map<string, string>): TechStack['frameworks'] {
   return frameworks;
 }
 
+function buildDependencies(deps: Map<string, string>): TechStack['dependencies'] {
+  const entries = Array.from(deps.entries()).map(([name, version]) => ({
+    name,
+    version,
+  }));
+
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  return entries;
+}
+
 function detectBuildTools(deps: Map<string, string>): string[] {
   const names = Array.from(deps.keys());
   return collectMatches(names, BUILD_TOOLS);
@@ -113,6 +123,7 @@ export function detectTechStack(input: TechStackDetectionInput): TechStack {
   const dependencies = mergeDependencies(packageJsons);
 
   const frameworks = buildFrameworks(dependencies);
+  const dependencyList = buildDependencies(dependencies);
   const buildTools = detectBuildTools(dependencies);
   const testingFrameworks = detectTestingTools(dependencies);
   const { languages, testPatterns } = detectLanguagesAndPatterns(input.rootDir);
@@ -123,6 +134,7 @@ export function detectTechStack(input: TechStackDetectionInput): TechStack {
     source: 'auto',
     detectedAt: new Date().toISOString(),
     frameworks,
+    dependencies: dependencyList,
     buildTools,
     languages,
     structure,

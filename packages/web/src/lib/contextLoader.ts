@@ -7,6 +7,9 @@ import {
   DecisionsSchema,
   DesignSystemSchema,
   OverviewSchema,
+  StatisticsSchema,
+  StructureSchema,
+  TestingSchema,
   TechStackSchema,
 } from './contextTypes';
 import { parseYamlWithSchema } from './yamlParsing';
@@ -20,6 +23,9 @@ const CONTEXT_FILES: Array<{
   filename: string;
   schema: z.ZodTypeAny;
 }> = [
+  { key: 'statistics', filename: 'statistics.yaml', schema: StatisticsSchema },
+  { key: 'structure', filename: 'structure.yaml', schema: StructureSchema },
+  { key: 'testing', filename: 'testing.yaml', schema: TestingSchema },
   { key: 'techStack', filename: 'tech-stack.yaml', schema: TechStackSchema },
   { key: 'conventions', filename: 'conventions.yaml', schema: ConventionsSchema },
   { key: 'decisions', filename: 'decisions.yaml', schema: DecisionsSchema },
@@ -31,6 +37,9 @@ const CONTEXT_FILES: Array<{
 export async function loadContextFiles(): Promise<ContextData> {
   const entries = await Promise.all(CONTEXT_FILES.map((entry) => loadContextFile(entry)));
   const result: Record<ContextKey, ContextFile<unknown>> = {
+    statistics: { status: 'missing' },
+    structure: { status: 'missing' },
+    testing: { status: 'missing' },
     techStack: { status: 'missing' },
     conventions: { status: 'missing' },
     decisions: { status: 'missing' },

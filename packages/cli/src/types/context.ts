@@ -14,6 +14,15 @@ export const TechStackSchema = z.object({
     })
   ),
 
+  dependencies: z
+    .array(
+      z.object({
+        name: z.string(),
+        version: z.string().optional(),
+      })
+    )
+    .optional(),
+
   buildTools: z.array(z.string()),
 
   languages: z.array(

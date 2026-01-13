@@ -9,7 +9,14 @@ import type { Cluster, FeatureDetails, GroupSummary, MapEntity, ViewMode } from 
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
 import type { GroupMember } from '@/lib/groupMembership';
-import type { ContextFile, Conventions, TechStack } from '@/lib/contextTypes';
+import type {
+  ContextFile,
+  Conventions,
+  Statistics,
+  Structure,
+  TechStack,
+  Testing,
+} from '@/lib/contextTypes';
 
 interface SidebarProps {
   node: MapEntity | null;
@@ -22,8 +29,11 @@ interface SidebarProps {
   groups?: GroupSummary[];
   focusedFilePath?: string | null;
   stats?: ProjectStats;
+  statistics?: ContextFile<Statistics>;
   techStack?: ContextFile<TechStack>;
   conventions?: ContextFile<Conventions>;
+  structure?: ContextFile<Structure>;
+  testing?: ContextFile<Testing>;
   internalDependencies?: string[];
   entities?: Record<string, MapEntity>;
 }
@@ -39,8 +49,11 @@ export function Sidebar({
   groups = [],
   focusedFilePath,
   stats,
+  statistics,
   techStack,
   conventions,
+  structure,
+  testing,
   internalDependencies,
   entities,
 }: SidebarProps) {
@@ -82,16 +95,12 @@ export function Sidebar({
         </div>
         <ScrollArea className="flex-1">
           <ProjectOverview
-            stats={
-              stats ?? {
-                clusters: 0,
-                features: 0,
-                files: 0,
-                connections: 0,
-              }
-            }
+            stats={stats}
+            statistics={statistics}
             techStack={techStack ?? { status: 'missing' }}
             conventions={conventions ?? { status: 'missing' }}
+            structure={structure ?? { status: 'missing' }}
+            testing={testing ?? { status: 'missing' }}
           />
         </ScrollArea>
       </div>

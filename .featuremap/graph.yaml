@@ -1,5 +1,5 @@
 version: 1
-generatedAt: 2026-01-13T10:56:10.590Z
+generatedAt: 2026-01-13T11:38:13.364Z
 nodes:
   - fileCount: 23
     id: cli-analyzer
@@ -61,7 +61,7 @@ nodes:
     id: web-components
     label: Web Components
     type: cluster
-  - fileCount: 6
+  - fileCount: 7
     id: web-components-ui
     label: Web Components Ui
     type: cluster
@@ -1100,12 +1100,16 @@ edges:
         targetFile: packages/web/src/components/ui/card.tsx
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
-        symbol: CardHeader
-        targetFile: packages/web/src/components/ui/card.tsx
+        symbol: Collapsible
+        targetFile: packages/web/src/components/ui/collapsible.tsx
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
-        symbol: CardTitle
-        targetFile: packages/web/src/components/ui/card.tsx
+        symbol: CollapsibleContent
+        targetFile: packages/web/src/components/ui/collapsible.tsx
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+        symbol: CollapsibleTrigger
+        targetFile: packages/web/src/components/ui/collapsible.tsx
       - sourceFiles:
           - packages/web/src/components/SearchPalette.tsx
         symbol: Dialog
@@ -1325,7 +1329,22 @@ edges:
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
+        symbol: Statistics
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
+        symbol: Structure
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
         symbol: TechStack
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
+        symbol: Testing
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/ContextViewer.tsx

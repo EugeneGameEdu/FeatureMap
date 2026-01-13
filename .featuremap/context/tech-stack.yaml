@@ -1,6 +1,6 @@
 version: 1
 source: auto
-detectedAt: 2026-01-13T10:55:41.621Z
+detectedAt: 2026-01-13T11:37:46.412Z
 frameworks:
   - name: "@modelcontextprotocol/sdk"
     version: ^1.25.2
@@ -11,6 +11,79 @@ frameworks:
   - name: react
     version: ^18.3.1
     usage: frontend UI
+dependencies:
+  - name: "@dagrejs/dagre"
+    version: ^1.1.8
+  - name: "@featuremap/cli"
+    version: 0.1.0
+  - name: "@modelcontextprotocol/sdk"
+    version: ^1.25.2
+  - name: "@radix-ui/react-collapsible"
+    version: ^1.1.0
+  - name: "@radix-ui/react-dialog"
+    version: ^1.1.15
+  - name: "@radix-ui/react-scroll-area"
+    version: ^1.2.10
+  - name: "@radix-ui/react-slot"
+    version: ^1.2.4
+  - name: "@types/express"
+    version: ^4.17.23
+  - name: "@types/js-yaml"
+    version: ^4.0.9
+  - name: "@types/node"
+    version: ^20.0.0
+  - name: "@types/react"
+    version: ^18.3.27
+  - name: "@types/react-dom"
+    version: ^18.3.7
+  - name: "@types/ws"
+    version: ^8.18.1
+  - name: "@vitejs/plugin-react"
+    version: ^4.7.0
+  - name: "@xyflow/react"
+    version: ^12.10.0
+  - name: autoprefixer
+    version: ^10.4.22
+  - name: chokidar
+    version: ^3.5.0
+  - name: class-variance-authority
+    version: ^0.7.1
+  - name: clsx
+    version: ^2.1.1
+  - name: commander
+    version: ^12.0.0
+  - name: express
+    version: ^4.21.2
+  - name: fast-glob
+    version: ^3.3.0
+  - name: js-yaml
+    version: ^4.1.1
+  - name: lucide-react
+    version: ^0.300.0
+  - name: postcss
+    version: ^8.5.6
+  - name: react
+    version: ^18.3.1
+  - name: react-dom
+    version: ^18.3.1
+  - name: tailwind-merge
+    version: ^3.4.0
+  - name: tailwindcss
+    version: ^3.4.19
+  - name: tailwindcss-animate
+    version: ^1.0.7
+  - name: ts-morph
+    version: ^21.0.0
+  - name: typescript
+    version: ^5.3.0
+  - name: vite
+    version: ^5.4.21
+  - name: ws
+    version: ^8.18.0
+  - name: yaml
+    version: ^2.3.0
+  - name: zod
+    version: ^4.3.5
 buildTools:
   - typescript
   - vite

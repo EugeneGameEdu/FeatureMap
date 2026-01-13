@@ -12,6 +12,14 @@ export const TechStackSchema = z
         usage: z.string().optional(),
       })
     ),
+    dependencies: z
+      .array(
+        z.object({
+          name: z.string(),
+          version: z.string().optional(),
+        })
+      )
+      .optional(),
     buildTools: z.array(z.string()),
     languages: z.array(
       z.object({
@@ -73,6 +81,62 @@ export const ConventionsSchema = z
             })
           )
           .optional(),
+      })
+      .optional(),
+  })
+  .passthrough();
+
+export const StatisticsSchema = z
+  .object({
+    version: z.number(),
+    source: z.literal('auto'),
+    detectedAt: z.string(),
+    counts: z.object({
+      files: z.number(),
+      clusters: z.number(),
+      features: z.number(),
+      edges: z.number(),
+    }),
+  })
+  .passthrough();
+
+export const StructureSchema = z
+  .object({
+    version: z.number(),
+    source: z.literal('auto'),
+    detectedAt: z.string(),
+    workspace: z.object({
+      type: z.enum(['monorepo', 'single-package', 'multi-root']),
+      packageManager: z.enum(['npm', 'yarn', 'pnpm', 'bun', 'unknown']),
+      packages: z.array(z.string()).optional(),
+      workspaceGlobs: z.array(z.string()).optional(),
+    }),
+    subprojects: z.object({
+      packageJson: z.array(z.string()),
+      goModules: z.array(z.string()),
+    }),
+  })
+  .passthrough();
+
+export const TestingSchema = z
+  .object({
+    version: z.number(),
+    source: z.literal('auto'),
+    detectedAt: z.string(),
+    frameworks: z.array(
+      z.object({
+        name: z.string(),
+        version: z.string().optional(),
+      })
+    ),
+    testFiles: z.object({
+      total: z.number(),
+      patterns: z.array(z.string()),
+    }),
+    coverage: z
+      .object({
+        reports: z.array(z.string()),
+        tools: z.array(z.string()),
       })
       .optional(),
   })
@@ -146,6 +210,9 @@ export const DesignSystemSchema = z
 
 export type TechStack = z.infer<typeof TechStackSchema>;
 export type Conventions = z.infer<typeof ConventionsSchema>;
+export type Statistics = z.infer<typeof StatisticsSchema>;
+export type Structure = z.infer<typeof StructureSchema>;
+export type Testing = z.infer<typeof TestingSchema>;
 export type Decisions = z.infer<typeof DecisionsSchema>;
 export type Constraints = z.infer<typeof ConstraintsSchema>;
 export type Overview = z.infer<typeof OverviewSchema>;
@@ -161,6 +228,9 @@ export interface ContextFile<T> {
 }
 
 export interface ContextData {
+  statistics: ContextFile<Statistics>;
+  structure: ContextFile<Structure>;
+  testing: ContextFile<Testing>;
   techStack: ContextFile<TechStack>;
   conventions: ContextFile<Conventions>;
   decisions: ContextFile<Decisions>;
