@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { GroupDetailsPanel } from '@/components/GroupDetailsPanel';
 import { ProjectOverview, type ProjectStats } from '@/components/ProjectOverview';
 import { SidebarClusterDetails } from '@/components/SidebarClusterDetails';
+import { ResizableSidebar } from '@/components/ResizableSidebar';
 import type { Cluster, FeatureDetails, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { formatDate } from '@/lib/loadFeatureMap';
 import { getGroupsForFeature } from '@/lib/groupFilters';
@@ -89,7 +90,7 @@ export function Sidebar({
   }
   if (!node) {
     return (
-      <div className="w-[350px] border-l border-border bg-card flex flex-col">
+      <ResizableSidebar initialWidth={350}>
         <div className="p-4 border-b border-border">
           <h2 className="font-semibold text-foreground">Project Overview</h2>
         </div>
@@ -103,7 +104,7 @@ export function Sidebar({
             testing={testing ?? { status: 'missing' }}
           />
         </ScrollArea>
-      </div>
+      </ResizableSidebar>
     );
   }
 
@@ -123,7 +124,7 @@ export function Sidebar({
   const featureGroups = featureData ? getGroupsForFeature(groups, featureData.id) : [];
 
   return (
-    <div className="w-[350px] border-l border-border bg-card flex flex-col">
+    <ResizableSidebar initialWidth={350}>
       <div className="p-4 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-2">
@@ -273,7 +274,7 @@ export function Sidebar({
           </section>
         </div>
       </ScrollArea>
-    </div>
+    </ResizableSidebar>
   );
 }
 

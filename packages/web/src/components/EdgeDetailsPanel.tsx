@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowRight, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ResizableSidebar } from '@/components/ResizableSidebar';
 import type { EdgeImportDetail } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +39,7 @@ export function EdgeDetailsPanel({
   };
 
   return (
-    <div className="w-[400px] border-l border-border bg-card flex flex-col">
+    <ResizableSidebar initialWidth={400}>
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-2">
           <h2 className="font-semibold text-foreground">Connection Details</h2>
@@ -140,7 +141,7 @@ export function EdgeDetailsPanel({
           )}
         </div>
       </ScrollArea>
-    </div>
+    </ResizableSidebar>
   );
 }
 

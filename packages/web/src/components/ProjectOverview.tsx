@@ -17,14 +17,8 @@ import type {
   Testing,
 } from '@/lib/contextTypes';
 import { formatDate } from '@/lib/loadFeatureMap';
-const PRIMARY_FRAMEWORK_CATEGORIES = new Set([
-  'UI Framework',
-  'Web Server',
-  'UI Components',
-  'Visualization',
-  'AI Integration',
-  'CLI',
-]);
+import { buildTechStackGroups } from '@/components/projectOverviewHelpers';
+import { usePersistentBoolean } from '@/components/usePersistentBoolean';
 export type ProjectStats = {
   clusters: number;
   features: number;
@@ -73,19 +67,7 @@ export function ProjectOverview({
   const conventionsEmptyLabel = getEmptyLabel(conventions.status);
   const structureEmptyLabel = getEmptyLabel(structure?.status);
   const testingEmptyLabel = getEmptyLabel(testing?.status);
-  const frameworkLabels =
-    techStackData?.frameworks
-      .filter(
-        (framework) =>
-          !framework.category || PRIMARY_FRAMEWORK_CATEGORIES.has(framework.category)
-      )
-      .map((framework) =>
-        framework.version ? `${framework.name} ${framework.version}` : framework.name
-      ) ?? [];
-  const dependencyLabels =
-    techStackData?.dependencies?.map((dependency) =>
-      dependency.version ? `${dependency.name} ${dependency.version}` : dependency.name
-    ) ?? [];
+  const techStackGroups = buildTechStackGroups(techStackData);
   const languageLabels =
     techStackData?.languages.map((language) => {
       if (typeof language.percentage === 'number') {
@@ -111,38 +93,81 @@ export function ProjectOverview({
       : testFileTotal > 0
         ? `${testFileTotal} files`
         : 'Not detected';
+  const statsLine = [
+    `${statsCounts.clusters} clusters`,
+    `${statsCounts.features} features`,
+    `${statsCounts.files} files`,
+    `${statsCounts.connections} connections`,
+  ].join(' · ');
   return (
-    <div className="p-4 space-y-4">
-      <OverviewSection title="Statistics" icon={FileText} defaultOpen>
-        <div className="grid grid-cols-2 gap-3 text-sm text-foreground">
-          <StatItem label="Clusters" value={statsCounts.clusters} />
-          <StatItem label="Features" value={statsCounts.features} />
-          <StatItem label="Files" value={statsCounts.files} />
-          <StatItem label="Connections" value={statsCounts.connections} />
-        </div>
-        <div className="text-[11px] text-muted-foreground mt-2">
-          Updated {statsUpdatedLabel}
+    <div className="p-4 space-y-2">
+      <OverviewSection id="tech-stack" title="Tech Stack" icon={Package}>
+        <div className="space-y-4 pl-6 text-sm text-foreground">
+          <div className="space-y-2">
+            <SectionLabel label="Libraries" icon={Package} />
+            <div className="space-y-3 pl-4">
+              {techStackGroups.length === 0 ? (
+                <div className="text-xs text-muted-foreground/80">{techEmptyLabel}</div>
+              ) : (
+                techStackGroups.map((group) => (
+                  <div key={group.category} className="space-y-1.5">
+                    <div className="text-xs font-normal uppercase tracking-wide text-[hsl(var(--accent-subheader))]">
+                      {group.category} ({group.count})
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pl-3">
+                      {group.items.map((item) => (
+                        <Badge
+                          key={`${group.category}-${item.name}`}
+                          variant="secondary"
+                          className="text-sm font-mono"
+                        >
+                          {item.name}
+                          {item.version ? (
+                            <span className="ml-1 text-xs font-sans text-muted-foreground">
+                              {item.version}
+                            </span>
+                          ) : null}
+                          {item.detail ? (
+                            <span className="ml-1 text-xs font-sans text-muted-foreground">
+                              {item.detail}
+                            </span>
+                          ) : null}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <SectionLabel label="Languages" icon={Code} />
+            <div className="pl-4">{renderBadgeList(languageLabels, techEmptyLabel)}</div>
+          </div>
+          <div className="space-y-2">
+            <SectionLabel label="Build tools" icon={Code} />
+            <div className="pl-4">{renderBadgeList(buildToolLabels, techEmptyLabel)}</div>
+          </div>
         </div>
       </OverviewSection>
-      <OverviewSection title="Tech Stack" icon={Package}>
-        <div className="space-y-4">
-          <StackSection icon={Package} label="Libraries">
-            {renderBadgeList(dependencyLabels, techEmptyLabel)}
-          </StackSection>
-          <StackSection icon={Package} label="Frameworks">
-            {renderBadgeList(frameworkLabels, techEmptyLabel)}
-          </StackSection>
-          <StackSection icon={Code} label="Languages">
-            {renderBadgeList(languageLabels, techEmptyLabel)}
-          </StackSection>
-          <StackSection icon={Code} label="Build tools">
-            {renderBadgeList(buildToolLabels, techEmptyLabel)}
-          </StackSection>
+
+      <OverviewSection id="file-structure" title="File Structure" icon={FolderTree}>
+        <div className="space-y-2 text-sm text-foreground">
+          <KeyValueRow label="Workspace" value={workspaceType ?? structureEmptyLabel} />
+          <KeyValueRow
+            label="Package manager"
+            value={workspaceManager ?? structureEmptyLabel}
+          />
+          <div className="space-y-2 pt-1">
+            <SectionLabel label="Packages" />
+            {renderBadgeList(workspacePackages, structureEmptyLabel)}
+          </div>
         </div>
       </OverviewSection>
-      <OverviewSection title="Conventions" icon={Code}>
-        <div className="space-y-4 text-sm text-foreground">
-          <div className="space-y-3">
+
+      <OverviewSection id="conventions" title="Conventions" icon={Code}>
+        <div className="space-y-3 text-sm text-foreground">
+          <div className="space-y-2">
             <SectionLabel label="Naming patterns" />
             <div className="space-y-2">
               <KeyValueRow
@@ -153,7 +178,7 @@ export function ProjectOverview({
               <KeyValueRow label="Types" value={namingFiles?.types ?? conventionsEmptyLabel} />
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <SectionLabel label="Import style" />
             <div className="text-sm text-foreground">
               {importStyle ?? conventionsEmptyLabel}
@@ -161,48 +186,46 @@ export function ProjectOverview({
           </div>
         </div>
       </OverviewSection>
-      <OverviewSection title="File Structure" icon={FolderTree}>
-        <div className="space-y-4 text-sm text-foreground">
-          <KeyValueRow label="Workspace" value={workspaceType ?? structureEmptyLabel} />
-          <KeyValueRow
-            label="Package manager"
-            value={workspaceManager ?? structureEmptyLabel}
-          />
-          <div className="space-y-3">
-            <SectionLabel label="Packages" />
-            {renderBadgeList(workspacePackages, structureEmptyLabel)}
-          </div>
-        </div>
-      </OverviewSection>
-      <OverviewSection title="Testing" icon={TestTube2}>
-        <div className="space-y-4 text-sm text-foreground">
-          <div className="space-y-3">
+
+      <OverviewSection id="testing" title="Testing" icon={TestTube2}>
+        <div className="space-y-3 text-sm text-foreground">
+          <div className="space-y-2">
             <SectionLabel label="Frameworks" />
             {renderBadgeList(testingFrameworks, testingEmptyLabel)}
           </div>
           <KeyValueRow label="Test files" value={testFileLabel} />
-          <div className="space-y-3">
+          <div className="space-y-2">
             <SectionLabel label="Patterns" />
             {renderBadgeList(testFilePatterns, testingEmptyLabel)}
           </div>
+        </div>
+      </OverviewSection>
+
+      <OverviewSection id="statistics" title="Statistics" icon={FileText}>
+        <div className="space-y-1 text-xs text-muted-foreground">
+          <div>{statsLine}</div>
+          <div>Updated {statsUpdatedLabel}</div>
         </div>
       </OverviewSection>
     </div>
   );
 }
 function OverviewSection({
+  id,
   title,
   icon: Icon,
-  defaultOpen = false,
   children,
+  defaultOpen = false,
 }: {
+  id: string;
   title: string;
   icon: typeof Package;
-  defaultOpen?: boolean;
   children: ReactNode;
+  defaultOpen?: boolean;
 }) {
+  const [open, setOpen] = usePersistentBoolean(`project-overview:${id}`, defaultOpen);
   return (
-    <Collapsible defaultOpen={defaultOpen}>
+    <Collapsible open={open} onOpenChange={setOpen}>
       <Card className="overflow-hidden">
         <CollapsibleTrigger asChild>
           <button
@@ -220,26 +243,10 @@ function OverviewSection({
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <CardContent className="px-4 pb-3 pt-0">{children}</CardContent>
+          <CardContent className="px-4 pb-3 pt-2">{children}</CardContent>
         </CollapsibleContent>
       </Card>
     </Collapsible>
-  );
-}
-function StackSection({
-  icon: Icon,
-  label,
-  children,
-}: {
-  icon: typeof Package;
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="space-y-3">
-      <SectionLabel label={label} icon={Icon} />
-      {children}
-    </div>
   );
 }
 function SectionLabel({ label, icon: Icon }: { label: string; icon?: typeof Package }) {
@@ -275,15 +282,6 @@ function KeyValueRow({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-function StatItem({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-md border border-border bg-muted/40 px-2.5 py-2">
-      <div className="text-[11px] text-muted-foreground">{label}</div>
-      <div className="text-sm font-semibold text-foreground">{value}</div>
-    </div>
-  );
-}
-
 function getUnavailableLabel(status?: ContextStatus) {
   if (status === 'invalid') {
     return 'Invalid data';
@@ -297,3 +295,4 @@ function getEmptyLabel(status?: ContextStatus) {
   }
   return getUnavailableLabel(status);
 }
+

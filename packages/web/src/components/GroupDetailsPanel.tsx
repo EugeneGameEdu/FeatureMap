@@ -3,6 +3,7 @@ import { AlertTriangle, Layers, Tag, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { ResizableSidebar } from '@/components/ResizableSidebar';
 import type { GroupSummary, ViewMode } from '@/lib/types';
 import type { GroupMember } from '@/lib/groupMembership';
 import { GroupApiError, useGroupApi } from '@/lib/useGroupApi';
@@ -63,7 +64,7 @@ export function GroupDetailsPanel({
   };
 
   return (
-    <div className="w-[350px] border-l border-border bg-card flex flex-col">
+    <ResizableSidebar initialWidth={350}>
       <div className="p-4 border-b border-border">
         <div className="flex items-start justify-between">
           <div className="flex-1 pr-2">
@@ -163,7 +164,7 @@ export function GroupDetailsPanel({
           </section>
         </div>
       </ScrollArea>
-    </div>
+    </ResizableSidebar>
   );
 }
 
