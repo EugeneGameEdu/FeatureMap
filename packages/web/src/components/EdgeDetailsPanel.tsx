@@ -1,12 +1,13 @@
-import { useState } from 'react';
 import { ArrowRight, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ResizableSidebar } from '@/components/ResizableSidebar';
 import type { EdgeImportDetail } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { usePersistentStringSet } from '@/components/usePersistentStringSet';
 
 interface EdgeDetailsPanelProps {
+  edgeId: string;
   sourceLabel: string;
   targetLabel: string;
   imports?: EdgeImportDetail[];
@@ -16,6 +17,7 @@ interface EdgeDetailsPanelProps {
 }
 
 export function EdgeDetailsPanel({
+  edgeId,
   sourceLabel,
   targetLabel,
   imports = [],
@@ -24,7 +26,9 @@ export function EdgeDetailsPanel({
   onViewTarget,
 }: EdgeDetailsPanelProps) {
   const totalSourceFiles = imports.reduce((sum, detail) => sum + detail.sourceFiles.length, 0);
-  const [expandedImports, setExpandedImports] = useState<Set<string>>(() => new Set());
+  const [expandedImports, setExpandedImports] = usePersistentStringSet(
+    `edge-imports:${edgeId}`
+  );
 
   const toggleImport = (key: string) => {
     setExpandedImports((current) => {
@@ -88,15 +92,16 @@ export function EdgeDetailsPanel({
                 </h3>
                 <div className="space-y-2">
                   {imports.map((detail, index) => {
-                    const key = `${detail.symbol}|${detail.targetFile ?? ''}|${index}`;
-                    const isExpanded = expandedImports.has(key);
+                    const storageKey = `${detail.symbol}|${detail.targetFile ?? ''}`;
+                    const key = `${storageKey}|${index}`;
+                    const isExpanded = expandedImports.has(storageKey);
                     const ChevronIcon = isExpanded ? ChevronDown : ChevronRight;
 
                     return (
                       <div key={key} className="space-y-1">
                         <button
                           type="button"
-                          onClick={() => toggleImport(key)}
+                          onClick={() => toggleImport(storageKey)}
                           className="flex items-center gap-2 text-left w-full"
                           aria-expanded={isExpanded}
                         >

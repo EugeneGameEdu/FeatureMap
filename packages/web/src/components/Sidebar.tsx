@@ -13,6 +13,7 @@ import type { GroupMember } from '@/lib/groupMembership';
 import type {
   ContextFile,
   Conventions,
+  ContextStatus,
   Statistics,
   Structure,
   TechStack,
@@ -76,6 +77,29 @@ export function Sidebar({
     infrastructure: 'bg-indigo-500/20 text-indigo-200',
     smell: 'bg-rose-500/20 text-rose-200',
   };
+  const statsFallback = stats ?? {
+    clusters: 0,
+    features: 0,
+    files: 0,
+    connections: 0,
+  };
+  const statsData = statistics?.status === 'present' ? statistics.data : undefined;
+  const statsCounts = {
+    clusters: statsData?.counts.clusters ?? statsFallback.clusters,
+    features: statsData?.counts.features ?? statsFallback.features,
+    files: statsData?.counts.files ?? statsFallback.files,
+    connections: statsData?.counts.edges ?? statsFallback.connections,
+  };
+  const statsUpdatedAt = statsData?.detectedAt ?? statsFallback.updatedAt;
+  const statsUpdatedLabel = statsUpdatedAt
+    ? formatDate(statsUpdatedAt)
+    : getUnavailableLabel(statistics?.status);
+  const statsLine = [
+    `${statsCounts.clusters} clusters`,
+    `${statsCounts.features} features`,
+    `${statsCounts.files} files`,
+    `${statsCounts.connections} connections`,
+  ].join(' · ');
 
   if (group) {
     return (
@@ -93,11 +117,13 @@ export function Sidebar({
       <ResizableSidebar initialWidth={350}>
         <div className="p-4 border-b border-border">
           <h2 className="font-semibold text-foreground">Project Overview</h2>
+          <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+            <div>{statsLine}</div>
+            <div>Updated {statsUpdatedLabel}</div>
+          </div>
         </div>
         <ScrollArea className="flex-1">
           <ProjectOverview
-            stats={stats}
-            statistics={statistics}
             techStack={techStack ?? { status: 'missing' }}
             conventions={conventions ?? { status: 'missing' }}
             structure={structure ?? { status: 'missing' }}
@@ -288,4 +314,11 @@ function resolveFeatureSource(feature: FeatureDetails): 'auto' | 'ai' | 'user' {
 
 function isFeatureEntity(entity: MapEntity): entity is Extract<MapEntity, { kind: 'feature' }> {
   return entity.kind === 'feature';
+}
+
+function getUnavailableLabel(status?: ContextStatus) {
+  if (status === 'invalid') {
+    return 'Invalid data';
+  }
+  return 'Not available';
 }

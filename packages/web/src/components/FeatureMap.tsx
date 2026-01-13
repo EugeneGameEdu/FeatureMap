@@ -16,12 +16,13 @@ import { mergeMeasuredNodes } from '@/lib/flowNodes';
 import { buildGroupContainerNodes, GROUP_CONTAINER_NODE_TYPE } from '@/lib/groupContainers';
 import { type GroupDragStateEntry } from '@/lib/groupDrag';
 import { applyLayoutPositions, getLayoutedElements } from '@/lib/graphLayout';
-import type { EdgeStyle, GraphData, GroupSummary, MapEntity } from '@/lib/types';
+import type { EdgeStyle, GraphData, GroupSummary, MapEntity, ViewMode } from '@/lib/types';
 import { useFlowHandlers } from '@/lib/useFlowHandlers';
 
 interface FeatureMapProps {
   graph: GraphData;
   entities: Record<string, MapEntity>;
+  viewMode: ViewMode;
   layoutPositions?: Record<string, { x: number; y: number }>;
   groups?: GroupSummary[];
   groupMembership?: Map<string, string[]>;
@@ -66,9 +67,15 @@ const edgeTypes: EdgeTypes = {
   [COMMENT_EDGE_TYPE]: BezierEdge,
 };
 
+const VIEW_DESCRIPTIONS: Record<ViewMode, string> = {
+  clusters: 'Technical view: file organization and module dependencies',
+  features: 'Architectural view: what the system does and how parts connect',
+};
+
 export function FeatureMap({
   graph,
   entities,
+  viewMode,
   layoutPositions = {},
   groups = [],
   groupMembership,
@@ -102,6 +109,7 @@ export function FeatureMap({
 }: FeatureMapProps) {
   const isReadOnly = Boolean(readOnly);
   const dependencyCountById = useMemo(() => buildDependencyCountById(graph.edges), [graph.edges]);
+  const viewDescription = VIEW_DESCRIPTIONS[viewMode];
 
   const graphNodes: Node[] = useMemo(
     () => buildGraphNodes({ nodes: graph.nodes, entities, dependencyCountById, connectedNodeIds, selectedNodeId, focusedNodeId, focusedUntil }),
@@ -215,7 +223,15 @@ export function FeatureMap({
   const lockTitle = isReadOnly ? 'Unlock graph (edit mode)' : 'Lock graph (read-only)';
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
+      <div className="pointer-events-none absolute left-4 right-4 top-3 z-10 text-muted-foreground">
+        <span
+          key={viewMode}
+          className="block text-base sm:text-lg leading-tight animate-in fade-in-0 duration-200"
+        >
+          {viewDescription}
+        </span>
+      </div>
       <ReactFlow
         nodes={nodes}
         edges={styledEdges}
@@ -236,6 +252,7 @@ export function FeatureMap({
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.3}
         maxZoom={2}
+        proOptions={{ hideAttribution: true }}
         className={commentPlacementActive ? 'cursor-crosshair bg-background' : 'bg-background'}
         defaultEdgeOptions={{ type: edgeStyle }}
         nodesDraggable={!isReadOnly}
@@ -243,7 +260,7 @@ export function FeatureMap({
         edgesReconnectable={!isReadOnly}
         elementsSelectable
       >
-        <Background color="hsl(var(--border))" gap={20} size={1} />
+        <Background color="hsl(var(--border))" gap={60} size={3} />
         <Controls showInteractive={false}>
           <ControlButton
             onClick={onToggleReadOnly}

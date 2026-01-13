@@ -6,19 +6,18 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Code, FileText, FolderTree, Package, TestTube2, ChevronDown } from 'lucide-react';
+import { Code, FolderTree, Package, TestTube2, ChevronDown } from 'lucide-react';
 import type {
   ContextFile,
   Conventions,
   ContextStatus,
-  Statistics,
   Structure,
   TechStack,
   Testing,
 } from '@/lib/contextTypes';
-import { formatDate } from '@/lib/loadFeatureMap';
 import { buildTechStackGroups } from '@/components/projectOverviewHelpers';
 import { usePersistentBoolean } from '@/components/usePersistentBoolean';
+
 export type ProjectStats = {
   clusters: number;
   features: number;
@@ -27,38 +26,17 @@ export type ProjectStats = {
   updatedAt?: string;
 };
 interface ProjectOverviewProps {
-  stats?: ProjectStats;
-  statistics?: ContextFile<Statistics>;
   techStack: ContextFile<TechStack>;
   conventions: ContextFile<Conventions>;
   structure?: ContextFile<Structure>;
   testing?: ContextFile<Testing>;
 }
 export function ProjectOverview({
-  stats,
-  statistics,
   techStack,
   conventions,
   structure,
   testing,
 }: ProjectOverviewProps) {
-  const statsFallback = stats ?? {
-    clusters: 0,
-    features: 0,
-    files: 0,
-    connections: 0,
-  };
-  const statsData = statistics?.status === 'present' ? statistics.data : undefined;
-  const statsCounts = {
-    clusters: statsData?.counts.clusters ?? statsFallback.clusters,
-    features: statsData?.counts.features ?? statsFallback.features,
-    files: statsData?.counts.files ?? statsFallback.files,
-    connections: statsData?.counts.edges ?? statsFallback.connections,
-  };
-  const statsUpdatedAt = statsData?.detectedAt ?? statsFallback.updatedAt;
-  const statsUpdatedLabel = statsUpdatedAt
-    ? formatDate(statsUpdatedAt)
-    : getUnavailableLabel(statistics?.status);
   const techStackData = techStack.status === 'present' ? techStack.data : undefined;
   const conventionsData = conventions.status === 'present' ? conventions.data : undefined;
   const structureData = structure?.status === 'present' ? structure.data : undefined;
@@ -93,12 +71,6 @@ export function ProjectOverview({
       : testFileTotal > 0
         ? `${testFileTotal} files`
         : 'Not detected';
-  const statsLine = [
-    `${statsCounts.clusters} clusters`,
-    `${statsCounts.features} features`,
-    `${statsCounts.files} files`,
-    `${statsCounts.connections} connections`,
-  ].join(' · ');
   return (
     <div className="p-4 space-y-2">
       <OverviewSection id="tech-stack" title="Tech Stack" icon={Package}>
@@ -198,13 +170,6 @@ export function ProjectOverview({
             <SectionLabel label="Patterns" />
             {renderBadgeList(testFilePatterns, testingEmptyLabel)}
           </div>
-        </div>
-      </OverviewSection>
-
-      <OverviewSection id="statistics" title="Statistics" icon={FileText}>
-        <div className="space-y-1 text-xs text-muted-foreground">
-          <div>{statsLine}</div>
-          <div>Updated {statsUpdatedLabel}</div>
         </div>
       </OverviewSection>
     </div>

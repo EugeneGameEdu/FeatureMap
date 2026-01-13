@@ -138,6 +138,7 @@ function App() {
       visibleGraph.edges.find((edge, index) => buildEdgeId(edge, index) === selectedEdgeId) ?? null
     );
   }, [selectedEdgeId, visibleGraph]);
+  const selectedEdgeStorageId = selectedEdgeId ?? (selectedEdge ? String(selectedEdge.id) : '');
   const selectedEdgeSourceLabel = useMemo(() => {
     if (!selectedEdge || !data) return '';
     return data.entities[selectedEdge.source]?.label ?? selectedEdge.source;
@@ -260,10 +261,11 @@ function App() {
       <div className="flex-1 flex overflow-hidden">
         <main className="flex-1 relative">
           <LeftToolbar onSearchClick={() => setSearchOpen(true)} commentMode={commentToolMode} onToggleAddMode={togglePlacementMode} edgeStyle={edgeStyle} onEdgeStyleChange={setEdgeStyle} />
-          <FeatureMap graph={visibleGraph} entities={data.entities} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds} hiddenNodeIds={hiddenNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} collapsedGroupIds={collapsedGroupIds} onGroupCollapseToggle={handleGroupCollapseToggle} />
+          <FeatureMap graph={visibleGraph} entities={data.entities} viewMode={viewMode} layoutPositions={layoutPositions} groups={data.groups} groupMembership={groupMembership} selectedGroupId={selectedGroupId} selectedGroupDetailsId={selectedGroupDetailsId} onGroupSelect={handleGroupSelect} commentNodes={commentElements.nodes} commentEdges={commentElements.edges} onNodeClick={handleNodeClick} onPaneClick={handleMapPaneClick} onConnect={handleConnect} onEdgeClick={handleEdgeClick} onEdgeRemove={handleEdgeRemove} onNodeDragStop={handleNodeDragStop} onNodeRemove={handleNodeRemove} onGroupDragStop={handleGroupDragStop} commentPlacementActive={placementActive} onInit={setReactFlowInstance} selectedNodeId={selectedNodeId} selectedEdgeId={selectedEdgeId} connectedEdgeIds={connectedEdgeIds} connectedNodeIds={connectedNodeIds} hiddenNodeIds={hiddenNodeIds} focusedNodeId={focusedNodeId} focusedUntil={focusedUntil} readOnly={readOnly} onToggleReadOnly={handleToggleReadOnly} edgeStyle={edgeStyle} collapsedGroupIds={collapsedGroupIds} onGroupCollapseToggle={handleGroupCollapseToggle} />
         </main>
         {selectedEdge ? (
           <EdgeDetailsPanel
+            edgeId={selectedEdgeStorageId}
             sourceLabel={selectedEdgeSourceLabel}
             targetLabel={selectedEdgeTargetLabel}
             imports={selectedEdge.imports}
