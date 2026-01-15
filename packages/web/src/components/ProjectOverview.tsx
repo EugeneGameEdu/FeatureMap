@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -6,7 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Check, ChevronDown, ChevronRight, Clipboard, Code, FolderTree, Package, Terminal, TestTube2 } from 'lucide-react';
+import { ChevronDown, Code, FolderTree, Package, Terminal, TestTube2 } from 'lucide-react';
 import type {
   ContextFile,
   Conventions,
@@ -18,6 +18,7 @@ import type {
 } from '@/lib/contextTypes';
 import { buildTechStackGroups } from '@/components/projectOverviewHelpers';
 import { usePersistentBoolean } from '@/components/usePersistentBoolean';
+import { RunCommandsContent } from '@/components/runCommandsSection';
 
 export type ProjectStats = {
   clusters: number;
@@ -78,6 +79,14 @@ export function ProjectOverview({
         : 'Not detected';
   return (
     <div className="p-4 space-y-2">
+      <OverviewSection id="run-commands" title="Run Commands" icon={Terminal}>
+        <RunCommandsContent
+          commands={runCommandsData?.commands}
+          subprojects={runCommandsData?.subprojects}
+          emptyLabel={runCommandsEmptyLabel}
+        />
+      </OverviewSection>
+
       <OverviewSection id="tech-stack" title="Tech Stack" icon={Package}>
         <div className="space-y-4 pl-6 text-sm text-foreground">
           <div className="space-y-2">
@@ -177,14 +186,6 @@ export function ProjectOverview({
           </div>
         </div>
       </OverviewSection>
-
-      <OverviewSection id="run-commands" title="Run Commands" icon={Terminal}>
-        <RunCommandsContent
-          commands={runCommandsData?.commands}
-          subprojects={runCommandsData?.subprojects}
-          emptyLabel={runCommandsEmptyLabel}
-        />
-      </OverviewSection>
     </div>
   );
 }
@@ -273,173 +274,3 @@ function getEmptyLabel(status?: ContextStatus) {
   }
   return getUnavailableLabel(status);
 }
-
-type CommandEntry = {
-  command: string;
-  source: string;
-  verified: boolean;
-};
-
-function RunCommandsContent({
-  commands,
-  subprojects,
-  emptyLabel,
-}: {
-  commands?: Record<string, CommandEntry>;
-  subprojects?: Record<string, { path: string; commands: Record<string, CommandEntry> }>;
-  emptyLabel: string;
-}) {
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  const handleCopy = async (key: string, command: string) => {
-    try {
-      await navigator.clipboard.writeText(command);
-      setCopiedKey(key);
-      window.setTimeout(() => {
-        setCopiedKey((current) => (current === key ? null : current));
-      }, 1500);
-    } catch {
-      // Silently fail
-    }
-  };
-
-  const commandEntries = commands ? Object.entries(commands) : [];
-  const subprojectEntries = subprojects ? Object.entries(subprojects) : [];
-
-  if (commandEntries.length === 0 && subprojectEntries.length === 0) {
-    return <div className="text-xs text-muted-foreground/80">{emptyLabel}</div>;
-  }
-
-  return (
-    <div className="space-y-4 text-sm text-foreground">
-      {commandEntries.length > 0 && (
-        <div className="space-y-2">
-          {subprojectEntries.length > 0 && <SectionLabel label="Root" />}
-          <div className="space-y-1.5">
-            {commandEntries.map(([name, entry]) => (
-              <CommandRow
-                key={name}
-                name={name}
-                command={entry.command}
-                source={entry.source}
-                copied={copiedKey === name}
-                onCopy={() => handleCopy(name, entry.command)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {subprojectEntries.map(([packageName, pkg]) => (
-        <SubprojectCommands
-          key={packageName}
-          packageName={packageName}
-          packagePath={pkg.path}
-          commands={pkg.commands}
-          copiedKey={copiedKey}
-          onCopy={handleCopy}
-        />
-      ))}
-    </div>
-  );
-}
-
-function CommandRow({
-  name,
-  command,
-  source,
-  copied,
-  onCopy,
-}: {
-  name: string;
-  command: string;
-  source: string;
-  copied: boolean;
-  onCopy: () => void;
-}) {
-  return (
-    <div className="group flex items-start gap-2 rounded-md bg-muted/50 px-2 py-1.5 hover:bg-muted">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-medium text-primary">{name}</span>
-          <Badge
-            variant="outline"
-            className="text-[10px] px-1 py-0 border-muted-foreground/40 text-muted-foreground"
-          >
-            {source}
-          </Badge>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground truncate mt-0.5">
-          {command}
-        </div>
-      </div>
-      <button
-        type="button"
-        onClick={onCopy}
-        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-background rounded"
-        title="Copy command"
-      >
-        {copied ? (
-          <Check size={14} className="text-emerald-400" />
-        ) : (
-          <Clipboard size={14} className="text-muted-foreground" />
-        )}
-      </button>
-    </div>
-  );
-}
-
-function SubprojectCommands({
-  packageName,
-  packagePath,
-  commands,
-  copiedKey,
-  onCopy,
-}: {
-  packageName: string;
-  packagePath: string;
-  commands: Record<string, CommandEntry>;
-  copiedKey: string | null;
-  onCopy: (key: string, command: string) => void;
-}) {
-  const [expanded, setExpanded] = usePersistentBoolean(
-    `run-commands:${packageName}`,
-    false
-  );
-  const commandEntries = Object.entries(commands);
-
-  return (
-    <Collapsible open={expanded} onOpenChange={setExpanded}>
-      <CollapsibleTrigger asChild>
-        <button
-          type="button"
-          className="flex w-full items-center gap-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground"
-        >
-          <ChevronRight
-            size={14}
-            className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
-          />
-          <span>{packageName}</span>
-          <span className="font-normal text-muted-foreground/60">
-            ({packagePath})
-          </span>
-        </button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div className="space-y-1.5 pl-5 pt-2">
-          {commandEntries.map(([name, entry]) => (
-            <CommandRow
-              key={`${packageName}:${name}`}
-              name={name}
-              command={entry.command}
-              source={entry.source}
-              copied={copiedKey === `${packageName}:${name}`}
-              onCopy={() => onCopy(`${packageName}:${name}`, entry.command)}
-            />
-          ))}
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
-  );
-}
-
