@@ -276,7 +276,7 @@ function App() {
             onViewTarget={handleViewEdgeTarget}
           />
         ) : (
-          <Sidebar node={selectedNode} group={selectedGroupDetails} groupMembers={selectedGroupMembers} viewMode={viewMode} onClose={handleCloseSidebar} onGroupUpdated={handleGroupUpdated} onDependencyClick={handleDependencyClick} groups={data.groups} focusedFilePath={focusedFilePath} stats={projectStats} statistics={data.context.statistics} techStack={data.context.techStack} conventions={data.context.conventions} structure={data.context.structure} testing={data.context.testing} internalDependencies={selectedNodeDependencies} entities={data.entities} />
+          <Sidebar node={selectedNode} group={selectedGroupDetails} groupMembers={selectedGroupMembers} viewMode={viewMode} onClose={handleCloseSidebar} onGroupUpdated={handleGroupUpdated} onDependencyClick={handleDependencyClick} groups={data.groups} focusedFilePath={focusedFilePath} stats={projectStats} statistics={data.context.statistics} techStack={data.context.techStack} conventions={data.context.conventions} structure={data.context.structure} testing={data.context.testing} runCommands={data.context.runCommands} internalDependencies={selectedNodeDependencies} entities={data.entities} />
         )}
       </div>
     </div>

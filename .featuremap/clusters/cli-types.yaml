@@ -146,6 +146,12 @@ exports:
     name: RawGraphSchema
     type: variable
   - isDefault: false
+    name: RunCommands
+    type: type
+  - isDefault: false
+    name: RunCommandsSchema
+    type: variable
+  - isDefault: false
     name: Source
     type: type
   - isDefault: false
@@ -183,4 +189,4 @@ imports:
 compositionHash: 26a6168d39f3d617
 metadata:
   createdAt: 2026-01-13T15:40:50.553Z
-  updatedAt: 2026-01-13T15:40:50.553Z
+  updatedAt: 2026-01-15T11:32:34.988Z

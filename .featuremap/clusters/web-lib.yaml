@@ -473,6 +473,12 @@ exports:
     name: resolveVisibility
     type: function
   - isDefault: false
+    name: RunCommands
+    type: type
+  - isDefault: false
+    name: RunCommandsSchema
+    type: variable
+  - isDefault: false
     name: SearchIndexEntry
     type: interface
   - isDefault: false
@@ -607,4 +613,4 @@ imports:
 compositionHash: 2b26becdc4aaa03b
 metadata:
   createdAt: 2026-01-13T15:40:50.606Z
-  updatedAt: 2026-01-13T15:40:50.606Z
+  updatedAt: 2026-01-15T11:32:35.045Z

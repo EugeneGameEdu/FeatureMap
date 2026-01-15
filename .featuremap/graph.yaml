@@ -1,7 +1,7 @@
 version: 1
-generatedAt: 2026-01-13T15:40:50.646Z
+generatedAt: 2026-01-15T11:32:35.108Z
 nodes:
-  - fileCount: 25
+  - fileCount: 26
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
@@ -73,6 +73,7 @@ edges:
   - imports:
       - sourceFiles:
           - packages/cli/src/analyzer/conventions-detector.ts
+          - packages/cli/src/analyzer/run-commands-detector.ts
           - packages/cli/src/analyzer/statistics-detector.ts
           - packages/cli/src/analyzer/structure-detector.ts
           - packages/cli/src/analyzer/tech-stack-detector.ts
@@ -106,6 +107,10 @@ edges:
           - packages/cli/src/analyzer/graph.ts
         symbol: ImportList
         targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
+          - packages/cli/src/analyzer/run-commands-detector.ts
+        symbol: RunCommands
+        targetFile: packages/cli/src/types/context.ts
       - sourceFiles:
           - packages/cli/src/analyzer/statistics-detector.ts
         symbol: Statistics
@@ -160,6 +165,10 @@ edges:
           - packages/cli/src/commands/scan.ts
         symbol: detectConventions
         targetFile: packages/cli/src/analyzer/conventions-detector.ts
+      - sourceFiles:
+          - packages/cli/src/commands/scan.ts
+        symbol: detectRunCommands
+        targetFile: packages/cli/src/analyzer/run-commands-detector.ts
       - sourceFiles:
           - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
@@ -313,6 +322,11 @@ edges:
       - sourceFiles:
           - packages/cli/src/commands/validate.ts
         symbol: RawGraphSchema
+        targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
+          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/validate.ts
+        symbol: RunCommandsSchema
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
           - packages/cli/src/commands/context.ts
@@ -1319,6 +1333,11 @@ edges:
           - packages/web/src/components/ContextEditor.tsx
         symbol: parseYamlWithSchema
         targetFile: packages/web/src/lib/yamlParsing.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
+        symbol: RunCommands
+        targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/SearchPalette.tsx
         symbol: SearchIndexEntry

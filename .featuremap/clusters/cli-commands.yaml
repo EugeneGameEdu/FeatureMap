@@ -70,6 +70,7 @@ imports:
     - ../analyzer/conventions-detector.js
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
+    - ../analyzer/run-commands-detector.js
     - ../analyzer/scanner.js
     - ../analyzer/statistics-detector.js
     - ../analyzer/structure-detector.js
@@ -92,4 +93,4 @@ imports:
 compositionHash: 41b1809086cea553
 metadata:
   createdAt: 2026-01-13T15:40:50.527Z
-  updatedAt: 2026-01-13T15:40:50.527Z
+  updatedAt: 2026-01-15T11:32:34.970Z

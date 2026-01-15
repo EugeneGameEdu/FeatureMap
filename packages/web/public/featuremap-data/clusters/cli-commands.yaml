@@ -10,10 +10,14 @@ files:
   - packages/cli/src/commands/context.ts
   - packages/cli/src/commands/init.ts
   - packages/cli/src/commands/scan.ts
+  - packages/cli/src/commands/scanHelpers.ts
   - packages/cli/src/commands/serve.ts
   - packages/cli/src/commands/validate.ts
   - packages/cli/src/commands/web.ts
 exports:
+  - isDefault: false
+    name: ClusterSaveResult
+    type: interface
   - isDefault: false
     name: createContextCommand
     type: function
@@ -28,6 +32,21 @@ exports:
     type: function
   - isDefault: false
     name: createWebCommand
+    type: function
+  - isDefault: false
+    name: ensureDirectory
+    type: function
+  - isDefault: false
+    name: ensureLayout
+    type: function
+  - isDefault: false
+    name: migrateLegacyClusters
+    type: function
+  - isDefault: false
+    name: printLayerSummary
+    type: function
+  - isDefault: false
+    name: saveClusters
     type: function
   - isDefault: false
     name: validateCommand
@@ -51,9 +70,13 @@ imports:
     - ../analyzer/conventions-detector.js
     - ../analyzer/graph.js
     - ../analyzer/grouper.js
+    - ../analyzer/run-commands-detector.js
     - ../analyzer/scanner.js
+    - ../analyzer/statistics-detector.js
+    - ../analyzer/structure-detector.js
     - ../analyzer/structure-scanner.js
     - ../analyzer/tech-stack-detector.js
+    - ../analyzer/testing-detector.js
     - ../constants/versions.js
     - ../server/createServer.js
     - ../types/index.js
@@ -66,7 +89,8 @@ imports:
     - ../utils/scanCompare.js
     - ../utils/version-checker.js
     - ../utils/yaml-loader.js
-compositionHash: 739e908fbe699880
+    - ./scanHelpers.js
+compositionHash: 41b1809086cea553
 metadata:
-  createdAt: 2026-01-11T15:14:54.279Z
-  updatedAt: 2026-01-12T10:49:49.676Z
+  createdAt: 2026-01-13T15:40:50.527Z
+  updatedAt: 2026-01-15T11:32:34.970Z

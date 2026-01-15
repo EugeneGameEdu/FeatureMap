@@ -14,6 +14,7 @@ import type {
   ContextFile,
   Conventions,
   ContextStatus,
+  RunCommands,
   Statistics,
   Structure,
   TechStack,
@@ -36,6 +37,7 @@ interface SidebarProps {
   conventions?: ContextFile<Conventions>;
   structure?: ContextFile<Structure>;
   testing?: ContextFile<Testing>;
+  runCommands?: ContextFile<RunCommands>;
   internalDependencies?: string[];
   entities?: Record<string, MapEntity>;
 }
@@ -56,6 +58,7 @@ export function Sidebar({
   conventions,
   structure,
   testing,
+  runCommands,
   internalDependencies,
   entities,
 }: SidebarProps) {
@@ -128,6 +131,7 @@ export function Sidebar({
             conventions={conventions ?? { status: 'missing' }}
             structure={structure ?? { status: 'missing' }}
             testing={testing ?? { status: 'missing' }}
+            runCommands={runCommands ?? { status: 'missing' }}
           />
         </ScrollArea>
       </ResizableSidebar>

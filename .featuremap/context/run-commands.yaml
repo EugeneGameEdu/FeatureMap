@@ -1,0 +1,102 @@
+version: 1
+source: auto
+detectedAt: 2026-01-15T11:32:08.029Z
+commands:
+  dev:
+    command: npm run dev --workspace=@featuremap/web
+    source: package.json
+    verified: true
+  build:
+    command: npm run build --workspaces
+    source: package.json
+    verified: true
+  serve:
+    command: node packages/cli/dist/index.js serve
+    source: package.json
+    verified: true
+  cli:
+    command: node packages/cli/dist/index.js
+    source: package.json
+    verified: true
+  mcp:build:
+    command: npm run build --workspace=@featuremap/mcp-server
+    source: package.json
+    verified: true
+  mcp:codex:add:
+    command: node scripts/print-codex-mcp-add-command.mjs
+    source: package.json
+    verified: true
+  mcp:codex:snippet:
+    command: node scripts/print-codex-mcp-snippet.mjs
+    source: package.json
+    verified: true
+  scan:
+    command: node packages/cli/dist/index.js scan
+    source: package.json
+    verified: true
+  serve:dev:
+    command: npm run build --workspace=@featuremap/cli && node packages/cli/dist/index.js serve --dev
+    source: package.json
+    verified: true
+  web:
+    command: node packages/cli/dist/index.js web
+    source: package.json
+    verified: true
+subprojects:
+  "@featuremap/cli":
+    path: packages/cli
+    commands:
+      dev:
+        command: tsc --watch
+        source: package.json
+        verified: true
+      build:
+        command: tsc
+        source: package.json
+        verified: true
+      demo:ai:
+        command: node dist/scripts/demo-ai-analysis.js
+        source: package.json
+        verified: true
+      test:graph:
+        command: node dist/analyzer/test-graph.js
+        source: package.json
+        verified: true
+      test:grouper:
+        command: node dist/analyzer/test-grouper.js
+        source: package.json
+        verified: true
+      test:parser:
+        command: node dist/analyzer/test-parser.js
+        source: package.json
+        verified: true
+      test:scanner:
+        command: node dist/analyzer/test-scanner.js
+        source: package.json
+        verified: true
+  "@featuremap/mcp-server":
+    path: packages/mcp-server
+    commands:
+      dev:
+        command: tsc --watch
+        source: package.json
+        verified: true
+      build:
+        command: tsc
+        source: package.json
+        verified: true
+  "@featuremap/web":
+    path: packages/web
+    commands:
+      dev:
+        command: vite
+        source: package.json
+        verified: true
+      build:
+        command: tsc && vite build
+        source: package.json
+        verified: true
+      preview:
+        command: vite preview
+        source: package.json
+        verified: true

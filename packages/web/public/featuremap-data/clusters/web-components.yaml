@@ -24,11 +24,18 @@ files:
   - packages/web/src/components/MapControlsRow.tsx
   - packages/web/src/components/MapHeader.tsx
   - packages/web/src/components/ProjectOverview.tsx
+  - packages/web/src/components/projectOverviewHelpers.ts
+  - packages/web/src/components/ResizableSidebar.tsx
   - packages/web/src/components/SearchPalette.tsx
   - packages/web/src/components/Sidebar.tsx
   - packages/web/src/components/SidebarClusterDetails.tsx
   - packages/web/src/components/StatusScreens.tsx
+  - packages/web/src/components/usePersistentBoolean.ts
+  - packages/web/src/components/usePersistentStringSet.ts
 exports:
+  - isDefault: false
+    name: buildTechStackGroups
+    type: function
   - isDefault: false
     name: CommentFlowNode
     type: type
@@ -84,6 +91,9 @@ exports:
     name: ProjectStats
     type: type
   - isDefault: false
+    name: ResizableSidebar
+    type: function
+  - isDefault: false
     name: SearchPalette
     type: function
   - isDefault: false
@@ -91,6 +101,18 @@ exports:
     type: function
   - isDefault: false
     name: SidebarClusterDetails
+    type: function
+  - isDefault: false
+    name: TechStackCategoryGroup
+    type: type
+  - isDefault: false
+    name: TechStackGroupItem
+    type: type
+  - isDefault: false
+    name: usePersistentBoolean
+    type: function
+  - isDefault: false
+    name: usePersistentStringSet
     type: function
 imports:
   external:
@@ -108,17 +130,24 @@ imports:
     - packages/web/src/components/GroupDetailsPanel.tsx
     - packages/web/src/components/MapControlsRow.tsx
     - packages/web/src/components/ProjectOverview.tsx
+    - packages/web/src/components/projectOverviewHelpers.ts
+    - packages/web/src/components/ResizableSidebar.tsx
     - packages/web/src/components/SidebarClusterDetails.tsx
     - packages/web/src/components/ui/badge.tsx
     - packages/web/src/components/ui/button.tsx
     - packages/web/src/components/ui/card.tsx
+    - packages/web/src/components/ui/collapsible.tsx
     - packages/web/src/components/ui/dialog.tsx
     - packages/web/src/components/ui/scroll-area.tsx
     - packages/web/src/components/ui/sheet.tsx
+    - packages/web/src/components/usePersistentBoolean.ts
+    - packages/web/src/components/usePersistentStringSet.ts
     - packages/web/src/lib/commentsMode.ts
     - packages/web/src/lib/commentTypes.ts
     - packages/web/src/lib/contextTypes.ts
     - packages/web/src/lib/featureMapElements.ts
+    - packages/web/src/lib/flowEdges.ts
+    - packages/web/src/lib/flowNodes.ts
     - packages/web/src/lib/graphLayout.ts
     - packages/web/src/lib/groupContainers.ts
     - packages/web/src/lib/groupDrag.ts
@@ -129,10 +158,11 @@ imports:
     - packages/web/src/lib/searchIndex.ts
     - packages/web/src/lib/types.ts
     - packages/web/src/lib/useContextApi.ts
+    - packages/web/src/lib/useFlowHandlers.ts
     - packages/web/src/lib/useGroupApi.ts
     - packages/web/src/lib/utils.ts
     - packages/web/src/lib/yamlParsing.ts
-compositionHash: da4287e5f049c686
+compositionHash: 3aa86f60098304c2
 metadata:
-  createdAt: 2026-01-11T15:14:54.305Z
-  updatedAt: 2026-01-12T10:49:49.729Z
+  createdAt: 2026-01-13T15:40:50.589Z
+  updatedAt: 2026-01-13T15:40:50.589Z

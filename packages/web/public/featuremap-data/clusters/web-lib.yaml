@@ -1,13 +1,15 @@
 version: 1
 id: web-lib
-layer: frontend
+layer: smell
 layerDetection:
-  layer: frontend
-  confidence: medium
+  layer: smell
+  confidence: low
   signals:
     - exports React components
+    - exports route handlers
     - imports @xyflow/react
     - imports react
+    - mixed frontend+backend signals (no SSR framework)
     - path contains /lib/
     - path contains /web/
 files:
@@ -20,6 +22,8 @@ files:
   - packages/web/src/lib/contextTypes.ts
   - packages/web/src/lib/featureMapElements.ts
   - packages/web/src/lib/featureMapLoaders.ts
+  - packages/web/src/lib/flowEdges.ts
+  - packages/web/src/lib/flowNodes.ts
   - packages/web/src/lib/focusHelpers.ts
   - packages/web/src/lib/graphLayout.ts
   - packages/web/src/lib/groupContainers.ts
@@ -40,6 +44,7 @@ files:
   - packages/web/src/lib/useCommentsTool.ts
   - packages/web/src/lib/useContextApi.ts
   - packages/web/src/lib/useFeatureMapData.ts
+  - packages/web/src/lib/useFlowHandlers.ts
   - packages/web/src/lib/useGroupApi.ts
   - packages/web/src/lib/useGroupLayoutActions.ts
   - packages/web/src/lib/useGroupSelection.ts
@@ -103,6 +108,9 @@ exports:
     type: function
   - isDefault: false
     name: buildSearchIndex
+    type: function
+  - isDefault: false
+    name: buildStyledEdges
     type: function
   - isDefault: false
     name: Cluster
@@ -279,6 +287,9 @@ exports:
     name: getLayoutedElements
     type: function
   - isDefault: false
+    name: getLayoutedPositions
+    type: function
+  - isDefault: false
     name: getVisibleCommentIds
     type: function
   - isDefault: false
@@ -423,6 +434,9 @@ exports:
     name: MapEntity
     type: type
   - isDefault: false
+    name: mergeMeasuredNodes
+    type: function
+  - isDefault: false
     name: mergeSavedComments
     type: function
   - isDefault: false
@@ -459,6 +473,12 @@ exports:
     name: resolveVisibility
     type: function
   - isDefault: false
+    name: RunCommands
+    type: type
+  - isDefault: false
+    name: RunCommandsSchema
+    type: variable
+  - isDefault: false
     name: SearchIndexEntry
     type: interface
   - isDefault: false
@@ -471,10 +491,28 @@ exports:
     name: sortCommentLinks
     type: function
   - isDefault: false
+    name: Statistics
+    type: type
+  - isDefault: false
+    name: StatisticsSchema
+    type: variable
+  - isDefault: false
+    name: Structure
+    type: type
+  - isDefault: false
+    name: StructureSchema
+    type: variable
+  - isDefault: false
     name: TechStack
     type: type
   - isDefault: false
     name: TechStackSchema
+    type: variable
+  - isDefault: false
+    name: Testing
+    type: type
+  - isDefault: false
+    name: TestingSchema
     type: variable
   - isDefault: false
     name: toggleAddMode
@@ -505,6 +543,9 @@ exports:
     type: function
   - isDefault: false
     name: useFeatureMapData
+    type: function
+  - isDefault: false
+    name: useFlowHandlers
     type: function
   - isDefault: false
     name: useGroupApi
@@ -550,6 +591,7 @@ imports:
     - ./featureMapLoaders
     - ./focusHelpers
     - ./groupContainers
+    - ./groupDrag
     - ./groupFilters
     - ./groupLoader
     - ./groupMembership
@@ -565,9 +607,10 @@ imports:
     - ./useCommentsApi
     - ./useLayoutApi
     - ./useOrphanedComments
+    - ./utils
     - ./wsClient
     - ./yamlParsing
-compositionHash: 9a51928c4bfdd9f4
+compositionHash: 2b26becdc4aaa03b
 metadata:
-  createdAt: 2026-01-11T15:14:54.313Z
-  updatedAt: 2026-01-12T10:49:49.750Z
+  createdAt: 2026-01-13T15:40:50.606Z
+  updatedAt: 2026-01-15T11:32:35.045Z

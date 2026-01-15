@@ -17,6 +17,7 @@ files:
   - packages/cli/src/analyzer/grouper.ts
   - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
+  - packages/cli/src/analyzer/run-commands-detector.ts
   - packages/cli/src/analyzer/scanner.ts
   - packages/cli/src/analyzer/statistics-detector.ts
   - packages/cli/src/analyzer/structure-detector.ts
@@ -104,6 +105,9 @@ exports:
     type: function
   - isDefault: false
     name: detectLayer
+    type: function
+  - isDefault: false
+    name: detectRunCommands
     type: function
   - isDefault: false
     name: detectStatistics
@@ -235,6 +239,9 @@ exports:
     name: resetParser
     type: function
   - isDefault: false
+    name: RunCommandsDetectionInput
+    type: interface
+  - isDefault: false
     name: scanProject
     type: function
   - isDefault: false
@@ -287,7 +294,7 @@ imports:
     - ./techStackHelpers.js
     - ./tsconfig.js
     - ./tsconfigLoader.js
-compositionHash: b9a394ed536593f2
+compositionHash: 49af7751d3fa551d
 metadata:
   createdAt: 2026-01-13T15:40:50.512Z
-  updatedAt: 2026-01-13T15:40:50.512Z
+  updatedAt: 2026-01-15T11:32:34.960Z

@@ -1,11 +1,11 @@
 version: 1
-generatedAt: 2026-01-12T10:49:49.791Z
+generatedAt: 2026-01-15T11:32:35.108Z
 nodes:
-  - fileCount: 20
+  - fileCount: 26
     id: cli-analyzer
     label: Cli Analyzer
     type: cluster
-  - fileCount: 6
+  - fileCount: 7
     id: cli-commands
     label: Cli Commands
     type: cluster
@@ -53,15 +53,11 @@ nodes:
     id: mcp-server-utils
     label: Mcp Server Utils
     type: cluster
-  - fileCount: 3
-    id: packages-web
-    label: Packages Web
-    type: cluster
-  - fileCount: 16
+  - fileCount: 20
     id: web-components
     label: Web Components
     type: cluster
-  - fileCount: 6
+  - fileCount: 7
     id: web-components-ui
     label: Web Components Ui
     type: cluster
@@ -69,7 +65,7 @@ nodes:
     id: web-core
     label: Web Core
     type: cluster
-  - fileCount: 38
+  - fileCount: 41
     id: web-lib
     label: Web Lib
     type: cluster
@@ -77,7 +73,11 @@ edges:
   - imports:
       - sourceFiles:
           - packages/cli/src/analyzer/conventions-detector.ts
+          - packages/cli/src/analyzer/run-commands-detector.ts
+          - packages/cli/src/analyzer/statistics-detector.ts
+          - packages/cli/src/analyzer/structure-detector.ts
           - packages/cli/src/analyzer/tech-stack-detector.ts
+          - packages/cli/src/analyzer/testing-detector.ts
         symbol: SUPPORTED_VERSIONS
         targetFile: packages/cli/src/constants/versions.ts
     source: cli-analyzer
@@ -108,9 +108,25 @@ edges:
         symbol: ImportList
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
+          - packages/cli/src/analyzer/run-commands-detector.ts
+        symbol: RunCommands
+        targetFile: packages/cli/src/types/context.ts
+      - sourceFiles:
+          - packages/cli/src/analyzer/statistics-detector.ts
+        symbol: Statistics
+        targetFile: packages/cli/src/types/context.ts
+      - sourceFiles:
+          - packages/cli/src/analyzer/structure-detector.ts
+        symbol: Structure
+        targetFile: packages/cli/src/types/context.ts
+      - sourceFiles:
           - packages/cli/src/analyzer/tech-stack-detector.ts
           - packages/cli/src/analyzer/techStackHelpers.ts
         symbol: TechStack
+        targetFile: packages/cli/src/types/context.ts
+      - sourceFiles:
+          - packages/cli/src/analyzer/testing-detector.ts
+        symbol: Testing
         targetFile: packages/cli/src/types/context.ts
     source: cli-analyzer
     target: cli-types
@@ -137,11 +153,11 @@ edges:
         symbol: buildGraph
         targetFile: packages/cli/src/analyzer/graph.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: Cluster
         targetFile: packages/cli/src/analyzer/grouper.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: DependencyGraph
         targetFile: packages/cli/src/analyzer/graph.ts
       - sourceFiles:
@@ -150,10 +166,29 @@ edges:
         symbol: detectConventions
         targetFile: packages/cli/src/analyzer/conventions-detector.ts
       - sourceFiles:
+          - packages/cli/src/commands/scan.ts
+        symbol: detectRunCommands
+        targetFile: packages/cli/src/analyzer/run-commands-detector.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+        symbol: detectStatistics
+        targetFile: packages/cli/src/analyzer/statistics-detector.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+        symbol: detectStructureContext
+        targetFile: packages/cli/src/analyzer/structure-detector.ts
+      - sourceFiles:
           - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
         symbol: detectTechStack
         targetFile: packages/cli/src/analyzer/tech-stack-detector.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+        symbol: detectTesting
+        targetFile: packages/cli/src/analyzer/testing-detector.ts
       - sourceFiles:
           - packages/cli/src/commands/init.ts
         symbol: FolderInfo
@@ -163,10 +198,12 @@ edges:
         symbol: formatStructureForAI
         targetFile: packages/cli/src/analyzer/structure-scanner.ts
       - sourceFiles:
+          - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
         symbol: getGraphStats
         targetFile: packages/cli/src/analyzer/graph.ts
       - sourceFiles:
+          - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
         symbol: groupByFolders
         targetFile: packages/cli/src/analyzer/grouper.ts
@@ -214,11 +251,11 @@ edges:
     target: cli-server
   - imports:
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: Cluster
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
           - packages/cli/src/commands/validate.ts
         symbol: ClusterSchema
         targetFile: packages/cli/src/types/index.ts
@@ -265,7 +302,7 @@ edges:
         symbol: GroupSchema
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: Layer
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
@@ -274,7 +311,7 @@ edges:
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
           - packages/cli/src/commands/init.ts
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
           - packages/cli/src/commands/validate.ts
         symbol: LayoutSchema
         targetFile: packages/cli/src/types/index.ts
@@ -287,20 +324,43 @@ edges:
         symbol: RawGraphSchema
         targetFile: packages/cli/src/types/index.ts
       - sourceFiles:
+          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/validate.ts
+        symbol: RunCommandsSchema
+        targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/validate.ts
+        symbol: StatisticsSchema
+        targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/validate.ts
+        symbol: StructureSchema
+        targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
           - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
           - packages/cli/src/commands/validate.ts
         symbol: TechStackSchema
         targetFile: packages/cli/src/types/index.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/validate.ts
+        symbol: TestingSchema
+        targetFile: packages/cli/src/types/index.ts
     source: cli-commands
     target: cli-types
   - imports:
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: areClustersEquivalent
         targetFile: packages/cli/src/utils/scanCompare.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: buildClusterFile
         targetFile: packages/cli/src/utils/cluster-builder.ts
       - sourceFiles:
@@ -313,11 +373,11 @@ edges:
         symbol: buildConventionsInput
         targetFile: packages/cli/src/utils/contextUtils.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: buildDefaultLayout
         targetFile: packages/cli/src/utils/layout-builder.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: buildUpdatedMetadata
         targetFile: packages/cli/src/utils/scanCompare.ts
       - sourceFiles:
@@ -325,6 +385,16 @@ edges:
           - packages/cli/src/commands/web.ts
         symbol: copyFeatureMapData
         targetFile: packages/cli/src/utils/featuremapWebSync.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+        symbol: countFeatureFiles
+        targetFile: packages/cli/src/utils/contextUtils.ts
+      - sourceFiles:
+          - packages/cli/src/commands/context.ts
+          - packages/cli/src/commands/scan.ts
+        symbol: findGoModPaths
+        targetFile: packages/cli/src/utils/contextUtils.ts
       - sourceFiles:
           - packages/cli/src/commands/context.ts
           - packages/cli/src/commands/scan.ts
@@ -336,7 +406,7 @@ edges:
         symbol: findWebPackagePath
         targetFile: packages/cli/src/utils/featuremapWebSync.ts
       - sourceFiles:
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
           - packages/cli/src/commands/validate.ts
         symbol: loadYAML
         targetFile: packages/cli/src/utils/yaml-loader.ts
@@ -351,7 +421,7 @@ edges:
         targetFile: packages/cli/src/utils/graphYaml.ts
       - sourceFiles:
           - packages/cli/src/commands/init.ts
-          - packages/cli/src/commands/scan.ts
+          - packages/cli/src/commands/scanHelpers.ts
         symbol: saveYAML
         targetFile: packages/cli/src/utils/yaml-loader.ts
       - sourceFiles:
@@ -1040,12 +1110,16 @@ edges:
         targetFile: packages/web/src/components/ui/card.tsx
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
-        symbol: CardHeader
-        targetFile: packages/web/src/components/ui/card.tsx
+        symbol: Collapsible
+        targetFile: packages/web/src/components/ui/collapsible.tsx
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
-        symbol: CardTitle
-        targetFile: packages/web/src/components/ui/card.tsx
+        symbol: CollapsibleContent
+        targetFile: packages/web/src/components/ui/collapsible.tsx
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+        symbol: CollapsibleTrigger
+        targetFile: packages/web/src/components/ui/collapsible.tsx
       - sourceFiles:
           - packages/web/src/components/SearchPalette.tsx
         symbol: Dialog
@@ -1086,10 +1160,6 @@ edges:
   - imports:
       - sourceFiles:
           - packages/web/src/components/FeatureMap.tsx
-        symbol: applyGroupDragChanges
-        targetFile: packages/web/src/lib/groupDrag.ts
-      - sourceFiles:
-          - packages/web/src/components/FeatureMap.tsx
         symbol: applyLayoutPositions
         targetFile: packages/web/src/lib/graphLayout.ts
       - sourceFiles:
@@ -1109,20 +1179,20 @@ edges:
         symbol: buildGroupContainerNodes
         targetFile: packages/web/src/lib/groupContainers.ts
       - sourceFiles:
+          - packages/web/src/components/FeatureMap.tsx
+        symbol: buildStyledEdges
+        targetFile: packages/web/src/lib/flowEdges.ts
+      - sourceFiles:
           - packages/web/src/components/Sidebar.tsx
           - packages/web/src/components/SidebarClusterDetails.tsx
         symbol: Cluster
         targetFile: packages/web/src/lib/types.ts
       - sourceFiles:
           - packages/web/src/components/EdgeDetailsPanel.tsx
-          - packages/web/src/components/FeatureMap.tsx
           - packages/web/src/components/LeftToolbar.tsx
+          - packages/web/src/components/ResizableSidebar.tsx
         symbol: cn
         targetFile: packages/web/src/lib/utils.ts
-      - sourceFiles:
-          - packages/web/src/components/FeatureMap.tsx
-        symbol: collectMemberPositions
-        targetFile: packages/web/src/lib/groupDrag.ts
       - sourceFiles:
           - packages/web/src/components/FeatureMap.tsx
         symbol: COMMENT_EDGE_TYPE
@@ -1158,6 +1228,7 @@ edges:
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
         symbol: ContextStatus
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
@@ -1187,14 +1258,9 @@ edges:
         symbol: FeatureDetails
         targetFile: packages/web/src/lib/types.ts
       - sourceFiles:
-          - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
         symbol: formatDate
         targetFile: packages/web/src/lib/loadFeatureMap.ts
-      - sourceFiles:
-          - packages/web/src/components/FeatureMap.tsx
-        symbol: getGroupIdFromContainer
-        targetFile: packages/web/src/lib/groupDrag.ts
       - sourceFiles:
           - packages/web/src/components/Sidebar.tsx
         symbol: getGroupsForFeature
@@ -1256,6 +1322,10 @@ edges:
         symbol: MapEntity
         targetFile: packages/web/src/lib/types.ts
       - sourceFiles:
+          - packages/web/src/components/FeatureMap.tsx
+        symbol: mergeMeasuredNodes
+        targetFile: packages/web/src/lib/flowNodes.ts
+      - sourceFiles:
           - packages/web/src/components/ContextViewer.tsx
         symbol: OverviewSchema
         targetFile: packages/web/src/lib/contextTypes.ts
@@ -1264,23 +1334,48 @@ edges:
         symbol: parseYamlWithSchema
         targetFile: packages/web/src/lib/yamlParsing.ts
       - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
+        symbol: RunCommands
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
           - packages/web/src/components/SearchPalette.tsx
         symbol: SearchIndexEntry
         targetFile: packages/web/src/lib/searchIndex.ts
       - sourceFiles:
+          - packages/web/src/components/Sidebar.tsx
+        symbol: Statistics
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
           - packages/web/src/components/ProjectOverview.tsx
           - packages/web/src/components/Sidebar.tsx
+        symbol: Structure
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/projectOverviewHelpers.ts
+          - packages/web/src/components/Sidebar.tsx
         symbol: TechStack
+        targetFile: packages/web/src/lib/contextTypes.ts
+      - sourceFiles:
+          - packages/web/src/components/ProjectOverview.tsx
+          - packages/web/src/components/Sidebar.tsx
+        symbol: Testing
         targetFile: packages/web/src/lib/contextTypes.ts
       - sourceFiles:
           - packages/web/src/components/ContextViewer.tsx
         symbol: useContextApi
         targetFile: packages/web/src/lib/useContextApi.ts
       - sourceFiles:
+          - packages/web/src/components/FeatureMap.tsx
+        symbol: useFlowHandlers
+        targetFile: packages/web/src/lib/useFlowHandlers.ts
+      - sourceFiles:
           - packages/web/src/components/GroupDetailsPanel.tsx
         symbol: useGroupApi
         targetFile: packages/web/src/lib/useGroupApi.ts
       - sourceFiles:
+          - packages/web/src/components/FeatureMap.tsx
           - packages/web/src/components/GroupDetailsPanel.tsx
           - packages/web/src/components/MapControlsRow.tsx
           - packages/web/src/components/MapHeader.tsx
@@ -1369,6 +1464,14 @@ edges:
           - packages/web/src/App.tsx
         symbol: EdgeStyle
         targetFile: packages/web/src/lib/types.ts
+      - sourceFiles:
+          - packages/web/src/App.tsx
+        symbol: getLayoutedPositions
+        targetFile: packages/web/src/lib/graphLayout.ts
+      - sourceFiles:
+          - packages/web/src/App.tsx
+        symbol: isCommentNodeId
+        targetFile: packages/web/src/lib/commentTypes.ts
       - sourceFiles:
           - packages/web/src/App.tsx
         symbol: LayerFilter

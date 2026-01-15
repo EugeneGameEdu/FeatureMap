@@ -16,6 +16,7 @@ import {
   RawGraphSchema,
   LayoutSchema,
   OverviewSchema,
+  RunCommandsSchema,
   StatisticsSchema,
   StructureSchema,
   TestingSchema,
@@ -96,6 +97,10 @@ function getSchemaForFile(filePath: string, featuremapDir: string): SchemaTarget
 
   if (relativePath === 'context/design-system.yaml') {
     return { schema: DesignSystemSchema, fileType: 'context' };
+  }
+
+  if (relativePath === 'context/run-commands.yaml') {
+    return { schema: RunCommandsSchema, fileType: 'context' };
   }
 
   if (relativePath.startsWith('features/')) {

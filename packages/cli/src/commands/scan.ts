@@ -8,12 +8,14 @@ import { detectStructureContext } from '../analyzer/structure-detector.js';
 import { detectTesting } from '../analyzer/testing-detector.js';
 import { detectConventions } from '../analyzer/conventions-detector.js';
 import { detectTechStack } from '../analyzer/tech-stack-detector.js';
+import { detectRunCommands } from '../analyzer/run-commands-detector.js';
 import { loadExistingClusters } from '../analyzer/cluster-loader.js';
 import { applyClusterMatching } from '../analyzer/cluster-id-matching.js';
 import { loadConfig, scanProject } from '../analyzer/scanner.js';
 import { scanProjectStructure } from '../analyzer/structure-scanner.js';
 import {
   ConventionsSchema,
+  RunCommandsSchema,
   StatisticsSchema,
   StructureSchema,
   TestingSchema,
@@ -116,6 +118,16 @@ export function createScanCommand(): Command {
           path.join(featuremapDir, 'context', 'testing.yaml'),
           testing,
           TestingSchema
+        );
+        const runCommands = detectRunCommands({
+          projectRoot,
+          packageJsonPaths,
+          goModPaths,
+        });
+        saveAutoContext(
+          path.join(featuremapDir, 'context', 'run-commands.yaml'),
+          runCommands,
+          RunCommandsSchema
         );
 
         const graph = await buildGraph(scanResult);

@@ -55,6 +55,12 @@ exports:
     name: copyFeatureMapData
     type: function
   - isDefault: false
+    name: countFeatureFiles
+    type: function
+  - isDefault: false
+    name: findGoModPaths
+    type: function
+  - isDefault: false
     name: findPackageJsonPaths
     type: function
   - isDefault: false
@@ -110,6 +116,7 @@ exports:
     type: interface
 imports:
   external:
+    - "@dagrejs/dagre"
     - crypto
     - fast-glob
     - fs
@@ -133,5 +140,5 @@ imports:
     - ./yaml-loader.js
 compositionHash: e618131c64d6ca13
 metadata:
-  createdAt: 2026-01-11T15:14:54.292Z
-  updatedAt: 2026-01-12T10:49:49.702Z
+  createdAt: 2026-01-13T15:40:50.563Z
+  updatedAt: 2026-01-13T15:40:50.563Z

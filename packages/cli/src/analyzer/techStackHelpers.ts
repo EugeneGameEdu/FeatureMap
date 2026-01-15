@@ -11,6 +11,7 @@ export interface PackageJsonData {
   module?: string;
   types?: string;
   bin?: string | Record<string, string>;
+  scripts?: Record<string, string>;
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;

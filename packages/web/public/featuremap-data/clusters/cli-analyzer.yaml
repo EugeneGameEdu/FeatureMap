@@ -17,14 +17,20 @@ files:
   - packages/cli/src/analyzer/grouper.ts
   - packages/cli/src/analyzer/layer-detector.ts
   - packages/cli/src/analyzer/parser.ts
+  - packages/cli/src/analyzer/run-commands-detector.ts
   - packages/cli/src/analyzer/scanner.ts
+  - packages/cli/src/analyzer/statistics-detector.ts
+  - packages/cli/src/analyzer/structure-detector.ts
   - packages/cli/src/analyzer/structure-scanner.ts
+  - packages/cli/src/analyzer/tech-stack-categorizer.ts
+  - packages/cli/src/analyzer/tech-stack-dependencies.ts
   - packages/cli/src/analyzer/tech-stack-detector.ts
   - packages/cli/src/analyzer/techStackHelpers.ts
   - packages/cli/src/analyzer/test-graph.ts
   - packages/cli/src/analyzer/test-grouper.ts
   - packages/cli/src/analyzer/test-parser.ts
   - packages/cli/src/analyzer/test-scanner.ts
+  - packages/cli/src/analyzer/testing-detector.ts
   - packages/cli/src/analyzer/tsconfig.ts
   - packages/cli/src/analyzer/tsconfigLoader.ts
 exports:
@@ -38,10 +44,16 @@ exports:
     name: applyClusterMatching
     type: function
   - isDefault: false
+    name: buildDependencySummary
+    type: function
+  - isDefault: false
     name: buildGraph
     type: function
   - isDefault: false
     name: calculateFileOverlap
+    type: function
+  - isDefault: false
+    name: categorizeDependency
     type: function
   - isDefault: false
     name: Cluster
@@ -56,6 +68,9 @@ exports:
     name: ClusterMatchResult
     type: interface
   - isDefault: false
+    name: collectDependencyRecords
+    type: function
+  - isDefault: false
     name: Confidence
     type: type
   - isDefault: false
@@ -65,8 +80,23 @@ exports:
     name: createAliasResolver
     type: function
   - isDefault: false
+    name: DependencyAggregation
+    type: interface
+  - isDefault: false
     name: DependencyGraph
     type: interface
+  - isDefault: false
+    name: DependencyListEntry
+    type: interface
+  - isDefault: false
+    name: DependencySource
+    type: type
+  - isDefault: false
+    name: DependencySummary
+    type: interface
+  - isDefault: false
+    name: DependencyType
+    type: type
   - isDefault: false
     name: detectConventions
     type: function
@@ -77,10 +107,22 @@ exports:
     name: detectLayer
     type: function
   - isDefault: false
+    name: detectRunCommands
+    type: function
+  - isDefault: false
+    name: detectStatistics
+    type: function
+  - isDefault: false
     name: detectStructure
     type: function
   - isDefault: false
+    name: detectStructureContext
+    type: function
+  - isDefault: false
     name: detectTechStack
+    type: function
+  - isDefault: false
+    name: detectTesting
     type: function
   - isDefault: false
     name: ExistingCluster
@@ -109,6 +151,9 @@ exports:
   - isDefault: false
     name: formatStructureForAI
     type: function
+  - isDefault: false
+    name: FrameworkDependency
+    type: interface
   - isDefault: false
     name: getClusterStats
     type: function
@@ -194,6 +239,9 @@ exports:
     name: resetParser
     type: function
   - isDefault: false
+    name: RunCommandsDetectionInput
+    type: interface
+  - isDefault: false
     name: scanProject
     type: function
   - isDefault: false
@@ -203,7 +251,16 @@ exports:
     name: ScanResult
     type: interface
   - isDefault: false
+    name: StatisticsDetectionInput
+    type: interface
+  - isDefault: false
+    name: StructureDetectionInput
+    type: interface
+  - isDefault: false
     name: TechStackDetectionInput
+    type: interface
+  - isDefault: false
+    name: TestingDetectionInput
     type: interface
   - isDefault: false
     name: TsConfigData
@@ -232,10 +289,12 @@ imports:
     - ./grouper.js
     - ./parser.js
     - ./scanner.js
+    - ./tech-stack-categorizer.js
+    - ./tech-stack-dependencies.js
     - ./techStackHelpers.js
     - ./tsconfig.js
     - ./tsconfigLoader.js
-compositionHash: 4ee37aec38f1e940
+compositionHash: 49af7751d3fa551d
 metadata:
-  createdAt: 2026-01-11T15:14:54.273Z
-  updatedAt: 2026-01-12T10:49:49.668Z
+  createdAt: 2026-01-13T15:40:50.512Z
+  updatedAt: 2026-01-15T11:32:34.960Z

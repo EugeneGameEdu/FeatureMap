@@ -15,6 +15,7 @@ files:
   - packages/web/src/components/ui/badge.tsx
   - packages/web/src/components/ui/button.tsx
   - packages/web/src/components/ui/card.tsx
+  - packages/web/src/components/ui/collapsible.tsx
   - packages/web/src/components/ui/dialog.tsx
   - packages/web/src/components/ui/scroll-area.tsx
   - packages/web/src/components/ui/sheet.tsx
@@ -30,6 +31,7 @@ exports:
     type: interface
 imports:
   external:
+    - "@radix-ui/react-collapsible"
     - "@radix-ui/react-dialog"
     - "@radix-ui/react-scroll-area"
     - "@radix-ui/react-slot"
@@ -38,7 +40,7 @@ imports:
     - react
   internal:
     - packages/web/src/lib/utils.ts
-compositionHash: 54e905d93f23df1c
+compositionHash: 9df03b6a3d7a3cac
 metadata:
-  createdAt: 2026-01-11T15:14:54.309Z
-  updatedAt: 2026-01-12T10:49:49.734Z
+  createdAt: 2026-01-13T15:40:50.597Z
+  updatedAt: 2026-01-13T15:40:50.597Z

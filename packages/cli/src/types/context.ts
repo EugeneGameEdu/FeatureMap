@@ -164,6 +164,37 @@ export const TestingSchema = z.object({
     .optional(),
 });
 
+// Run Commands - auto-detected from package.json scripts, go.mod, Dockerfile
+export const RunCommandsSchema = z.object({
+  version: z.number().int().positive(),
+  source: z.literal('auto'),
+  detectedAt: z.string(),
+  commands: z.record(
+    z.string(),
+    z.object({
+      command: z.string(),
+      source: z.enum(['package.json', 'go.mod', 'dockerfile', 'inferred']),
+      verified: z.boolean(),
+    })
+  ),
+  subprojects: z
+    .record(
+      z.string(),
+      z.object({
+        path: z.string(),
+        commands: z.record(
+          z.string(),
+          z.object({
+            command: z.string(),
+            source: z.enum(['package.json', 'go.mod', 'dockerfile', 'inferred']),
+            verified: z.boolean(),
+          })
+        ),
+      })
+    )
+    .optional(),
+});
+
 // Decisions - manually written by user
 export const DecisionsSchema = z.object({
   version: z.number().int().positive(),
@@ -236,6 +267,7 @@ export type Conventions = z.infer<typeof ConventionsSchema>;
 export type Statistics = z.infer<typeof StatisticsSchema>;
 export type Structure = z.infer<typeof StructureSchema>;
 export type Testing = z.infer<typeof TestingSchema>;
+export type RunCommands = z.infer<typeof RunCommandsSchema>;
 export type Decisions = z.infer<typeof DecisionsSchema>;
 export type Constraints = z.infer<typeof ConstraintsSchema>;
 export type Overview = z.infer<typeof OverviewSchema>;

@@ -155,6 +155,38 @@ export const TestingSchema = z
   })
   .passthrough();
 
+export const RunCommandsSchema = z
+  .object({
+    version: z.number(),
+    source: z.literal('auto'),
+    detectedAt: z.string(),
+    commands: z.record(
+      z.string(),
+      z.object({
+        command: z.string(),
+        source: z.enum(['package.json', 'go.mod', 'dockerfile', 'inferred']),
+        verified: z.boolean(),
+      })
+    ),
+    subprojects: z
+      .record(
+        z.string(),
+        z.object({
+          path: z.string(),
+          commands: z.record(
+            z.string(),
+            z.object({
+              command: z.string(),
+              source: z.enum(['package.json', 'go.mod', 'dockerfile', 'inferred']),
+              verified: z.boolean(),
+            })
+          ),
+        })
+      )
+      .optional(),
+  })
+  .passthrough();
+
 export const DecisionsSchema = z
   .object({
     version: z.number(),
@@ -226,6 +258,7 @@ export type Conventions = z.infer<typeof ConventionsSchema>;
 export type Statistics = z.infer<typeof StatisticsSchema>;
 export type Structure = z.infer<typeof StructureSchema>;
 export type Testing = z.infer<typeof TestingSchema>;
+export type RunCommands = z.infer<typeof RunCommandsSchema>;
 export type Decisions = z.infer<typeof DecisionsSchema>;
 export type Constraints = z.infer<typeof ConstraintsSchema>;
 export type Overview = z.infer<typeof OverviewSchema>;
@@ -246,6 +279,7 @@ export interface ContextData {
   testing: ContextFile<Testing>;
   techStack: ContextFile<TechStack>;
   conventions: ContextFile<Conventions>;
+  runCommands: ContextFile<RunCommands>;
   decisions: ContextFile<Decisions>;
   constraints: ContextFile<Constraints>;
   overview: ContextFile<Overview>;
